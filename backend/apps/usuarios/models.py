@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
@@ -9,7 +9,25 @@ class Rol(models.Model):
     def __str__(self):
         return self.nombre_rol
 
-# Adaptación del usuario integrando el sistema base de Django
+# ==========================================
+# NUEVO: El "Gerente" que sabe buscar usuarios
+# ==========================================
+class UsuarioManager(BaseUserManager):
+    def create_user(self, nombre_usuario, password=None, **extra_fields):
+        if not nombre_usuario:
+            raise ValueError('El usuario debe tener un nombre de usuario')
+        usuario = self.model(nombre_usuario=nombre_usuario, **extra_fields)
+        usuario.set_password(password)
+        usuario.save(using=self._db)
+        return usuario
+
+    def create_superuser(self, nombre_usuario, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(nombre_usuario, password, **extra_fields)
+
+# ==========================================
+# Tu modelo Usuario (Actualizado)
+# ==========================================
 class Usuario(AbstractBaseUser, PermissionsMixin):
     id_usuario = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre_usuario = models.CharField(max_length=150, unique=True)
@@ -18,6 +36,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     creado_en = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, default='activo')
     roles = models.ManyToManyField(Rol, related_name='usuarios')
+
+    # AQUÍ ESTÁ LA MAGIA: Le asignamos el gerente al usuario
+    objects = UsuarioManager()
 
     USERNAME_FIELD = 'nombre_usuario'
 
