@@ -104,7 +104,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
     
-    # --- LA SOLUCIÓN ESTÁ AQUÍ ---
     'USER_ID_FIELD': 'id_usuario',
     'USER_ID_CLAIM': 'user_id',
 }
