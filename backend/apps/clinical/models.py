@@ -28,7 +28,12 @@ class ArchivoFuente(models.Model):
     admision = models.ForeignKey(Admision, on_delete=models.CASCADE, related_name='archivos')
     nombre_archivo = models.CharField(max_length=255)
     tipo_documento = models.CharField(max_length=20) # NA, NE, VIT, LAB, PUL, MED
-    ruta_almacenamiento = models.TextField()
+    
+    archivo_fisico = models.FileField(upload_to='evidencia/%Y/%m/', null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Archivo Fuente"
+        verbose_name_plural = "Archivos Fuente"
 
     def __str__(self):
         return f"{self.tipo_documento} - {self.nombre_archivo}"
