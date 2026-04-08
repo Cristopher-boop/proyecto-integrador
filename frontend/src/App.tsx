@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
+import UploadResults from './pages/UploadResults';
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
           
           <Route path="labs" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Resultados de Laboratorio</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
           
-          <Route path="upload" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Ingesta de Datos (Drag & Drop)</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
+          <Route path="upload" element={<UploadResults />} />
           
           <Route path="reports" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Reportes y Analítica</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
           
