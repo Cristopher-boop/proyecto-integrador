@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
 import UploadResults from './pages/UploadResults';
+import PatientProfile from './pages/PatientProfile';
+import Admissions from './pages/Admissions';
 
 function App() {
   return (
@@ -20,9 +22,11 @@ function App() {
           <Route index element={<DashboardHome />} />
           
           {/* Rutas temporales funcionales para el menú clínico */}
-          <Route path="admissions" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Módulo de Admisiones</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
           
-          <Route path="patients" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Directorio de Pacientes</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
+          {/* Ruta real para el Episodio Clínico */}
+          <Route path="admissions" element={<Admissions />} />
+          
+          <Route path="patients" element={<PatientProfile />} />
           
           <Route path="labs" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Resultados de Laboratorio</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
           
