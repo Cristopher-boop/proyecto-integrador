@@ -5,6 +5,7 @@ import DashboardHome from './pages/DashboardHome';
 import UploadResults from './pages/UploadResults';
 import PatientProfile from './pages/PatientProfile';
 import Admissions from './pages/Admissions';
+import Labs from './pages/Labs';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
           
           <Route path="patients" element={<PatientProfile />} />
           
-          <Route path="labs" element={<div className="p-8 bg-white rounded-xl shadow-sm border border-slate-100"><h2 className="text-2xl font-bold text-slate-800">Resultados de Laboratorio</h2><p className="text-slate-500 mt-2">Área en construcción...</p></div>} />
+          <Route path="labs" element={<Labs />} />
           
           <Route path="upload" element={<UploadResults />} />
           
