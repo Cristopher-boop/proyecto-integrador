@@ -1,28 +1,51 @@
 import React, { useState } from 'react';
 import { User, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Importante para redirigir
+import axios from 'axios'; // Importante para hacer la petición al backend
 
-// Importamos tus imágenes directamente de la carpeta assets
 import logoInaaqc from '../assets/logo_inaaqc.svg';
-// Asegúrate de que el nombre coincida con tu imagen sin franjas negras
-import loginBg from '../assets/fondo_inaaqc.jpg'; 
+import loginBg from '../assets/fondo_inaaqc.jpg';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(''); // Estado para mostrar errores
+  
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg(''); // Limpiamos errores previos
     
-    // Simulamos una carga de 2 segundos para dar el "efecto real" en la presentación
-    setTimeout(() => {
-      console.log('Iniciando sesión con:', username);
-      alert(`¡Login Exitoso, ${username}! (Conectaremos la API de Django después de la presentación)`);
+    try {
+      // 1. El Disparo Real a Django
+      const response = await axios.post('http://127.0.0.1:8000/api/token/', {
+        username: username,
+        password: password
+      });
+
+      // 2. Si Django responde 200 OK, sacamos los tokens de la respuesta
+      const { access, refresh } = response.data;
+
+      // 3. Guardamos los tokens en la caja fuerte del navegador (Local Storage)
+      localStorage.setItem('accessToken', access);
+      localStorage.setItem('refreshToken', refresh);
+
+      // 4. ¡Redirigimos al Dashboard!
+      navigate('/dashboard'); 
+
+    } catch (error: any) {
+      // Si el servidor responde con error 401 (No autorizado) o está caído
+      if (error.response && error.response.status === 401) {
+        setErrorMsg('Usuario o contraseña incorrectos.');
+      } else {
+        setErrorMsg('Error al conectar con el servidor.');
+      }
+    } finally {
       setIsLoading(false);
-      setUsername('');
-      setPassword('');
-    }, 2000);
+    }
   };
 
   return (
@@ -31,21 +54,12 @@ const Login: React.FC = () => {
       {/* SECCIÓN IZQUIERDA: Formulario (50%) */}
       <div className="w-full md:w-1/2 flex flex-col justify-between p-8 md:p-16 lg:p-24 z-10 relative bg-white">
         
-        {/* Cabecera con tu Logo SVG */}
+        {/* Cabecera */}
         <div className="flex flex-col items-center mt-8">
-          
-          {/* LA CORRECCIÓN DEL LOGO: Limpio, circular y sin forzar el escalado que lo volvía negro */}
           <div className="mb-6 shadow-xl rounded-full overflow-hidden border-4 border-slate-100 h-28 w-28 bg-white flex justify-center items-center">
-            <img 
-              src={logoInaaqc} 
-              alt="Logo INAAQC" 
-              className="w-full h-full object-cover" 
-            />
+            <img src={logoInaaqc} alt="Logo INAAQC" className="w-full h-full object-cover" />
           </div>
-          
-          <h1 className="text-4xl font-extrabold text-blue-950 tracking-tight">
-            INAAQC
-          </h1>
+          <h1 className="text-4xl font-extrabold text-blue-950 tracking-tight">INAAQC</h1>
           <p className="text-blue-600 text-sm mt-2 font-medium uppercase tracking-wider">
             Sistema Experto de Ingesta Clínica
           </p>
@@ -54,11 +68,16 @@ const Login: React.FC = () => {
         {/* Formulario */}
         <form onSubmit={handleLogin} className="space-y-6 max-w-sm mx-auto w-full mt-12 flex-grow">
           
+          {/* Mensaje de Error (Aparece solo si hay un error) */}
+          {errorMsg && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center border border-red-100">
+              {errorMsg}
+            </div>
+          )}
+
           {/* Input Usuario */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">
-              Usuario Institucional
-            </label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">🧑‍⚕️ Usuario Institucional</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-slate-400" />
@@ -76,9 +95,7 @@ const Login: React.FC = () => {
 
           {/* Input Contraseña */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">
-              Contraseña
-            </label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">🔑 Contraseña</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-slate-400" />
@@ -111,26 +128,20 @@ const Login: React.FC = () => {
           </button>
         </form>
         
-        {/* Footer del Formulario */}
+        {/* Footer */}
         <div className="text-center pb-4 pt-12 border-t border-slate-100">
-          <p className="text-xs text-slate-400 font-medium">
-            Módulo de Acceso Restringido • Hospital Erasme
-          </p>
+          <p className="text-xs text-slate-400 font-medium">Módulo de Acceso Restringido • Hospital Erasme</p>
         </div>
-
       </div>
 
-      {/* SECCIÓN DERECHA: Imagen de Fondo (50%) */}
+      {/* SECCIÓN DERECHA: Imagen de Fondo */}
       <div 
         className="hidden md:block md:w-1/2 bg-cover bg-center relative"
-        // bg-cover asegura que la imagen llene el espacio, y tú ya solucionaste lo de las franjas
         style={{ backgroundImage: `url(${loginBg})` }}
       >
-        {/* Capas superpuestas (Overlay) para un tono azul institucional profesional */}
         <div className="absolute inset-0 bg-blue-900 mix-blend-multiply opacity-20"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/40 to-transparent opacity-90"></div>
         
-        {/* Texto sobre la imagen */}
         <div className="absolute bottom-16 left-16 right-16 text-white">
           <h2 className="text-4xl font-bold mb-4 tracking-tight">Precisión y Trazabilidad</h2>
           <p className="text-blue-100 text-lg opacity-90 leading-relaxed max-w-lg">
@@ -138,7 +149,6 @@ const Login: React.FC = () => {
           </p>
         </div>
       </div>
-
     </div>
   );
 };
