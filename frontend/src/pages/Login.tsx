@@ -145,7 +145,7 @@ const Login: React.FC = () => {
         <div className="absolute bottom-16 left-16 right-16 text-white">
           <h2 className="text-4xl font-bold mb-4 tracking-tight">Precisión y Trazabilidad</h2>
           <p className="text-blue-100 text-lg opacity-90 leading-relaxed max-w-lg">
-            Plataforma centralizada para la ingesta y análisis de parámetros biomédicos en tiempo real.
+            Plataforma centralizada para la ingesta y análisis de parámetros biomédicos simulados en tiempo real.
           </p>
         </div>
       </div>
