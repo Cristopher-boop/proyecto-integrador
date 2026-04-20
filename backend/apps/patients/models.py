@@ -36,6 +36,7 @@ class Admision(models.Model):
     peso_ingreso_kg = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     talla_ingreso_cm = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
+    esta_activo = models.BooleanField(default=True)
 
     class Meta:
         indexes = [
