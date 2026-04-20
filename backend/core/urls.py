@@ -18,6 +18,8 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('api/v1/users/', include('apps.users.urls')),
+
+    path('api/v1/clinical/', include('apps.clinical.urls')),
 ]
 
 if settings.DEBUG:
