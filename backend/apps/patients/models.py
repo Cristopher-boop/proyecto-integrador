@@ -15,6 +15,7 @@ class Paciente(models.Model):
     fecha_nacimiento = models.DateField(null=True, blank=True)
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES, null=True, blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
+    esta_activo = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.apellidos}, {self.nombres} ({self.dossier_erasme})"

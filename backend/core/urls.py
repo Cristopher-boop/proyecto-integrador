@@ -11,9 +11,9 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/clinical/', include('apps.clinical.urls')), 
+    path('api/clinical/', include('apps.clinical.urls')),
+    path('api/v1/patients/', include('apps.patients.urls')),
     
-    # NUESTRAS RUTAS DE LOGIN (Generación de Tokens)
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
