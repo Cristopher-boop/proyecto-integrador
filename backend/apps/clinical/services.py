@@ -1,5 +1,6 @@
 from apps.patients.models import Admision
 from .models import ArchivoFuente, ObservacionBiomedica
+from .ocr_service import MotorIngestaClinica
 
 class ArchivoFuenteService:
     @staticmethod
@@ -32,6 +33,43 @@ class ArchivoFuenteService:
     def eliminar_archivo(archivo):
         archivo.delete()
         return True
+    
+    @staticmethod
+    def procesar_ocr_archivo(archivo):
+        """
+        Toma el archivo físico, ejecuta el motor OCR determinista,
+        le inyecta el ID de la admisión y guarda los resultados en bloque.
+        Esta separación asegura que si el OCR falla, la API no colapse.
+        """
+        if not archivo.archivo_fisico:
+            raise ValueError("El registro no tiene un archivo físico adjunto para procesar.")
+
+        # 1. Extraer los datos crudos usando el motor
+        ruta_absoluta = archivo.archivo_fisico.path
+        resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
+
+        if not resultados_crudos:
+            return 0 # No se encontró nada para extraer
+
+        # 2. Inyectar el ID de la admisión a cada diccionario de resultados
+        id_admision = archivo.admision.pk
+        for res in resultados_crudos:
+            res['admision'] = id_admision
+
+        # 3. Guardar en bloque usando el servicio que ya teníamos
+        # Importamos aquí para evitar referencias circulares si es necesario
+        from .serializers import ObservacionBiomedicaSerializer
+        
+        serializer = ObservacionBiomedicaSerializer(data=resultados_crudos, many=True)
+        if serializer.is_valid():
+            # Inserción masiva
+            from .models import ObservacionBiomedica
+            observaciones = [ObservacionBiomedica(**datos) for datos in serializer.validated_data]
+            ObservacionBiomedica.objects.bulk_create(observaciones)
+            return len(observaciones)
+        else:
+            # Si el OCR extrajo algo mal formado, lanzamos error detallado
+            raise ValueError(f"Fallo de validación en los datos extraídos: {serializer.errors}")
 
 
 class ObservacionBiomedicaService:

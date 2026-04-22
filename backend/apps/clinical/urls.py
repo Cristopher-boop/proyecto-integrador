@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import ArchivoUploadView, ObservacionBiomedicaListCreateAPIView, ObservacionBiomedicaDetailAPIView
+from .views import ArchivoUploadView, ObservacionBiomedicaListCreateAPIView, ObservacionBiomedicaDetailAPIView, ArchivoProcesarOCRAPIView
 
 urlpatterns = [
     path('archivos/', ArchivoUploadView.as_view(), name='archivo-upload'),
     path('archivos/admision/<str:id_admision>/', ArchivoUploadView.as_view(), name='archivo-list'),
+    path('archivos/<uuid:pk>/procesar/', ArchivoProcesarOCRAPIView.as_view(), name='archivo-procesar-ocr'),
 
     path('observaciones/', ObservacionBiomedicaListCreateAPIView.as_view(), name='observacion-create-bulk'),
     path('observaciones/admision/<str:id_admision>/', ObservacionBiomedicaListCreateAPIView.as_view(), name='observacion-list'),
