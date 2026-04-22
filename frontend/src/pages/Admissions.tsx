@@ -1,110 +1,282 @@
-import React, { useState } from 'react';
-import { Activity, AlertTriangle, FileText, CheckCircle2 } from 'lucide-react';
-import useSound from 'use-sound';
-import PatientChart from '../components/ui/PatientChart';
-import alarmSfx from '../assets/alerta-usi.mp3';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Activity, Plus, Loader2, Search, ClipboardList, CheckCircle2, XCircle, Edit2, PowerOff } from 'lucide-react';
+
+interface Paciente {
+  id_paciente: string;
+  nombres: string;
+  apellidos: string;
+  dossier_erasme: string;
+  esta_activo: boolean;
+}
+
+interface Admision {
+  id_admision: string;
+  numero_episodio: string;
+  fecha_ingreso: string;
+  fecha_salida?: string;
+  cama_sala: string;
+  peso_ingreso_kg: string;
+  talla_ingreso_cm: string;
+  esta_activo: boolean;
+  paciente: string;
+}
 
 const Admissions: React.FC = () => {
-  const [criticalAlert, setCriticalAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [admisiones, setAdmisiones] = useState<Admision[]>([]);
+  const [pacientes, setPacientes] = useState<Paciente[]>([]); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const [playAlarm] = useSound(alarmSfx, { 
-    volume: 0.8,
-    interrupt: false 
+  const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState({
+    paciente: '', 
+    numero_episodio: '',
+    fecha_ingreso: new Date().toISOString().slice(0, 16),
+    cama_sala: '',
+    peso_ingreso_kg: '',
+    talla_ingreso_cm: ''
   });
 
-  // Esta función es llamada POR EL GRÁFICO cuando la línea roja cruza el umbral
-  const handleCriticalEvent = (message: string) => {
-    // Si la alerta no estaba activa ya, la disparamos
-    if (!criticalAlert) {
-      setCriticalAlert(true);
-      setAlertMessage(message);
-      
-      playAlarm();
-      setTimeout(playAlarm, 1000);
-      setTimeout(playAlarm, 2000);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const pacientesRes = await axios.get('http://127.0.0.1:8000/api/v1/patients/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const admisionesRes = await axios.get('http://127.0.0.1:8000/api/v1/patients/admisiones/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setPacientes(pacientesRes.data);
+      setAdmisiones(admisionesRes.data);
+    } catch (err: any) {
+      setError('Error al cargar los datos.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const acknowledgeAlert = () => {
-    setCriticalAlert(false);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem('accessToken');
+      
+      if (editingId) {
+        // ACTUALIZAR (PUT)
+        await axios.put(`http://127.0.0.1:8000/api/v1/patients/admisiones/${editingId}/`, formData, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      } else {
+        // CREAR (POST)
+        await axios.post('http://127.0.0.1:8000/api/v1/patients/admisiones/', formData, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      }
+      
+      cerrarFormulario();
+      fetchData();
+    } catch (err: any) {
+      alert('Error en la operación: ' + (err.response?.data?.error || 'Revisa los datos'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeactivate = async (id: string) => {
+    if (!window.confirm("¿Confirmar Alta Médica? El episodio dejará de estar activo para monitoreo.")) return;
+    try {
+      const token = localStorage.getItem('accessToken');
+      await axios.delete(`http://127.0.0.1:8000/api/v1/patients/admisiones/${id}/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      fetchData();
+    } catch (err: any) {
+      alert('Error al dar de alta el episodio.');
+    }
+  };
+
+  const abrirParaEditar = (a: Admision) => {
+    setEditingId(a.id_admision);
+    setFormData({
+      paciente: a.paciente,
+      numero_episodio: a.numero_episodio,
+      fecha_ingreso: new Date(a.fecha_ingreso).toISOString().slice(0, 16),
+      cama_sala: a.cama_sala,
+      peso_ingreso_kg: a.peso_ingreso_kg,
+      talla_ingreso_cm: a.talla_ingreso_cm
+    });
+    setShowForm(true);
+  };
+
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setFormData({ 
+      paciente: '', numero_episodio: '', fecha_ingreso: new Date().toISOString().slice(0, 16),
+      cama_sala: '', peso_ingreso_kg: '', talla_ingreso_cm: '' 
+    });
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       
-      {/* Panel Superior */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Episodio Activo</span>
-              <h2 className="text-2xl font-bold text-slate-800">EP-001</h2>
-            </div>
-            <p className="text-slate-600 font-medium text-lg">VELLEMANS, HILDE JOSEPHINE</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-slate-500 font-medium">Ingreso: 19 Ene 2026 - 12:00</p>
-            <div className="flex items-center justify-end gap-2 mt-1 text-emerald-600 font-bold text-sm">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-              </span>
-              Monitorización Continua
-            </div>
-          </div>
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <Activity className="text-blue-600 w-7 h-7" />
+            Gestión de Episodios Clínicos
+          </h2>
+          <p className="text-slate-500 mt-1">Control de ingresos y altas hospitalarias.</p>
         </div>
-
-        {/* Panel de Alerta Dinámica */}
-        {criticalAlert ? (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex justify-between items-center animate-pulse shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="bg-red-100 p-2 rounded-full">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
-              </div>
-              <div>
-                <h3 className="text-red-800 font-bold">¡ALERTA CRÍTICA DETECTADA!</h3>
-                <p className="text-red-600 text-sm">{alertMessage}</p>
-              </div>
-            </div>
-            <button onClick={acknowledgeAlert} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
-              Reconocer Alarma
-            </button>
-          </div>
-        ) : (
-          <div className="bg-slate-50 border border-slate-200 p-4 rounded-lg flex justify-between items-center">
-             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-slate-400" />
-              <p className="text-slate-600 text-sm font-medium">Parámetros dentro de umbrales tolerables. Esperando datos del monitor...</p>
-            </div>
-          </div>
-        )}
+        <button 
+          onClick={showForm ? cerrarFormulario : () => setShowForm(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2"
+        >
+          {showForm ? <Search className="w-5 h-5"/> : <Plus className="w-5 h-5"/>}
+          {showForm ? 'Ver Directorio' : 'Nueva Admisión'}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          {/* PASAMOS LA FUNCIÓN COMO PROP AL GRÁFICO */}
-          <PatientChart onCriticalAlert={handleCriticalEvent} />
-        </div>
+      {showForm && (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 animate-in fade-in slide-in-from-top-4">
+          <h3 className="text-lg font-semibold border-b pb-3 mb-4 flex items-center gap-2">
+            <ClipboardList className="w-5 h-5 text-slate-500" /> 
+            {editingId ? 'Editar Detalles del Episodio' : 'Aperturar Nuevo Episodio'}
+          </h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <div className="md:col-span-3">
+              <label className="block text-sm font-medium text-slate-600 mb-1">Paciente</label>
+              <select required className="w-full border p-2 rounded focus:ring-2 outline-none bg-slate-50 disabled:opacity-60"
+                disabled={!!editingId}
+                value={formData.paciente} onChange={e => setFormData({...formData, paciente: e.target.value})}>
+                <option value="">-- Selecciona un Paciente --</option>
+                {pacientes.filter(p => p.esta_activo || p.id_paciente === formData.paciente).map(p => (
+                  <option key={p.id_paciente} value={p.id_paciente}>
+                    {p.nombres} {p.apellidos} ({p.dossier_erasme})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Notas Clínicas</h3>
-          <div className="space-y-4 flex-1 overflow-y-auto pr-2">
-            <div className="relative pl-6 border-l-2 border-blue-200 pb-4">
-              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1 shadow-[0_0_0_4px_white]"></div>
-              <p className="text-xs text-slate-400 font-bold mb-1">20 Ene 2026 - 09:00</p>
-              <p className="text-sm font-medium text-blue-900 mb-1 flex items-center gap-1"><FileText className="w-3 h-3" /> Nota de Evolución (NE)</p>
-              <p className="text-sm text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">P/ Statines Asa+Brilique. ETT faite aux urgences. Sortie jeudi si ok.</p>
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Nº de Episodio</label>
+              <input required type="text" className="w-full border p-2 rounded focus:ring-2 outline-none" 
+                value={formData.numero_episodio} onChange={e => setFormData({...formData, numero_episodio: e.target.value})} />
             </div>
-            <div className="relative pl-6 border-l-2 border-slate-200">
-              <div className="absolute w-3 h-3 bg-slate-300 rounded-full -left-[7px] top-1 shadow-[0_0_0_4px_white]"></div>
-              <p className="text-xs text-slate-400 font-bold mb-1">19 Ene 2026 - 12:30</p>
-              <p className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1"><Activity className="w-3 h-3" /> Intervención (PPCI)</p>
-              <p className="text-sm text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">Mise en place d'un DES Ultimaster 3.5/28 sur CD2-3.</p>
+            
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-slate-600 mb-1">Fecha y Hora de Ingreso</label>
+              <input required type="datetime-local" className="w-full border p-2 rounded focus:ring-2 outline-none" 
+                value={formData.fecha_ingreso} onChange={e => setFormData({...formData, fecha_ingreso: e.target.value})} />
             </div>
-          </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Cama / Sala</label>
+              <input required type="text" className="w-full border p-2 rounded focus:ring-2 outline-none" 
+                value={formData.cama_sala} onChange={e => setFormData({...formData, cama_sala: e.target.value})} />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Peso (Kg)</label>
+              <input type="number" step="0.01" className="w-full border p-2 rounded focus:ring-2 outline-none" 
+                value={formData.peso_ingreso_kg} onChange={e => setFormData({...formData, peso_ingreso_kg: e.target.value})} />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Talla (cm)</label>
+              <input type="number" step="0.01" className="w-full border p-2 rounded focus:ring-2 outline-none" 
+                value={formData.talla_ingreso_cm} onChange={e => setFormData({...formData, talla_ingreso_cm: e.target.value})} />
+            </div>
+
+            <div className="md:col-span-3 mt-4 flex gap-3">
+              <button disabled={isSubmitting} type="submit" className="flex-1 bg-slate-800 text-white py-3 rounded-lg font-bold flex justify-center items-center gap-2">
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingId ? 'Guardar Cambios' : 'Registrar Episodio')}
+              </button>
+              {editingId && (
+                <button type="button" onClick={cerrarFormulario} className="px-6 bg-slate-200 text-slate-700 py-3 rounded-lg font-bold hover:bg-slate-300">
+                  Cancelar
+                </button>
+              )}
+            </div>
+          </form>
         </div>
-      </div>
+      )}
+
+      {!showForm && (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+          {isLoading ? (
+            <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-max">
+                <thead>
+                  <tr className="bg-slate-50 text-slate-500 text-sm border-b">
+                    <th className="p-4 font-medium">Episodio</th>
+                    <th className="p-4 font-medium">Paciente</th>
+                    <th className="p-4 font-medium">Sala/Cama</th>
+                    <th className="p-4 font-medium">Ingreso</th>
+                    <th className="p-4 font-medium text-center">Estado</th>
+                    <th className="p-4 font-medium text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {admisiones.map((a) => {
+                    const px = pacientes.find(p => p.id_paciente === a.paciente);
+                    const nombre = px ? `${px.nombres} ${px.apellidos}` : 'N/D';
+
+                    return (
+                      <tr key={a.id_admision} className={`border-b border-slate-50 hover:bg-slate-50 transition-colors ${!a.esta_activo ? 'opacity-60 bg-slate-50' : ''}`}>
+                        <td className="p-4 font-bold text-blue-600">{a.numero_episodio}</td>
+                        <td className="p-4 font-medium text-slate-800">{nombre}</td>
+                        <td className="p-4 text-slate-600 font-mono text-sm">{a.cama_sala}</td>
+                        <td className="p-4 text-slate-600 text-xs">{new Date(a.fecha_ingreso).toLocaleString()}</td>
+                        <td className="p-4 text-center">
+                          {a.esta_activo ? (
+                            <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">
+                              <CheckCircle2 className="w-3 h-3" /> ACTIVO
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs font-bold">
+                              <XCircle className="w-3 h-3" /> ALTA
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4 text-right flex justify-end gap-2">
+                          <button 
+                            onClick={() => abrirParaEditar(a)}
+                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            title="Editar"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          {a.esta_activo && (
+                            <button 
+                              onClick={() => handleDeactivate(a.id_admision)}
+                              className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                              title="Dar de Alta"
+                            >
+                              <PowerOff className="w-4 h-4" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
