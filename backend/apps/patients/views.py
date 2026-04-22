@@ -6,10 +6,10 @@ from .serializers import PacienteSerializer
 from .services import PacienteService
 from .serializers import PacienteSerializer, AdmisionSerializer
 from .services import PacienteService, AdmisionService
+from rest_framework.permissions import IsAuthenticated 
 
 class PacienteListCreateAPIView(APIView):
-    # Descomenta la siguiente línea cuando quieras proteger la ruta con Token JWT
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         pacientes = PacienteService.obtener_activos()
@@ -26,7 +26,7 @@ class PacienteListCreateAPIView(APIView):
 
 
 class PacienteDetailAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         """Obtiene un paciente por ID"""
