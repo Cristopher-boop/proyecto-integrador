@@ -77,3 +77,29 @@ class ObservacionBiomedicaDetailAPIView(APIView):
 
         ObservacionBiomedicaService.eliminar_observacion(observacion)
         return Response({"mensaje": "Resultado clínico eliminado correctamente"}, status=status.HTTP_200_OK)
+    
+class ArchivoProcesarOCRAPIView(APIView):
+    ## permission_classes = [IsAuthenticated]
+    def post(self, request, pk):
+        """Gatillo manual para iniciar la lectura OCR de un documento específico"""
+        archivo = ArchivoFuenteService.obtener_por_id(pk)
+        if not archivo:
+            return Response({"error": "Archivo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            cantidad_registros = ArchivoFuenteService.procesar_ocr_archivo(archivo)
+            if cantidad_registros == 0:
+                return Response({
+                    "mensaje": "El OCR finalizó, pero no se detectaron parámetros médicos conocidos en este documento."
+                }, status=status.HTTP_200_OK)
+                
+            return Response({
+                "mensaje": f"¡Éxito! El motor OCR extrajo y guardó {cantidad_registros} resultados biomédicos."
+            }, status=status.HTTP_200_OK)
+            
+        except ValueError as e:
+            # Capturamos errores lógicos o de validación
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            # Capturamos caídas críticas (defensa del servidor)
+            return Response({"error": f"Error interno del motor OCR: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
