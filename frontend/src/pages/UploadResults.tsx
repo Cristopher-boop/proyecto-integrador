@@ -1,26 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2 } from 'lucide-react';
+import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu } from 'lucide-react';
 import axios from 'axios';
 
 const UploadResults: React.FC = () => {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [episode, setEpisode] = useState('EP-001');
+  const [episode, setEpisode] = useState('EP-001'); // Debe coincidir con un episodio real de tu BD
   const [docType, setDocType] = useState('LAB');
   
   const [isUploading, setIsUploading] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Estados: idle -> uploaded (subido, listo para OCR) -> processed (OCR terminado) -> error
+  const [status, setStatus] = useState<'idle' | 'uploaded' | 'processed' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [fileId, setFileId] = useState<string | null>(null); // Guardaremos el ID que nos devuelva Django
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // --- NUEVA LÓGICA: Auto-seleccionar tipo según extensión ---
   useEffect(() => {
     if (file) {
       if (file.type === 'application/pdf') {
-        setDocType('LAB'); // Por defecto si es PDF
+        setDocType('LAB');
       } else if (file.type.startsWith('image/')) {
-        setDocType('IMG'); // Por defecto si es Imagen
+        setDocType('IMG');
       }
     }
   }, [file]);
@@ -53,6 +57,7 @@ const UploadResults: React.FC = () => {
     }
   };
 
+  // 1. SUBIR EL ARCHIVO FÍSICO
   const handleUpload = async () => {
     if (!file) return;
 
@@ -67,32 +72,70 @@ const UploadResults: React.FC = () => {
     try {
       const token = localStorage.getItem('accessToken');
       
-      const response = await axios.post('http://127.0.0.1:8000/api/clinical/upload/', formData, {
+      const response = await axios.post('http://127.0.0.1:8000/api/v1/clinical/archivos/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         }
       });
 
-      console.log('Respuesta de Django:', response.data);
-      setStatus('success');
+      // ¡MEGÁFONO 1! Vemos exactamente qué devuelve Django
+      console.log("✅ Django respondió al subir:", response.data);
+
+      // Truco: Atrapamos el ID sin importar cómo lo llame tu backend
+      const idAtrapado = response.data.id || response.data.id_archivo || response.data.uuid || response.data.pk;
+      
+      setFileId(idAtrapado);
+      setStatus('uploaded');
       
     } catch (error: any) {
-      console.error('Error al subir:', error);
       setStatus('error');
-      // Mejoramos el mensaje para que avise si el token expiró
       if (error.response?.status === 401) {
         setErrorMessage('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.');
       } else {
-        setErrorMessage(error.response?.data?.error || 'Error de conexión con el servidor.');
+        setErrorMessage(error.response?.data?.error || 'Error de conexión al subir el archivo.');
       }
     } finally {
       setIsUploading(false);
     }
   };
 
+  // 2. DISPARAR EL MOTOR OCR
+  const handleProcessOCR = async () => {
+    // ¡MEGÁFONO 2! Vemos si el botón sabe qué ID procesar
+    console.log("Intentando procesar el archivo con ID:", fileId);
+
+    if (!fileId) {
+      alert("🚨 ALERTA: El fileId está vacío. Abre la consola (F12) para ver qué devolvió Django en el paso anterior.");
+      return;
+    }
+
+    setIsProcessing(true);
+    setStatus('uploaded'); 
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      
+      const response = await axios.post(`http://127.0.0.1:8000/api/v1/clinical/archivos/${fileId}/procesar/`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setSuccessMessage(response.data.mensaje);
+      setStatus('processed');
+      
+    } catch (error: any) {
+      setStatus('error');
+      setErrorMessage(error.response?.data?.error || 'Error interno del motor OCR.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const removeFile = () => {
     setFile(null);
+    setFileId(null);
     setStatus('idle');
   };
 
@@ -123,6 +166,7 @@ const UploadResults: React.FC = () => {
               onChange={(e) => setEpisode(e.target.value)}
               className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="Ej: EP-001"
+              disabled={status === 'uploaded' || status === 'processed'}
             />
           </div>
 
@@ -132,11 +176,10 @@ const UploadResults: React.FC = () => {
               value={docType}
               onChange={(e) => setDocType(e.target.value)}
               className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-slate-100"
-              disabled={!file} // Deshabilitado si no hay archivo
+              disabled={!file || status === 'uploaded' || status === 'processed'}
             >
               {!file && <option value="">Sube un archivo primero...</option>}
               
-              {/* Opciones dinámicas para PDF */}
               {file?.type === 'application/pdf' && (
                 <>
                   <option value="LAB">Laboratorio (LAB)</option>
@@ -145,7 +188,6 @@ const UploadResults: React.FC = () => {
                 </>
               )}
 
-              {/* Opciones dinámicas para Imágenes */}
               {file?.type.startsWith('image/') && (
                 <option value="IMG">Imagen Médica (IMG)</option>
               )}
@@ -153,7 +195,7 @@ const UploadResults: React.FC = () => {
           </div>
         </div>
 
-        {/* PARTE DERECHA: Zona Drag & Drop */}
+        {/* PARTE DERECHA: Zona Drag & Drop y Acciones */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 md:col-span-2 flex flex-col">
           
           {!file ? (
@@ -181,49 +223,91 @@ const UploadResults: React.FC = () => {
             </div>
           ) : (
             <div className="flex-1 flex flex-col justify-center">
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 flex items-center justify-between">
+              
+              {/* Tarjeta del archivo seleccionado */}
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 flex items-center justify-between">
                 <div className="flex items-center gap-4 overflow-hidden">
-                  <div className="bg-blue-600 p-3 rounded-lg text-white">
+                  <div className={`${status === 'processed' ? 'bg-emerald-600' : 'bg-blue-600'} p-3 rounded-lg text-white transition-colors`}>
                     <FileText className="w-6 h-6" />
                   </div>
                   <div className="truncate">
-                    <p className="font-semibold text-blue-900 truncate">{file.name}</p>
-                    <p className="text-xs text-blue-600">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <p className="font-semibold text-slate-800 truncate">{file.name}</p>
+                    <p className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
                 </div>
-                <button onClick={removeFile} className="p-2 hover:bg-blue-100 rounded-full text-blue-700 transition-colors" title="Quitar archivo">
-                  <X className="w-5 h-5" />
-                </button>
+                {status !== 'processed' && !isProcessing && !isUploading && (
+                  <button onClick={removeFile} className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors" title="Quitar archivo">
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
               </div>
 
-              <div className="mt-6">
+              {/* Botones y Estados de Alerta */}
+              <div className="mt-6 space-y-3">
+                
+                {/* Estado Inicial: Botón Subir */}
                 {status === 'idle' && (
                   <button 
                     onClick={handleUpload}
                     disabled={isUploading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm flex justify-center items-center gap-2 transition-colors disabled:opacity-70"
+                    className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-sm flex justify-center items-center gap-2 transition-colors disabled:opacity-70"
                   >
                     {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <UploadCloud className="w-5 h-5" />}
-                    {isUploading ? 'Procesando en el Motor...' : 'Subir Archivo al Sistema'}
+                    {isUploading ? 'Subiendo al Servidor...' : 'Subir Archivo'}
                   </button>
                 )}
 
-                {status === 'success' && (
-                  <div className="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-medium py-3 rounded-lg flex justify-center items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    ¡Archivo ingerido exitosamente!
+                {/* Estado Subido: Botón Procesar OCR */}
+                {status === 'uploaded' && (
+                  <div className="space-y-4">
+                    <div className="w-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium py-2 px-4 rounded-lg flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                      Archivo guardado en base de datos. Listo para análisis.
+                    </div>
+                    
+                    <button 
+                      onClick={handleProcessOCR}
+                      disabled={isProcessing}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-md flex justify-center items-center gap-2 transition-colors disabled:opacity-70"
+                    >
+                      {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Cpu className="w-5 h-5" />}
+                      {isProcessing ? 'Extrayendo datos biomédicos...' : 'Procesar con Inteligencia Artificial'}
+                    </button>
                   </div>
                 )}
 
+                {/* Estado Procesado: Éxito */}
+                {status === 'processed' && (
+                  <div className="w-full bg-emerald-100 border border-emerald-300 text-emerald-900 font-medium py-4 px-4 rounded-lg flex flex-col justify-center items-center gap-2 shadow-sm text-center">
+                    <CheckCircle className="w-8 h-8 text-emerald-600 mb-1" />
+                    <span>{successMessage}</span>
+                    <button 
+                      onClick={removeFile}
+                      className="mt-2 text-sm text-emerald-700 underline hover:text-emerald-900"
+                    >
+                      Procesar otro documento
+                    </button>
+                  </div>
+                )}
+
+                {/* Estado Error */}
                 {status === 'error' && (
-                  <div className="w-full bg-red-50 border border-red-200 text-red-600 font-medium py-3 rounded-lg flex flex-col justify-center items-center gap-1">
-                    <div className="flex items-center gap-2">
+                  <div className="w-full bg-red-50 border border-red-200 text-red-700 font-medium py-3 px-4 rounded-lg flex flex-col justify-center gap-1 text-sm">
+                    <div className="flex items-center gap-2 font-bold mb-1">
                       <AlertCircle className="w-5 h-5" />
-                      <span>{errorMessage}</span>
+                      Se detectó un problema:
                     </div>
+                    <span className="ml-7">{errorMessage}</span>
+                    <button 
+                      onClick={() => setStatus('idle')}
+                      className="mt-2 ml-7 text-xs text-red-600 underline text-left"
+                    >
+                      Intentar nuevamente
+                    </button>
                   </div>
                 )}
               </div>
+
             </div>
           )}
 
