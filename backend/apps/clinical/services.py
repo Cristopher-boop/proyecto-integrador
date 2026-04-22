@@ -53,8 +53,11 @@ class ArchivoFuenteService:
 
         # 2. Inyectar el ID de la admisión a cada diccionario de resultados
         id_admision = archivo.admision.pk
+        id_archivo = archivo.pk
+        
         for res in resultados_crudos:
             res['admision'] = id_admision
+            res['archivo_fuente'] = id_archivo
 
         # 3. Guardar en bloque usando el servicio que ya teníamos
         # Importamos aquí para evitar referencias circulares si es necesario

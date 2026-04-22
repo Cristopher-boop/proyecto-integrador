@@ -66,27 +66,62 @@ class MotorIngestaClinica:
                         
                         # 2. Si ya sabemos en qué bloque estamos, buscamos fechas y valores
                         if parametro_actual and re.match(patron_fecha, linea_limpia):
-                            # Extraemos todos los números de la línea (incluyendo decimales)
-                            # Ignoramos la fecha dividiéndola primero si es necesario
                             partes = linea_limpia.split()
                             
-                            # Buscamos el primer número válido después de la fecha/hora y material
                             valor_encontrado = None
-                            for parte in partes[2:]: # Saltamos la fecha y la hora
-                                # Limpiamos caracteres raros como 'H' de High o '<'
-                                parte_limpia = re.sub(r'[Hh<>]', '', parte)
+                            indice_valor = -1
+                            
+                            # 1. Buscar el valor numérico
+                            for i, parte in enumerate(partes[2:], start=2):
+                                # Limpiamos basura del CyberLab (*, H, <, >)
+                                parte_limpia = re.sub(r'[Hh<>\*]', '', parte)
                                 try:
                                     valor_encontrado = float(parte_limpia)
-                                    break # Encontramos el valor del laboratorio
+                                    indice_valor = i
+                                    break # Lo encontramos, guardamos su índice
                                 except ValueError:
                                     continue
                             
-                            if valor_encontrado is not None:
+                            # 2. Si encontramos el valor, atrapamos los rangos y unidades a su derecha
+                            if valor_encontrado is not None and indice_valor != -1:
+                                rango_min = None
+                                rango_max = None
+                                unidad = None
+                                
+                                # Miramos los elementos que están después del valor
+                                resto_linea = partes[indice_valor + 1:]
+                                
+                                if len(resto_linea) >= 1:
+                                    rango_str = resto_linea[0]
+                                    # Si es un rango normal (ej. 150-440)
+                                    if '-' in rango_str:
+                                        limites = rango_str.split('-')
+                                        try:
+                                            rango_min = float(limites[0])
+                                            rango_max = float(limites[1])
+                                        except ValueError:
+                                            pass
+                                    # Si es un rango límite (ej. <1.2)
+                                    elif '<' in rango_str:
+                                        try:
+                                            rango_max = float(rango_str.replace('<', ''))
+                                        except:
+                                            pass
+                                
+                                if len(resto_linea) >= 2:
+                                    # La unidad es el resto (ej. mmol/L o x10^3/µL)
+                                    unidad = " ".join(resto_linea[1:])
+                                    # Limpiamos caracteres raros de formateo del PDF
+                                    unidad = unidad.replace('$', '').replace('|', '').strip()
+
+                                # 3. Guardamos todo el paquete completo
                                 resultados.append({
                                     "tipo_observacion": "LABORATORIO",
                                     "parametro": parametro_actual,
                                     "valor_numerico": valor_encontrado,
-                                    # Extraemos la fecha del inicio de la línea
+                                    "unidad_medida": unidad,
+                                    "rango_referencia_min": rango_min,
+                                    "rango_referencia_max": rango_max,
                                     "fecha_hora_registro": f"{partes[0][6:]}-{partes[0][3:5]}-{partes[0][0:2]}T12:00:00Z" 
                                 })
             
