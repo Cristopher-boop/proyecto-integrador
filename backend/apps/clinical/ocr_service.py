@@ -125,6 +125,16 @@ class MotorIngestaClinica:
                                     "fecha_hora_registro": f"{partes[0][6:]}-{partes[0][3:5]}-{partes[0][0:2]}T12:00:00Z" 
                                 })
             
+            if resultados:
+                # Extraemos todas las fechas. Como están en formato ISO (YYYY-MM-DD), 
+                # la función min() nos dará matemáticamente la fecha más antigua del PDF.
+                fechas = [obs["fecha_hora_registro"] for obs in resultados]
+                fecha_basal = min(fechas)
+                
+                # Iteramos y marcamos True a todo lo que sea posterior a la fecha basal
+                for obs in resultados:
+                    obs["es_diario"] = obs["fecha_hora_registro"] > fecha_basal
+
             return resultados
             
         except Exception as e:
