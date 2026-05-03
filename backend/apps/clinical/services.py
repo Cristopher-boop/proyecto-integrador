@@ -1,6 +1,7 @@
 from apps.patients.models import Admision
 from .models import ArchivoFuente, ObservacionBiomedica
-from .ocr_service import MotorIngestaClinica
+from .ocr_engines.lab_cyberlab_engine import MotorIngestaClinica 
+from .ocr_engines.vit_engine import MotorVitales  # El que vamos a crear
 
 class ArchivoFuenteService:
     @staticmethod
@@ -36,42 +37,47 @@ class ArchivoFuenteService:
     
     @staticmethod
     def procesar_ocr_archivo(archivo):
-        """
-        Toma el archivo físico, ejecuta el motor OCR determinista,
-        le inyecta el ID de la admisión y guarda los resultados en bloque.
-        Esta separación asegura que si el OCR falla, la API no colapse.
-        """
         if not archivo.archivo_fisico:
             raise ValueError("El registro no tiene un archivo físico adjunto para procesar.")
 
-        # 1. Extraer los datos crudos usando el motor
         ruta_absoluta = archivo.archivo_fisico.path
-        resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
+        tipo = archivo.tipo_documento
+        resultados_crudos = []
+
+        # EL SEMÁFORO (FACTORY PATTERN)
+        if tipo == 'LAB':
+            resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
+        elif tipo == 'VIT':
+            resultados_crudos = MotorVitales.procesar_imagen(ruta_absoluta)
+        else:
+            raise ValueError(f"Motor OCR aún no implementado para el tipo de documento: {tipo}")
 
         if not resultados_crudos:
-            return 0 # No se encontró nada para extraer
+            return 0 
 
-        # 2. Inyectar el ID de la admisión a cada diccionario de resultados
+        # Inyectar IDs
         id_admision = archivo.admision.pk
         id_archivo = archivo.pk
         
         for res in resultados_crudos:
             res['admision'] = id_admision
             res['archivo_fuente'] = id_archivo
+            
+            # Aseguramos que la BD sepa si es un parámetro vital o de laboratorio
+            if tipo == 'VIT':
+                res['tipo_observacion'] = "SIGNOS_VITALES"
+            elif tipo == 'LAB':
+                res['tipo_observacion'] = "LABORATORIO"
 
-        # 3. Guardar en bloque usando el servicio que ya teníamos
-        # Importamos aquí para evitar referencias circulares si es necesario
+        # Guardado Masivo
         from .serializers import ObservacionBiomedicaSerializer
-        
         serializer = ObservacionBiomedicaSerializer(data=resultados_crudos, many=True)
         if serializer.is_valid():
-            # Inserción masiva
             from .models import ObservacionBiomedica
             observaciones = [ObservacionBiomedica(**datos) for datos in serializer.validated_data]
             ObservacionBiomedica.objects.bulk_create(observaciones)
             return len(observaciones)
         else:
-            # Si el OCR extrajo algo mal formado, lanzamos error detallado
             raise ValueError(f"Fallo de validación en los datos extraídos: {serializer.errors}")
 
 
