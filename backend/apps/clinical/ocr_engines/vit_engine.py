@@ -6,7 +6,7 @@ import difflib
 from django.conf import settings
 
 # --- RUTA OBLIGATORIA PARA WINDOWS ---
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\crist\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 class MotorVitales:
     """
@@ -74,7 +74,9 @@ class MotorVitales:
         for c in contornos:
             x, y, w, h = cv2.boundingRect(c)
             
-            if (ancho * 0.02) < w < (ancho * 0.2) and (alto * 0.01) < h < (alto * 0.08):
+            # --- FIX: Aumentamos el límite de altura (de 0.08 a 0.15) ---
+            # Esto permite atrapar la celda gigante de "FC" que tiene el ícono del corazón
+            if (ancho * 0.02) < w < (ancho * 0.2) and (alto * 0.01) < h < (alto * 0.15):
                 recorte = gris[y+3 : y+h-3, x+3 : x+w-3]
                 
                 if recorte.shape[0] > 0 and recorte.shape[1] > 0:
@@ -135,6 +137,15 @@ class MotorVitales:
                 continue
                 
             parametro_crudo = celdas_fila[0]['valor']
+            es_huerfano = False
+            
+            # --- FIX MAGISTRAL: LA FILA HUÉRFANA ---
+            # Si el supuesto "título" es en realidad un número (ej: "73"), significa que el OCR 
+            # fue cegado por el ícono del corazón y omitió el título. Asumimos que es la FC.
+            if parametro_crudo.replace('.', '').replace('-', '').isdigit():
+                parametro_crudo = "FC"
+                es_huerfano = True
+                
             posibles_matches = difflib.get_close_matches(
                 parametro_crudo, MotorVitales.MAPEO_VIT.keys(), n=1, cutoff=0.4
             )
@@ -143,7 +154,10 @@ class MotorVitales:
                 parametro_oficial = MotorVitales.MAPEO_VIT[posibles_matches[0]]
                 estandar = MotorVitales.ESTANDARES_VIT.get(parametro_oficial, {})
                 
-                for celda in celdas_fila[1:]:
+                # Si es huérfano, los datos empiezan desde la celda 0. Si no, saltamos el título (celda 1).
+                celdas_valores = celdas_fila if es_huerfano else celdas_fila[1:]
+                
+                for celda in celdas_valores:
                     valor_str = celda['valor']
                     
                     # Corrección de temperatura
@@ -183,13 +197,16 @@ class MotorVitales:
         # =========================================================
         # --- MODO PRUEBA EN CONSOLA (SIN GUARDAR EN BD) ---
         # =========================================================
-        print("\n=== DATOS CLÍNICOS EXTRAÍDOS (MODO PRUEBA) ===")
-        for r in resultados_finales:
-            # Imprimimos el parámetro, la hora, el valor numérico y la unidad
-            print(f"{r['parametro']:<42} | Hora: {r['fecha_hora_registro'][-9:-1]} | Valor: {r['valor_numerico']} {r['unidad_medida']}")
+        # print("\n=== DATOS CLÍNICOS EXTRAÍDOS (MODO PRUEBA) ===")
+        # for r in resultados_finales:
+        #    # Imprimimos el parámetro, la hora, el valor numérico y la unidad
+        #    print(f"{r['parametro']:<42} | Hora: {r['fecha_hora_registro'][-9:-1]} | Valor: {r['valor_numerico']} {r['unidad_medida']}")
         
-        print(f"\n=== TOTAL: {len(resultados_finales)} REGISTROS DETECTADOS ===")
-        print("=========================================================\n")
+        # print(f"\n=== TOTAL: {len(resultados_finales)} REGISTROS DETECTADOS ===")
+        # print("=========================================================\n")
 
         # Devolvemos una lista vacía para que Django NO guarde nada en PostgreSQL
-        return []
+        # return []
+
+        # --- INSERCIÓN A BASE DE DATOS ---
+        return resultados_finales
