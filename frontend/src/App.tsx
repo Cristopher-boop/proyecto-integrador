@@ -9,6 +9,7 @@ import Labs from './pages/Labs';
 import Patients from './pages/Patients';
 import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
+import NeuralPrototype from './pages/NeuralPrototype';
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
           <Route path="trends" element={<LabTrends />} />
 
           <Route path="biosim" element={<BioSimulation />} />
+
+          <Route path="prototype" element={<NeuralPrototype />} />
 
           <Route path="labs" element={<Labs />} />
           
