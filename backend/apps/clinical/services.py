@@ -3,6 +3,7 @@ from .models import ArchivoFuente, ObservacionBiomedica
 from .ocr_engines.lab_cyberlab_engine import MotorIngestaClinica 
 from .ocr_engines.vit_engine import MotorVitales 
 from .ocr_engines.glas_engine import MotorGlasgow
+from .ocr_engines.pul_engine import MotorPulmonar
 
 class ArchivoFuenteService:
     @staticmethod
@@ -45,15 +46,16 @@ class ArchivoFuenteService:
         tipo = archivo.tipo_documento
         resultados_crudos = []
 
-        # --- EL SEMÁFORO EXPANDIDO (FACTORY PATTERN) ---
         if tipo == 'LAB':
             resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
         elif tipo == 'VIT':
             resultados_crudos = MotorVitales.procesar_imagen(ruta_absoluta)
-        elif tipo == 'GLAS':  # --- NUEVO: Caso para Glasgow ---
+        elif tipo == 'GLAS':
             resultados_crudos = MotorGlasgow.procesar_imagen(ruta_absoluta)
+        elif tipo == 'PUL': # <--- NUEVO CASO
+            resultados_crudos = MotorPulmonar.procesar_imagen(ruta_absoluta)
         else:
-            raise ValueError(f"Motor OCR aún no implementado para el tipo de documento: {tipo}")
+            raise ValueError(f"Motor OCR aún no implementado para el tipo: {tipo}")
 
         if not resultados_crudos:
             return 0
@@ -66,12 +68,11 @@ class ArchivoFuenteService:
             res['admision'] = id_admision
             res['archivo_fuente'] = id_archivo
             
-            # --- ASIGNACIÓN DE TIPOS PARA LA BD ---
             if tipo == 'VIT':
                 res['tipo_observacion'] = "SIGNOS_VITALES"
-            elif tipo == 'LAB':
+            elif tipo in ['LAB', 'PUL']: 
                 res['tipo_observacion'] = "LABORATORIO"
-            elif tipo == 'GLAS': # --- NUEVO: Mapeo Neurológico ---
+            elif tipo == 'GLAS':
                 res['tipo_observacion'] = "NEUROLOGICO"
 
         # Guardado Masivo
