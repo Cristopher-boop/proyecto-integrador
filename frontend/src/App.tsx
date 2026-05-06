@@ -7,6 +7,7 @@ import PatientProfile from './pages/PatientProfile';
 import Admissions from './pages/Admissions';
 import Labs from './pages/Labs';
 import Patients from './pages/Patients';
+import LabTrends from './pages/LabTrends';
 
 function App() {
   return (
@@ -29,9 +30,9 @@ function App() {
           <Route path="admissions" element={<Admissions />} />
 
           <Route path="patients" element={<Patients />} />
-          
-          <Route path="patients" element={<PatientProfile />} /> 
-          
+
+          <Route path="trends" element={<LabTrends />} />
+
           <Route path="labs" element={<Labs />} />
           
           <Route path="upload" element={<UploadResults />} />

@@ -10,7 +10,8 @@ import {
   X,
   ClipboardList, 
   TestTube,      
-  FileText       
+  FileText,
+  LineChart 
 } from 'lucide-react';
 
 import logoInaaqc from '../../assets/logo_inaaqc.svg';
@@ -31,6 +32,7 @@ const DashboardLayout: React.FC = () => {
     { name: 'Panel Principal', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Admisiones', icon: ClipboardList, path: '/dashboard/admissions' },
     { name: 'Pacientes', icon: Users, path: '/dashboard/patients' },
+    { name: 'Estudio LAB', icon: LineChart, path: '/dashboard/trends' }, // <--- NUEVA PESTAÑA AQUÍ
     { name: 'Laboratorios', icon: TestTube, path: '/dashboard/labs' },
     { name: 'Ingesta de Datos', icon: UploadCloud, path: '/dashboard/upload' },
     { name: 'Reportes Médicos', icon: FileText, path: '/dashboard/reports' },
