@@ -8,6 +8,7 @@ import Admissions from './pages/Admissions';
 import Labs from './pages/Labs';
 import Patients from './pages/Patients';
 import LabTrends from './pages/LabTrends';
+import BioSimulation from './pages/BioSimulation';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
           <Route path="patients" element={<Patients />} />
 
           <Route path="trends" element={<LabTrends />} />
+
+          <Route path="biosim" element={<BioSimulation />} />
 
           <Route path="labs" element={<Labs />} />
           
