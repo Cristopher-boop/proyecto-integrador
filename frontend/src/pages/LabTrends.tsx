@@ -3,7 +3,6 @@ import axios from 'axios';
 import { LineChart as ChartIcon, Loader2, AlertCircle, FileText, ChevronDown, Play, Pause, FastForward, RotateCcw } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea, Legend } from 'recharts';
 
-// Paleta de colores clínicos para distinguir parámetros (Se mantiene para diferenciarlos visualmente)
 const COLOR_PALETTE = ['#4f46e5', '#e11d48', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899'];
 
 interface Admision {
@@ -26,12 +25,14 @@ interface Observacion {
 const LabTrends: React.FC = () => {
   const [admisiones, setAdmisiones] = useState<Admision[]>([]);
   const [selectedAdmision, setSelectedAdmision] = useState<string>('');
+  
   const [observaciones, setObservaciones] = useState<Observacion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // --- ESTADOS DEL REPRODUCTOR DE SIMULACIÓN ---
-  const [simStep, setSimStep] = useState<number>(0);
+  // --- ESTADOS DEL REPRODUCTOR POR TIEMPO ---
+  const [uniqueTimes, setUniqueTimes] = useState<string[]>([]); // Lista ordenada de tiempos únicos (ej: ['07:00', '14:03'])
+  const [simStep, setSimStep] = useState<number>(0); // Ahora el step es el índice de uniqueTimes
   const [simStatus, setSimStatus] = useState<'idle' | 'playing' | 'paused' | 'finished'>('finished');
 
   // 1. Cargar episodios
@@ -55,10 +56,11 @@ const LabTrends: React.FC = () => {
     fetchAdmisiones();
   }, []);
 
-  // 2. Cargar datos del episodio seleccionado y FILTRAR ESTRICTAMENTE A LAB
+  // 2. Cargar datos y agrupar por tiempos
   useEffect(() => {
     if (!selectedAdmision) {
       setObservaciones([]);
+      setUniqueTimes([]);
       return;
     }
     const fetchObservaciones = async () => {
@@ -69,15 +71,14 @@ const LabTrends: React.FC = () => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        // --- FILTRO DE HIERRO PARA LAB ---
+        // Filtro estricto de LAB
         const isLab = (parametro: string, tipoDb?: string) => {
           const p = (parametro || '').toLowerCase();
-          if (p.includes('glasgow') || p.includes('coma')) return false; // GLAS
-          // BLOQUEAMOS TODO LO RELACIONADO A GASES / PULMONAR (Incluyendo Arterial/Venoso explícitamente)
+          if (p.includes('glasgow') || p.includes('coma')) return false; 
           if (p.includes('ph') || p.includes('pco2') || p.includes('po2') || p.includes('lactato') || p.includes('exceso de base') || p.includes('arterial') || p.includes('venoso') || p.includes('gases')) return false; 
-          if (p.includes('frecuencia') || p.includes('temperatura') || p.includes('presión arterial') || p === 'saturación de oxígeno') return false; // VIT
+          if (p.includes('frecuencia') || p.includes('temperatura') || p.includes('presión arterial') || p === 'saturación de oxígeno') return false; 
           if (tipoDb === 'SIGNOS_VITALES' || tipoDb === 'NEUROLOGICO' || tipoDb === 'PULMONAR') return false;
-          return true; // Solo sobrevive LAB
+          return true; 
         };
 
         const labOnly = response.data.filter((obs: Observacion) => isLab(obs.parametro, obs.tipo_observacion));
@@ -85,8 +86,12 @@ const LabTrends: React.FC = () => {
           new Date(a.fecha_hora_registro).getTime() - new Date(b.fecha_hora_registro).getTime()
         );
         
+        // Extraer tiempos únicos (ej. '14/02/2026 07:00')
+        const times = Array.from(new Set(sortedData.map((obs: Observacion) => obs.fecha_hora_registro)));
+        
         setObservaciones(sortedData);
-        setSimStep(sortedData.length); // Mostrar todo por defecto al cargar
+        setUniqueTimes(times);
+        setSimStep(times.length); // Empezar mostrando todo
         setSimStatus('finished');
 
       } catch (err: any) {
@@ -98,35 +103,34 @@ const LabTrends: React.FC = () => {
     fetchObservaciones();
   }, [selectedAdmision]);
 
-  // 3. Lógica del Motor de Simulación (Intervalo)
+  // 3. Lógica del Motor de Simulación (Avanza por Tiempos Únicos)
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (simStatus === 'playing') {
       interval = setInterval(() => {
         setSimStep(prev => {
-          if (prev >= observaciones.length) {
+          if (prev >= uniqueTimes.length) {
             setSimStatus('finished');
             return prev;
           }
-          return prev + 1;
+          return prev + 1; // Avanza un "latido" de tiempo
         });
-      }, 800); // 800ms por cada punto
+      }, 1000); // 1 segundo por cada bloque de tiempo
     }
     return () => { if (interval) clearInterval(interval); };
-  }, [simStatus, observaciones.length]);
+  }, [simStatus, uniqueTimes.length]);
 
-  // --- CONTROLES DEL REPRODUCTOR ---
+  // Controles
   const handlePlayPause = () => {
-    if (simStatus === 'playing') {
-      setSimStatus('paused');
-    } else {
-      if (simStep >= observaciones.length) setSimStep(1); // Si terminó y le da a play, reinicia desde 1
+    if (simStatus === 'playing') setSimStatus('paused');
+    else {
+      if (simStep >= uniqueTimes.length) setSimStep(1); 
       setSimStatus('playing');
     }
   };
 
   const handleSkipToEnd = () => {
-    setSimStep(observaciones.length);
+    setSimStep(uniqueTimes.length);
     setSimStatus('finished');
   };
 
@@ -135,12 +139,19 @@ const LabTrends: React.FC = () => {
     setSimStatus('idle');
   };
 
-  // 4. Preparar datos para las Gráficas
-  const getVisibleData = () => observaciones.slice(0, simStep);
+  // 4. Preparar datos filtrados hasta el tiempo actual simulado
+  const getVisibleData = () => {
+    if (uniqueTimes.length === 0) return [];
+    // Obtenemos el tiempo "límite" actual
+    const cutoffTime = uniqueTimes[simStep - 1]; 
+    if (!cutoffTime) return [];
+    
+    // Filtramos las observaciones que ocurrieron en o antes del tiempo límite
+    return observaciones.filter(obs => new Date(obs.fecha_hora_registro).getTime() <= new Date(cutoffTime).getTime());
+  };
 
   const prepareChartData = () => {
     const visible = getVisibleData();
-    // Identificamos las cajas de parámetros usando el TOTAL de observaciones para que las gráficas existan desde el step 0
     const parameters = Array.from(new Set(observaciones.map(obs => obs.parametro)));
 
     return parameters.map((param, index) => {
@@ -151,7 +162,6 @@ const LabTrends: React.FC = () => {
           valor: parseFloat(obs.valor_numerico),
         }));
 
-      // Extraemos los mínimos y máximos del global para que la banda verde siempre esté dibujada
       const allRecordsForParam = observaciones.filter(obs => obs.parametro === param);
       const globalMin = allRecordsForParam[0]?.rango_referencia_min ? parseFloat(allRecordsForParam[0].rango_referencia_min) : null;
       const globalMax = allRecordsForParam[0]?.rango_referencia_max ? parseFloat(allRecordsForParam[0].rango_referencia_max) : null;
@@ -169,14 +179,18 @@ const LabTrends: React.FC = () => {
 
   const visibleCharts = prepareChartData();
 
+  // 5. Gráfica Maestra (Todos Juntos) Mejorada
   const prepareMasterData = () => {
     const visible = getVisibleData();
     const timeBuckets: { [key: string]: any } = {};
+    
+    // Agrupamos por hora para que los puntos coincidan en el mismo eje X
     visible.forEach(obs => {
       const time = new Date(obs.fecha_hora_registro).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       if (!timeBuckets[time]) timeBuckets[time] = { timeStr: time };
       timeBuckets[time][obs.parametro] = parseFloat(obs.valor_numerico);
     });
+
     return Object.values(timeBuckets);
   };
 
@@ -214,7 +228,7 @@ const LabTrends: React.FC = () => {
       )}
 
       {/* REPRODUCTOR DE SIMULACIÓN (CONTROLES) */}
-      {selectedAdmision && observaciones.length > 0 && (
+      {selectedAdmision && uniqueTimes.length > 0 && (
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button 
@@ -240,7 +254,8 @@ const LabTrends: React.FC = () => {
             </button>
           </div>
           <div className="text-sm font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
-            Puntos procesados: <span className="text-indigo-600">{simStep}</span> / {observaciones.length}
+            Bloques de tiempo: <span className="text-indigo-600">{simStep}</span> / {uniqueTimes.length}
+            {simStep > 0 && <span className="ml-2 text-slate-500 font-mono">({new Date(uniqueTimes[simStep - 1]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})</span>}
           </div>
         </div>
       )}
@@ -263,29 +278,72 @@ const LabTrends: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* GRÁFICA MAESTRA (TODOS JUNTOS) */}
-          <div className="bg-slate-900 p-6 rounded-3xl shadow-xl border border-slate-800">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${simStatus === 'playing' ? 'bg-indigo-400 animate-pulse' : 'bg-slate-600'}`} />
-                Vista Comparativa Consolidada
-              </h3>
+          {/* GRÁFICA MAESTRA (TODOS JUNTOS) - MEJORADA PARA EXPANSIÓN */}
+          <div className="bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-800">
+            <div className="flex justify-between items-center mb-8">
+              <div className="space-y-1">
+                <h3 className="text-white font-bold text-xl flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full ${simStatus === 'playing' ? 'bg-indigo-400 animate-pulse' : 'bg-slate-600'}`} />
+                  Monitor Longitudinal Consolidado
+                </h3>
+                <p className="text-slate-400 text-xs font-medium">Correlación temporal de parámetros de laboratorio</p>
+              </div>
+              <div className="text-right">
+                <span className="text-indigo-400 text-lg font-mono font-black">
+                  {simStep > 0 ? new Date(uniqueTimes[simStep - 1]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--'}
+                </span>
+                <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Hora Simulada</p>
+              </div>
             </div>
-            <div className="h-80 w-full">
+
+            <div className="h-[450px] w-full"> {/* Aumentamos el alto para que se vea imponente */}
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={prepareMasterData()}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                  <XAxis dataKey="timeStr" stroke="#94a3b8" fontSize={12} tickMargin={10} />
-                  <YAxis stroke="#94a3b8" fontSize={12} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '12px', color: '#fff' }}
-                    itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                <LineChart 
+                  /* IMPORTANTE: Pasamos TODO el mapa de tiempo, pero los valores futuros serán null */
+                  data={prepareMasterData()} 
+                  margin={{ top: 10, right: 30, bottom: 20, left: 10 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} opacity={0.5} />
+                  
+                  <XAxis 
+                    dataKey="timeStr" 
+                    stroke="#94a3b8" 
+                    fontSize={11} 
+                    tickMargin={15}
+                    axisLine={{ stroke: '#475569' }}
+                    /* Esto mantiene el ancho de la gráfica constante */
+                    interval="preserveStartEnd" 
                   />
-                  <Legend />
+                  
+                  <YAxis hide domain={['auto', 'auto']} />
+                  
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '12px', color: '#fff', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.5)' }}
+                    itemStyle={{ fontSize: '13px', fontWeight: 'bold', padding: '2px 0' }}
+                    labelStyle={{ color: '#94a3b8', marginBottom: '8px', borderBottom: '1px solid #334155', pb: '4px' }}
+                    cursor={{ stroke: '#4f46e5', strokeWidth: 2, strokeDasharray: '5 5' }}
+                  />
+                  
+                  <Legend 
+                    verticalAlign="top" 
+                    align="right"
+                    wrapperStyle={{ paddingTop: '0px', paddingBottom: '40px' }}
+                  />
+
+                  {/* Dibujamos las líneas con el estilo "bonito" de las individuales */}
                   {visibleCharts.map((c, i) => (
                     <Line 
-                      key={i} type="monotone" dataKey={c.parametro} stroke={c.color} 
-                      strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 6 }} animationDuration={300}
+                      key={i} 
+                      type="monotone" 
+                      dataKey={c.parametro} 
+                      stroke={c.color} 
+                      strokeWidth={4} 
+                      /* El punto con borde blanco que pediste */
+                      dot={{ r: 5, strokeWidth: 2, fill: '#1e293b', stroke: c.color }} 
+                      activeDot={{ r: 8, strokeWidth: 0, fill: c.color }} 
+                      animationDuration={400} 
+                      /* Evita que la línea se corte si faltan datos en una hora */
+                      connectNulls 
                     />
                   ))}
                 </LineChart>
@@ -293,7 +351,7 @@ const LabTrends: React.FC = () => {
             </div>
           </div>
 
-          {/* GRÁFICAS INDIVIDUALES (RESTAURADAS A SU VERSIÓN BONITA) */}
+          {/* GRÁFICAS INDIVIDUALES */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {visibleCharts.map((chart, idx) => (
               <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -329,7 +387,7 @@ const LabTrends: React.FC = () => {
                         strokeWidth={3} 
                         dot={{ r: 4, fill: chart.color, strokeWidth: 2, stroke: '#fff' }} 
                         activeDot={{ r: 6 }} 
-                        animationDuration={300} 
+                        animationDuration={500} 
                       />
                     </LineChart>
                   </ResponsiveContainer>
