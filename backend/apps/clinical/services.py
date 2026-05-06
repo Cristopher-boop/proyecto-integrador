@@ -64,17 +64,20 @@ class ArchivoFuenteService:
         id_admision = archivo.admision.pk
         id_archivo = archivo.pk
         
+        # ... dentro de procesar_ocr_archivo en services.py ...
         for res in resultados_crudos:
             res['admision'] = id_admision
             res['archivo_fuente'] = id_archivo
             
+            # --- CORRECCIÓN DE IDENTIDAD: Dividimos según el motor que lo generó ---
             if tipo == 'VIT':
                 res['tipo_observacion'] = "SIGNOS_VITALES"
-            elif tipo in ['LAB', 'PUL']: 
-                res['tipo_observacion'] = "LABORATORIO"
             elif tipo == 'GLAS':
                 res['tipo_observacion'] = "NEUROLOGICO"
-
+            elif tipo == 'LAB':
+                res['tipo_observacion'] = "LABORATORIO"
+            elif tipo == 'PUL':
+                res['tipo_observacion'] = "PULMONAR"
         # Guardado Masivo
         from .serializers import ObservacionBiomedicaSerializer
         serializer = ObservacionBiomedicaSerializer(data=resultados_crudos, many=True)
