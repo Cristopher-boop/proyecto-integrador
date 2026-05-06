@@ -1,7 +1,8 @@
 from apps.patients.models import Admision
 from .models import ArchivoFuente, ObservacionBiomedica
 from .ocr_engines.lab_cyberlab_engine import MotorIngestaClinica 
-from .ocr_engines.vit_engine import MotorVitales  # El que vamos a crear
+from .ocr_engines.vit_engine import MotorVitales 
+from .ocr_engines.glas_engine import MotorGlasgow
 
 class ArchivoFuenteService:
     @staticmethod
@@ -44,16 +45,18 @@ class ArchivoFuenteService:
         tipo = archivo.tipo_documento
         resultados_crudos = []
 
-        # EL SEMÁFORO (FACTORY PATTERN)
+        # --- EL SEMÁFORO EXPANDIDO (FACTORY PATTERN) ---
         if tipo == 'LAB':
             resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
         elif tipo == 'VIT':
             resultados_crudos = MotorVitales.procesar_imagen(ruta_absoluta)
+        elif tipo == 'GLAS':  # --- NUEVO: Caso para Glasgow ---
+            resultados_crudos = MotorGlasgow.procesar_imagen(ruta_absoluta)
         else:
             raise ValueError(f"Motor OCR aún no implementado para el tipo de documento: {tipo}")
 
         if not resultados_crudos:
-            return 0 
+            return 0
 
         # Inyectar IDs
         id_admision = archivo.admision.pk
@@ -63,11 +66,13 @@ class ArchivoFuenteService:
             res['admision'] = id_admision
             res['archivo_fuente'] = id_archivo
             
-            # Aseguramos que la BD sepa si es un parámetro vital o de laboratorio
+            # --- ASIGNACIÓN DE TIPOS PARA LA BD ---
             if tipo == 'VIT':
                 res['tipo_observacion'] = "SIGNOS_VITALES"
             elif tipo == 'LAB':
                 res['tipo_observacion'] = "LABORATORIO"
+            elif tipo == 'GLAS': # --- NUEVO: Mapeo Neurológico ---
+                res['tipo_observacion'] = "NEUROLOGICO"
 
         # Guardado Masivo
         from .serializers import ObservacionBiomedicaSerializer
