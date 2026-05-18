@@ -4,11 +4,10 @@ import numpy as np
 import os
 import difflib
 from django.conf import settings
+from .base_engine import MotorOCRBase
 
-# --- RUTA OBLIGATORIA PARA WINDOWS ---
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-class MotorGlasgow:
+class MotorGlasgow(MotorOCRBase):
     """
     Motor de Visión Computacional específico para la Escala de Coma de Glasgow (GLAS).
     Construido EXACTAMENTE sobre la base estable de VIT.

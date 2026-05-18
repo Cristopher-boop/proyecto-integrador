@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary_storage',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,9 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+
     'apps.users',
     'apps.patients',
     'apps.clinical',
+    
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -130,9 +135,6 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'users.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
 # --- CONFIGURACIÓN DE CORS ---
 # Permite que nuestro Frontend en React (Vite) se comunique con Django
 CORS_ALLOWED_ORIGINS = [
@@ -150,4 +152,19 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'darvdmh4y',   
+    'API_KEY': '715425881377614',         
+    'API_SECRET': 'Cyo3yKCvC2Y45s2238Yi_p4TOgo'    
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }

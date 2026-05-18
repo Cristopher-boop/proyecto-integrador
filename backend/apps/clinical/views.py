@@ -1,3 +1,4 @@
+import traceback
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -102,4 +103,5 @@ class ArchivoProcesarOCRAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             # Capturamos caídas críticas (defensa del servidor)
+            traceback.print_exc() # <--- 2. AÑADE ESTO PARA QUE LA CONSOLA IMPRIMA EL ERROR ROJO
             return Response({"error": f"Error interno del motor OCR: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

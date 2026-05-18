@@ -3,11 +3,12 @@ import pytesseract
 import numpy as np
 import difflib
 from django.conf import settings
+from .base_engine import MotorOCRBase
 
 # --- RUTA OBLIGATORIA PARA WINDOWS ---
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\crist\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-class MotorPulmonar:
+class MotorPulmonar(MotorOCRBase):
     """
     Motor OCR para Gasometría (PUL).
     Detecta columnas (A/V) y repara ruido clínico (pH sin punto, SBE negativos).

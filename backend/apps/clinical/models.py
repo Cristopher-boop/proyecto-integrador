@@ -1,6 +1,7 @@
-from django.db import models
+import os
 import uuid
-# Importamos la Admisión desde nuestra app de pacientes
+from django.db import models
+from datetime import datetime
 from apps.patients.models import Admision
 
 # ==========================================
@@ -23,13 +24,48 @@ class CatDiagnostico(models.Model):
 # ==========================================
 # 3. ARCHIVOS FUENTE (Trazabilidad)
 # ==========================================
+def ruta_dinamica_inaaqc(instance, filename):
+    """
+    Genera la ruta jerárquica para Cloudinary:
+    INAAQC/Año/Mes/Día. Apellidos, Nombres (Episodio)/Archivo.pdf
+    """
+    # 1. Obtener fecha de la admisión (o actual si no hay)
+    fecha = getattr(instance.admision, 'fecha_ingreso', datetime.now())
+    año = fecha.strftime('%Y')
+    
+    # 2. Diccionario de meses en inglés (Formato: "02. FEBRUARY")
+    meses = {
+        1: 'JANUARY', 2: 'FEBRUARY', 3: 'MARCH', 4: 'APRIL', 5: 'MAY', 6: 'JUNE', 
+        7: 'JULY', 8: 'AUGUST', 9: 'SEPTEMBER', 10: 'OCTOBER', 11: 'NOVEMBER', 12: 'DECEMBER'
+    }
+    mes_num = fecha.strftime('%m')
+    mes_nombre = meses[fecha.month]
+    carpeta_mes = f"{mes_num}. {mes_nombre}"
+    
+    # 3. Datos del Paciente (Formato: "14. PEREZ, JUAN (EP-001)")
+    dia = fecha.strftime('%d')
+    if instance.admision and instance.admision.paciente:
+        nombres = instance.admision.paciente.nombres.upper()
+        apellidos = instance.admision.paciente.apellidos.upper()
+        paciente = f"{apellidos}, {nombres}"
+        episodio = instance.admision.numero_episodio
+    else:
+        paciente = "PACIENTE_DESCONOCIDO"
+        episodio = "SIN_EPISODIO"
+        
+    carpeta_paciente = f"{dia}. {paciente} ({episodio})"
+    
+    ruta_final = f"INAAQC/{año}/{carpeta_mes}/{carpeta_paciente}/{filename}"
+    return ruta_final
+
+
 class ArchivoFuente(models.Model):
     id_archivo = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     admision = models.ForeignKey(Admision, on_delete=models.CASCADE, related_name='archivos')
     nombre_archivo = models.CharField(max_length=255)
-    tipo_documento = models.CharField(max_length=20) # NA, NE, VIT, LAB, PUL, MED
+    tipo_documento = models.CharField(max_length=20)
     
-    archivo_fisico = models.FileField(upload_to='evidencia/%Y/%m/', null=True, blank=True)
+    archivo_fisico = models.FileField(upload_to=ruta_dinamica_inaaqc, null=True, blank=True)
 
     class Meta:
         verbose_name = "Archivo Fuente"

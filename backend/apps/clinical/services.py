@@ -1,5 +1,8 @@
-from apps.patients.models import Admision
-from .models import ArchivoFuente, ObservacionBiomedica
+import os
+import requests
+import tempfile
+from django.conf import settings
+from .models import ArchivoFuente, ObservacionBiomedica, Admision
 from .ocr_engines.lab_cyberlab_engine import MotorIngestaClinica 
 from .ocr_engines.vit_engine import MotorVitales 
 from .ocr_engines.glas_engine import MotorGlasgow
@@ -38,56 +41,91 @@ class ArchivoFuenteService:
         return True
     
     @staticmethod
-    def procesar_ocr_archivo(archivo):
+    def procesar_ocr_archivo(archivo): # <--- 1. AHORA RECIBE EL OBJETO ENTERO
         if not archivo.archivo_fisico:
-            raise ValueError("El registro no tiene un archivo físico adjunto para procesar.")
-
-        ruta_absoluta = archivo.archivo_fisico.path
-        tipo = archivo.tipo_documento
-        resultados_crudos = []
-
-        if tipo == 'LAB':
-            resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_absoluta)
-        elif tipo == 'VIT':
-            resultados_crudos = MotorVitales.procesar_imagen(ruta_absoluta)
-        elif tipo == 'GLAS':
-            resultados_crudos = MotorGlasgow.procesar_imagen(ruta_absoluta)
-        elif tipo == 'PUL': # <--- NUEVO CASO
-            resultados_crudos = MotorPulmonar.procesar_imagen(ruta_absoluta)
-        else:
-            raise ValueError(f"Motor OCR aún no implementado para el tipo: {tipo}")
-
-        if not resultados_crudos:
-            return 0
-
-        # Inyectar IDs
-        id_admision = archivo.admision.pk
-        id_archivo = archivo.pk
+            raise ValueError("El registro no tiene un archivo físico asociado.")
         
-        # ... dentro de procesar_ocr_archivo en services.py ...
+        url_cloudinary = archivo.archivo_fisico.url
+        tipo = archivo.tipo_documento
+        
+        # 2. Extraemos los IDs directamente del objeto que nos mandó la Vista
+        id_admision = archivo.admision_id
+        id_archivo = archivo.id_archivo
+        
+        # --- INICIO DEL PARCHE ANTI-ERRORES 500 ---
+        if url_cloudinary.startswith('/media/'):
+            raise ValueError("Este archivo es antiguo y está en local. Sube un NUEVO archivo a la nube para procesarlo.")
+            
+        if url_cloudinary.startswith('//'):
+            url_cloudinary = 'https:' + url_cloudinary
+        # --- FIN DEL PARCHE ---
+        
+        # 3. CREA UN ARCHIVO TEMPORAL LOCAL (Puente)
+        try:
+            respuesta = requests.get(url_cloudinary, stream=True)
+            respuesta.raise_for_status()
+            
+            extension = os.path.splitext(archivo.nombre_archivo)[1]
+            
+            with tempfile.NamedTemporaryFile(delete=False, suffix=extension) as temp_file:
+                for chunk in respuesta.iter_content(chunk_size=8192):
+                    temp_file.write(chunk)
+                ruta_temporal = temp_file.name
+                
+        except Exception as e:
+            raise ValueError(f"No se pudo descargar el archivo desde Cloudinary. URL: {url_cloudinary}. Error: {str(e)}")
+
+        # 4. PROCESAMIENTO OCR (Usando la ruta temporal)
+        resultados_crudos = []
+        try:
+            if tipo == 'VIT':
+                resultados_crudos = MotorVitales.procesar_imagen(ruta_temporal)
+            elif tipo == 'LAB':
+                resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_temporal) 
+            elif tipo == 'PUL':
+                resultados_crudos = MotorPulmonar.procesar_pdf(ruta_temporal)
+            elif tipo == 'GLAS':
+                resultados_crudos = MotorGlasgow.procesar_imagen(ruta_temporal)
+            else:
+                raise ValueError("Tipo de documento no soportado para procesamiento OCR automático.")
+        finally:
+            # LIMPIEZA OBLIGATORIA
+            if os.path.exists(ruta_temporal):
+                os.remove(ruta_temporal)
+
+        # 5. GUARDADO EN BASE DE DATOS
+        observaciones_a_crear = []
         for res in resultados_crudos:
+            # Asignamos los IDs que extrajimos arriba
             res['admision'] = id_admision
             res['archivo_fuente'] = id_archivo
             
-            # --- CORRECCIÓN DE IDENTIDAD: Dividimos según el motor que lo generó ---
-            if tipo == 'VIT':
-                res['tipo_observacion'] = "SIGNOS_VITALES"
-            elif tipo == 'GLAS':
-                res['tipo_observacion'] = "NEUROLOGICO"
-            elif tipo == 'LAB':
-                res['tipo_observacion'] = "LABORATORIO"
-            elif tipo == 'PUL':
-                res['tipo_observacion'] = "PULMONAR"
-        # Guardado Masivo
-        from .serializers import ObservacionBiomedicaSerializer
-        serializer = ObservacionBiomedicaSerializer(data=resultados_crudos, many=True)
-        if serializer.is_valid():
-            from .models import ObservacionBiomedica
-            observaciones = [ObservacionBiomedica(**datos) for datos in serializer.validated_data]
-            ObservacionBiomedica.objects.bulk_create(observaciones)
-            return len(observaciones)
-        else:
-            raise ValueError(f"Fallo de validación en los datos extraídos: {serializer.errors}")
+            if tipo == 'VIT': res['tipo_observacion'] = "SIGNOS_VITALES"
+            elif tipo == 'GLAS': res['tipo_observacion'] = "NEUROLOGICO"
+            elif tipo == 'LAB': res['tipo_observacion'] = "LABORATORIO"
+            elif tipo == 'PUL': res['tipo_observacion'] = "PULMONAR"
+
+            obs = ObservacionBiomedica(
+                admision_id=id_admision,
+                archivo_fuente_id=id_archivo,
+                parametro=res.get('parametro'),
+                valor_numerico=res.get('valor_numerico'),
+                unidad_medida=res.get('unidad_medida'),
+                rango_referencia_min=res.get('rango_referencia_min'),
+                rango_referencia_max=res.get('rango_referencia_max'),
+                fecha_hora_registro=res.get('fecha_hora_registro'),
+                tipo_observacion=res.get('tipo_observacion'),
+                es_diario=res.get('es_diario', False)
+            )
+            observaciones_a_crear.append(obs)
+            
+        ObservacionBiomedica.objects.bulk_create(observaciones_a_crear)
+        
+        archivo.tipo_documento = f"{tipo}_AUDITADO"
+        archivo.save()
+        
+        # 6. RETORNA UN NÚMERO ENTERO (Como lo espera la Vista)
+        return len(observaciones_a_crear)
 
 
 class ObservacionBiomedicaService:
