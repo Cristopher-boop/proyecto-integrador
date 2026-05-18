@@ -3,7 +3,6 @@ import Login from './pages/Login';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
 import UploadResults from './pages/UploadResults';
-import PatientProfile from './pages/PatientProfile';
 import Admissions from './pages/Admissions';
 import Labs from './pages/Labs';
 import Patients from './pages/Patients';
