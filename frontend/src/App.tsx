@@ -9,6 +9,7 @@ import Patients from './pages/Patients';
 import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
 import NeuralPrototype from './pages/NeuralPrototype';
+import UISandbox from './pages/UISandbox';
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           <Route path="biosim" element={<BioSimulation />} />
 
           <Route path="prototype" element={<NeuralPrototype />} />
+
+          <Route path="sandbox" element={<UISandbox />} />
 
           <Route path="labs" element={<Labs />} />
           

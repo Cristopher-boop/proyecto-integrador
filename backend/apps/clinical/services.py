@@ -41,7 +41,7 @@ class ArchivoFuenteService:
         return True
     
     @staticmethod
-    def procesar_ocr_archivo(archivo): # <--- 1. AHORA RECIBE EL OBJETO ENTERO
+    def procesar_ocr_archivo(archivo):
         if not archivo.archivo_fisico:
             raise ValueError("El registro no tiene un archivo físico asociado.")
         
