@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/v1/patients/';
+const API_URL = 'http://127.0.0.1:8000/api/v1/patients/admisiones/';
 
 const getHeaders = () => ({
   headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
 });
 
-export const patientService = {
+export const admissionService = {
   getAll: async () => {
     const response = await axios.get(API_URL, getHeaders());
     return response.data;

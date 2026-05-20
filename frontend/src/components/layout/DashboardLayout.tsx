@@ -37,7 +37,7 @@ const DashboardLayout: React.FC = () => {
     { name: 'Bio-Simulación', icon: HeartPulse, path: '/dashboard/biosim' },
     { name: 'Prototipo IA', icon: BrainCircuit, path: '/dashboard/prototype' },
     { name: 'UI / UX', icon: Palette, path: '/dashboard/sandbox' },
-    { name: 'Pruebas Pacientes', icon: FlaskConical, path: 'pruebas/pacientes' },
+    { name: 'Pruebas General', icon: FlaskConical, path: 'pruebas/admisiones' },
     { name: 'Laboratorios', icon: TestTube, path: '/dashboard/labs' },
     { name: 'Ingesta de Datos', icon: UploadCloud, path: '/dashboard/upload' },
     { name: 'Reportes Médicos', icon: FileText, path: '/dashboard/reports' },

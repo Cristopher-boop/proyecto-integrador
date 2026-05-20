@@ -10,7 +10,7 @@ import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
 import NeuralPrototype from './pages/NeuralPrototype';
 import UISandbox from './pages/UISandbox';
-import PatientPruebasView from './features/patients/views/PatientPruebasView';
+import AdmissionsView from './features/admissions/views/AdmissionsViews';
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
 
           <Route path="sandbox" element={<UISandbox />} />
 
-          <Route path="pruebas/pacientes" element={<PatientPruebasView />} />
+          <Route path="pruebas/admisiones" element={<AdmissionsView />} />
 
           <Route path="labs" element={<Labs />} />
           

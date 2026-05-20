@@ -10,7 +10,7 @@ import { Badge } from '../../../components/common/Badge';
 import { DataTable } from '../../../components/common/DataTable';
 import type { Column } from '../../../components/common/DataTable';
 
-const PatientPruebasView: React.FC = () => {
+const PatientsView: React.FC = () => {
   const { pacientes, isLoading, error, toggleStatus, createPatient, updatePatient } = usePatients();
   const adobe = INAAQC_THEME.palette;
   
@@ -28,7 +28,6 @@ const PatientPruebasView: React.FC = () => {
     setSortConfig({ key: key as string, direction });
   };
 
-  // --- PIPELINE DE DATOS ---
   const processedData = useMemo(() => {
     let filtered = pacientes.filter(p => 
       p.nombres.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -52,35 +51,30 @@ const PatientPruebasView: React.FC = () => {
   const totalPages = Math.ceil(processedData.length / itemsPerPage);
   const currentData = processedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // --- DEFINICIÓN DE LAS COLUMNAS PARA LA TABLA UNIVERSAL ---
   const columns: Column<any>[] = [
     { 
       header: 'Paciente', 
       accessorKey: 'nombres', 
       sortable: true,
       width: 'w-[320px]',
-      // El nombre principal se queda en semibold y un poco más oscuro
       render: (row) => <div className="text-sm font-semibold text-slate-800 truncate">{row.nombres} {row.apellidos}</div>
     },
     { 
       header: 'Dossier Erasme', 
       accessorKey: 'dossier_erasme', 
       sortable: true,
-      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_erasme}</span>
     },
     { 
       header: 'Dossier MPI', 
       accessorKey: 'dossier_mpi', 
       sortable: true,
-      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_mpi || '-'}</span>
     },
     { 
       header: 'Nacimiento', 
       accessorKey: 'fecha_nacimiento', 
       sortable: true,
-      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.fecha_nacimiento}</span>
     },
     { 
@@ -117,7 +111,6 @@ const PatientPruebasView: React.FC = () => {
     }
   ];
 
-  // Handlers del Formulario
   const handleCloseForm = () => { setShowForm(false); setEditingPatient(null); };
   const handleSavePatient = async (formData: any) => {
     if (editingPatient) await updatePatient(editingPatient.id_paciente, formData);
@@ -130,7 +123,7 @@ const PatientPruebasView: React.FC = () => {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: adobe.base }}><Users style={{ color: adobe.highlight }} className="w-7 h-7" /> Directorio de Pacientes</h2>
-          <p className="mt-1" style={{ color: adobe.darkTint }}>Usando Ladrillo DataTable Genérico.</p>
+          <p className="mt-1" style={{ color: adobe.darkTint }}>Gestiona perfiles clinicos de la institución</p>
         </div>
         <Button variant="primary" icon={<Plus />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>Nuevo Paciente</Button>
       </div>
@@ -163,4 +156,4 @@ const PatientPruebasView: React.FC = () => {
   );
 };
 
-export default PatientPruebasView;
+export default PatientsView;
