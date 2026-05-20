@@ -53,7 +53,7 @@ function App() {
 
           <Route path="pruebas/laboratory" element={< LaboratoryView />} />
 
-          <Route path="labs" element={<Labs />} />
+          <Route path="laboratory" element={<Labs />} />
           
           <Route path="upload" element={<UploadResults />} />
           
