@@ -1,21 +1,16 @@
 import React, { useState, useMemo } from 'react';
-// ¡CORREGIDO! Todos los íconos están importados
 import { Users, Plus, Loader2, Search, MoreVertical, Edit2, Power, PowerOff } from 'lucide-react';
+import { usePatients } from '../hooks/usePatients';
+import { PatientForm } from '../components/PatientForm';
+import { INAAQC_THEME } from '../../../config/theme';
+import { Button } from '../../../components/common/Button';
+import { Input } from '../../../components/common/Input';
+import { Pagination } from '../../../components/common/Pagination';
+import { Badge } from '../../../components/common/Badge';
+import { DataTable } from '../../../components/common/DataTable';
+import type { Column } from '../../../components/common/DataTable';
 
-// Importaciones desde la Feature de Pacientes (Rutas corregidas)
-import { usePatients } from '../features/patients/hooks/usePatients';
-import { PatientForm } from '../features/patients/components/PatientForm';
-
-// Importaciones de Configuración y Ladrillos Comunes (Rutas corregidas)
-import { INAAQC_THEME } from '../config/theme';
-import { Button } from '../components/common/Button';
-import { Input } from '../components/common/Input';
-import { Pagination } from '../components/common/Pagination';
-import { Badge } from '../components/common/Badge';
-import { DataTable } from '../components/common/DataTable';
-import type { Column } from '../components/common/DataTable';
-
-const Patients: React.FC = () => {
+const PatientPruebasView: React.FC = () => {
   const { pacientes, isLoading, error, toggleStatus, createPatient, updatePatient } = usePatients();
   const adobe = INAAQC_THEME.palette;
   
@@ -25,7 +20,7 @@ const Patients: React.FC = () => {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null); // Estado para el menú de 3 puntos
 
   const handleSort = (key: any) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -64,24 +59,28 @@ const Patients: React.FC = () => {
       accessorKey: 'nombres', 
       sortable: true,
       width: 'w-[320px]',
+      // El nombre principal se queda en semibold y un poco más oscuro
       render: (row) => <div className="text-sm font-semibold text-slate-800 truncate">{row.nombres} {row.apellidos}</div>
     },
     { 
       header: 'Dossier Erasme', 
       accessorKey: 'dossier_erasme', 
       sortable: true,
+      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_erasme}</span>
     },
     { 
       header: 'Dossier MPI', 
       accessorKey: 'dossier_mpi', 
       sortable: true,
+      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_mpi || '-'}</span>
     },
     { 
       header: 'Nacimiento', 
       accessorKey: 'fecha_nacimiento', 
       sortable: true,
+      // ESTANDARIZADO: text-sm font-medium text-slate-600
       render: (row) => <span className="text-sm font-medium text-slate-600">{row.fecha_nacimiento}</span>
     },
     { 
@@ -131,7 +130,7 @@ const Patients: React.FC = () => {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: adobe.base }}><Users style={{ color: adobe.highlight }} className="w-7 h-7" /> Directorio de Pacientes</h2>
-          <p className="mt-1" style={{ color: adobe.darkTint }}>Gestión de perfiles clínicos de la institución.</p>
+          <p className="mt-1" style={{ color: adobe.darkTint }}>Usando Ladrillo DataTable Genérico.</p>
         </div>
         <Button variant="primary" icon={<Plus />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>Nuevo Paciente</Button>
       </div>
@@ -152,6 +151,7 @@ const Patients: React.FC = () => {
             <div className="p-10 text-center" style={{ color: adobe.midTint }}>No hay resultados.</div>
           ) : (
             <>
+              {/* ¡MAGIA! LA TABLA ENTERA SE RENDERIZA EN 1 SOLA LÍNEA */}
               <DataTable data={currentData} columns={columns} onSort={handleSort} sortConfig={sortConfig} />
               
               {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={processedData.length} itemsPerPage={itemsPerPage} onPageChange={setCurrentPage} />}
@@ -163,4 +163,4 @@ const Patients: React.FC = () => {
   );
 };
 
-export default Patients;
+export default PatientPruebasView;

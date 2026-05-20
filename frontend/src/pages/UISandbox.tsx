@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Palette, Table as TableIcon, FileText, Activity, Search, Filter, MoreVertical, Plus, UploadCloud, LineChart as ChartIcon } from 'lucide-react';
 import { INAAQC_THEME } from '../config/theme';
 import { Button } from '../components/common/Button';
@@ -6,19 +6,22 @@ import { Badge } from '../components/common/Badge';
 import { Input } from '../components/common/Input';
 import { Dropzone } from '../components/common/Dropzone';
 import { ChartCard } from '../components/common/ChartCard';
+import { Pagination } from '../components/common/Pagination'; // <--- IMPORTAMOS EL LADRILLO
 
 // --- DATOS MOCK PARA LA GRÁFICA VISUAL ---
 const mockSodioData = [
   { time: '08:00', valor: 135 }, { time: '10:00', valor: 142 }, { time: '12:00', valor: 138 },
   { time: '14:00', valor: 145 }, { time: '16:00', valor: 140 },
 ];
-
 const mockGlucosaData = [
   { time: '08:00', valor: 90 }, { time: '10:00', valor: 110 }, { time: '12:00', valor: 105 },
 ];
 
 const UISandbox: React.FC = () => {
   const adobe = INAAQC_THEME.palette;
+  
+  // ESTADO PARA LA PAGINACIÓN DEL SANDBOX
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-20 animate-fade-in-up font-sans">
@@ -30,7 +33,7 @@ const UISandbox: React.FC = () => {
           Sistema de Diseño INAAQC (Component-Based)
         </h1>
         <p className="font-medium mt-2 text-lg" style={{ color: adobe.darkTint }}>
-          Estructura 100% modular.
+          Estructura 100% modular con Paginación Integrada.
         </p>
       </div>
 
@@ -79,58 +82,36 @@ const UISandbox: React.FC = () => {
                 </tr>
               </tbody>
             </table>
+
+            {/* --- AQUÍ ESTÁ EL NUEVO LADRILLO DE PAGINACIÓN --- */}
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={5} 
+              totalItems={45} 
+              itemsPerPage={10} 
+              onPageChange={setCurrentPage} 
+            />
+
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* ========================================================= */}
-          {/* MÓDULO 2: INGESTA DE DATOS (USANDO COMPONENTE DROPZONE)   */}
-          {/* ========================================================= */}
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6">
             <h2 className="text-xl font-bold border-b pb-4 flex items-center gap-2" style={{ color: adobe.base, borderColor: '#e2e8f0' }}>
               <UploadCloud className="w-6 h-6" /> Vista de Ingesta Inteligente
             </h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold mb-1.5" style={{ color: adobe.darkTint }}>Seleccionar Documento</label>
-                <select className="w-full border-2 rounded-xl py-2.5 px-4 font-medium appearance-none outline-none" style={{ backgroundColor: '#f8fafc', borderColor: '#e2e8f0', color: adobe.base }}>
-                  <option>Laboratorio - Sangre (LAB)</option>
-                </select>
-              </div>
-              
-              {/* ¡MIRA QUÉ LIMPIO QUEDÓ ESTO! */}
               <Dropzone title="Arrastra el PDF aquí" subtitle="Formatos soportados: PDF, JPG, PNG (Max 5MB)" />
             </div>
           </div>
 
-          {/* ========================================================= */}
-          {/* MÓDULO 3: GRÁFICAS RECHARTS (USANDO COMPONENTE CHARTCARD) */}
-          {/* ========================================================= */}
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6">
             <h2 className="text-xl font-bold border-b pb-4 flex items-center gap-2" style={{ color: adobe.base, borderColor: '#e2e8f0' }}>
               <ChartIcon className="w-6 h-6" /> Vista Estudio (Recharts Reutilizable)
             </h2>
-            
             <div className="space-y-4">
-              <ChartCard 
-                title="Sodio (Na)" 
-                unit="mmol/L" 
-                data={mockSodioData} 
-                dataKey="valor" 
-                xAxisKey="time" 
-                statusText="Simulación finalizada."
-              />
-
-              <ChartCard 
-                title="Glucosa" 
-                unit="mg/dL" 
-                data={mockGlucosaData} 
-                dataKey="valor" 
-                xAxisKey="time" 
-              />
+              <ChartCard title="Sodio (Na)" unit="mmol/L" data={mockSodioData} dataKey="valor" xAxisKey="time" statusText="Simulación finalizada." />
             </div>
-            
           </div>
         </div>
 

@@ -18,10 +18,10 @@ export const Dropzone: React.FC<DropzoneProps> = ({
 
   return (
     <div className="border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
-         style={{ borderColor: adobe.lightTint, backgroundColor: '#f8fafc' }}
-         onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'hsl(208, 42%, 95%)'}
-         onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-         onClick={onFileSelect}
+        style={{ borderColor: adobe.lightTint, backgroundColor: '#f8fafc' }}
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'hsl(208, 42%, 95%)'}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+        onClick={onFileSelect}
     >
       <div className="p-4 rounded-full mb-4" style={{ backgroundColor: adobe.lightTint }}>
         <UploadCloud className="w-10 h-10" style={{ color: adobe.base }} />
