@@ -5,9 +5,6 @@ import difflib
 from django.conf import settings
 from .base_engine import MotorOCRBase
 
-# --- RUTA OBLIGATORIA PARA WINDOWS ---
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\crist\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
 class MotorPulmonar(MotorOCRBase):
     """
     Motor OCR para Gasometría (PUL).
@@ -49,7 +46,7 @@ class MotorPulmonar(MotorOCRBase):
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (ancho // 60, 1))
         kernel_v = cv2.getStructuringElement(cv2.MORPH_RECT, (1, alto // 60))
         cuadricula = cv2.addWeighted(cv2.morphologyEx(binaria, cv2.MORPH_OPEN, kernel), 0.5, 
-                                     cv2.morphologyEx(binaria, cv2.MORPH_OPEN, kernel_v), 0.5, 0.0)
+                                    cv2.morphologyEx(binaria, cv2.MORPH_OPEN, kernel_v), 0.5, 0.0)
         cuadricula = cv2.dilate(cuadricula, np.ones((3,3), np.uint8), iterations=1)
 
         contornos, _ = cv2.findContours(cuadricula, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)

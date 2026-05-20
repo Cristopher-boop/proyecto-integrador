@@ -36,9 +36,8 @@ const AdmissionsView: React.FC = () => {
       const pacienteInfo = pacientes.find(p => p.id_paciente === a.paciente);
       const nombreCompleto = pacienteInfo ? `${pacienteInfo.nombres} ${pacienteInfo.apellidos}`.toLowerCase() : '';
       
-      // ¡CORREGIDO! Buscamos por numero_episodio
       return (a.numero_episodio || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-             nombreCompleto.includes(searchTerm.toLowerCase());
+            nombreCompleto.includes(searchTerm.toLowerCase());
     });
 
     if (sortConfig !== null) {

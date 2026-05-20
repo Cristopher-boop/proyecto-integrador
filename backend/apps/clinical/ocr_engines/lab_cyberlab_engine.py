@@ -1,10 +1,10 @@
 import re
 import pdfplumber
+import traceback
 
 class MotorIngestaClinica:
     """
     Motor determinista para extracción de datos biomédicos de reportes CyberLab.
-    Usa un lector de estados para leer tablas longitudinales y rescata la hora real.
     """
 
     MAPEO_PARAMETROS = {
@@ -31,7 +31,6 @@ class MotorIngestaClinica:
         parametro_actual = None  
 
         patron_fecha = r"^(\d{2}/\d{2}/\d{4})"
-        # Nuevo patrón para cazar la hora exacta (ej. 14:30 o 07:00)
         patron_hora = r"\b([01]\d|2[0-3]):([0-5]\d)\b"
         
         try:
@@ -42,7 +41,6 @@ class MotorIngestaClinica:
                         
                     lineas = texto.split('\n')
                     
-                    # Usamos enumerate para saber en qué número de línea estamos
                     for i_linea, linea in enumerate(lineas):
                         linea_limpia = linea.strip()
 
@@ -54,13 +52,13 @@ class MotorIngestaClinica:
                                 parametro_actual = valor_espanol
                                 break 
                         
-                        if parametro_actual and re.match(patron_fecha, linea_limpia):
+                        match_fecha = re.match(patron_fecha, linea_limpia)
+                        if parametro_actual and match_fecha:
+                            # FIX: Aseguramos extraer exactamente 10 caracteres
+                            fecha_str = match_fecha.group(1) 
                             partes = linea_limpia.split()
-                            fecha_str = partes[0] # 'dd/mm/yyyy'
                             
-                            # --- EL RADAR DE TIEMPO ---
-                            # Buscamos la hora en esta línea o en las 3 de abajo
-                            hora_encontrada = "00:00" # Fallback extremo
+                            hora_encontrada = "00:00" 
                             for offset in range(4):
                                 if i_linea + offset < len(lineas):
                                     candidata = lineas[i_linea + offset]
@@ -68,7 +66,6 @@ class MotorIngestaClinica:
                                     if match_hora:
                                         hora_encontrada = match_hora.group(0)
                                         break
-                            # --------------------------
                             
                             valor_encontrado = None
                             indice_valor = -1
@@ -84,7 +81,6 @@ class MotorIngestaClinica:
                             
                             if valor_encontrado is not None and indice_valor != -1:
                                 rango_min, rango_max, unidad = None, None, None
-                                
                                 resto_linea = partes[indice_valor + 1:]
                                 
                                 if len(resto_linea) >= 1:
@@ -102,14 +98,10 @@ class MotorIngestaClinica:
                                 if len(resto_linea) >= 2:
                                     unidad = " ".join(resto_linea[1:]).replace('$', '').replace('|', '').strip()
 
-                                # --- FIX ZONA HORARIA BOLIVIA (-04:00) ---
                                 fecha_iso = f"{fecha_str[6:]}-{fecha_str[3:5]}-{fecha_str[0:2]}T{hora_encontrada}:00-04:00"
-
-                                # --- MODO CONSOLA ACTIVO ---
                                 print(f"[{parametro_actual}] Fecha/Hora Real: {fecha_iso} | Valor: {valor_encontrado}")
 
                                 resultados.append({
-                                    "tipo_observacion": "LABORATORIO",
                                     "parametro": parametro_actual,
                                     "valor_numerico": valor_encontrado,
                                     "unidad_medida": unidad,
@@ -125,9 +117,9 @@ class MotorIngestaClinica:
                     obs["es_diario"] = obs["fecha_hora_registro"] > fecha_basal
 
             print(f"\n=== SE EXTRAJERON {len(resultados)} RESULTADOS CON HORA EXACTA ===\n")
-            
-            # --- INYECCIÓN A BASE DE DATOS ACTIVADA ---
             return resultados 
             
         except Exception as e:
-            raise ValueError(f"Fallo crítico en el motor OCR: {str(e)}")
+            print("\n🔥 ERROR CRÍTICO EN MOTOR LAB (PDFPLUMBER) 🔥")
+            traceback.print_exc()
+            raise ValueError(f"El Motor LAB falló al leer el PDF: {str(e)}")

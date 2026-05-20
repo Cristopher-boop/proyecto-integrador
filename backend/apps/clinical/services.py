@@ -47,35 +47,33 @@ class ArchivoFuenteService:
         
         url_cloudinary = archivo.archivo_fisico.url
         tipo = archivo.tipo_documento
-        
-        # 2. Extraemos los IDs directamente del objeto que nos mandó la Vista
         id_admision = archivo.admision_id
         id_archivo = archivo.id_archivo
         
-        # --- INICIO DEL PARCHE ANTI-ERRORES 500 ---
-        if url_cloudinary.startswith('/media/'):
-            raise ValueError("Este archivo es antiguo y está en local. Sube un NUEVO archivo a la nube para procesarlo.")
-            
+        # 1. FIX CLOUDINARY: Aseguramos que la URL sea válida para requests.get()
         if url_cloudinary.startswith('//'):
             url_cloudinary = 'https:' + url_cloudinary
-        # --- FIN DEL PARCHE ---
+        elif url_cloudinary.startswith('/media/'):
+            raise ValueError("El archivo se guardó localmente en lugar de Cloudinary. Verifica las credenciales en settings.py")
         
-        # 3. CREA UN ARCHIVO TEMPORAL LOCAL (Puente)
+        # 2. DESCARGA A ARCHIVO TEMPORAL
         try:
             respuesta = requests.get(url_cloudinary, stream=True)
             respuesta.raise_for_status()
             
             extension = os.path.splitext(archivo.nombre_archivo)[1]
-            
+            if not extension: 
+                extension = ".pdf" # FIX: Seguro por si Cloudinary oculta la extensión
+                
             with tempfile.NamedTemporaryFile(delete=False, suffix=extension) as temp_file:
                 for chunk in respuesta.iter_content(chunk_size=8192):
                     temp_file.write(chunk)
                 ruta_temporal = temp_file.name
                 
         except Exception as e:
-            raise ValueError(f"No se pudo descargar el archivo desde Cloudinary. URL: {url_cloudinary}. Error: {str(e)}")
-
-        # 4. PROCESAMIENTO OCR (Usando la ruta temporal)
+            raise ValueError(f"Fallo al descargar el archivo desde Cloudinary. Error: {str(e)}")
+        
+        # 3. PROCESAMIENTO OCR 
         resultados_crudos = []
         try:
             if tipo == 'VIT':
@@ -83,28 +81,19 @@ class ArchivoFuenteService:
             elif tipo == 'LAB':
                 resultados_crudos = MotorIngestaClinica.procesar_pdf(ruta_temporal) 
             elif tipo == 'PUL':
-                resultados_crudos = MotorPulmonar.procesar_pdf(ruta_temporal)
+                resultados_crudos = MotorPulmonar.procesar_imagen(ruta_temporal)
             elif tipo == 'GLAS':
                 resultados_crudos = MotorGlasgow.procesar_imagen(ruta_temporal)
             else:
                 raise ValueError("Tipo de documento no soportado para procesamiento OCR automático.")
         finally:
-            # LIMPIEZA OBLIGATORIA
+            # LIMPIEZA OBLIGATORIA DEL TEMPORAL
             if os.path.exists(ruta_temporal):
                 os.remove(ruta_temporal)
 
-        # 5. GUARDADO EN BASE DE DATOS
+        # 4. GUARDADO EN BASE DE DATOS (FIX: Sin campos fantasma)
         observaciones_a_crear = []
         for res in resultados_crudos:
-            # Asignamos los IDs que extrajimos arriba
-            res['admision'] = id_admision
-            res['archivo_fuente'] = id_archivo
-            
-            if tipo == 'VIT': res['tipo_observacion'] = "SIGNOS_VITALES"
-            elif tipo == 'GLAS': res['tipo_observacion'] = "NEUROLOGICO"
-            elif tipo == 'LAB': res['tipo_observacion'] = "LABORATORIO"
-            elif tipo == 'PUL': res['tipo_observacion'] = "PULMONAR"
-
             obs = ObservacionBiomedica(
                 admision_id=id_admision,
                 archivo_fuente_id=id_archivo,
@@ -114,7 +103,6 @@ class ArchivoFuenteService:
                 rango_referencia_min=res.get('rango_referencia_min'),
                 rango_referencia_max=res.get('rango_referencia_max'),
                 fecha_hora_registro=res.get('fecha_hora_registro'),
-                tipo_observacion=res.get('tipo_observacion'),
                 es_diario=res.get('es_diario', False)
             )
             observaciones_a_crear.append(obs)
@@ -124,7 +112,6 @@ class ArchivoFuenteService:
         archivo.tipo_documento = f"{tipo}_AUDITADO"
         archivo.save()
         
-        # 6. RETORNA UN NÚMERO ENTERO (Como lo espera la Vista)
         return len(observaciones_a_crear)
 
 

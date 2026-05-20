@@ -6,8 +6,6 @@ import difflib
 from django.conf import settings
 from .base_engine import MotorOCRBase
 
-# --- RUTA OBLIGATORIA PARA WINDOWS ---
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\crist\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 class MotorVitales(MotorOCRBase):
     """

@@ -19,7 +19,6 @@ class ArchivoUploadView(APIView):
             return Response({"error": "Faltan datos obligatorios."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # ¡La Vista delega el trabajo pesado al Servicio!
             archivo = ArchivoFuenteService.crear_archivo_fisico(archivo_fisico, tipo_documento, numero_episodio)
             serializer = ArchivoFuenteSerializer(archivo)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -99,9 +98,10 @@ class ArchivoProcesarOCRAPIView(APIView):
             }, status=status.HTTP_200_OK)
             
         except ValueError as e:
-            # Capturamos errores lógicos o de validación
+            print(f"\n❌ [ERROR 400] MOTIVO DEL RECHAZO: {str(e)}\n")
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            # Capturamos caídas críticas (defensa del servidor)
-            traceback.print_exc() # <--- 2. AÑADE ESTO PARA QUE LA CONSOLA IMPRIMA EL ERROR ROJO
+            import traceback
+            print("\n🔥 [ERROR 500] CAÍDA DEL SERVIDOR:")
+            traceback.print_exc() 
             return Response({"error": f"Error interno del motor OCR: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
