@@ -28,7 +28,6 @@ const DashboardLayout: React.FC = () => {
     navigate('/login');
   };
 
-  // Opciones lógicas del menú clínico
   const navItems = [
     { name: 'Panel Principal', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Admisiones', icon: ClipboardList, path: '/dashboard/admissions' },
@@ -37,7 +36,7 @@ const DashboardLayout: React.FC = () => {
     { name: 'Bio-Simulación', icon: HeartPulse, path: '/dashboard/biosim' },
     { name: 'Prototipo IA', icon: BrainCircuit, path: '/dashboard/prototype' },
     { name: 'UI / UX', icon: Palette, path: '/dashboard/sandbox' },
-    { name: 'Pruebas General', icon: FlaskConical, path: 'pruebas/admisiones' },
+    { name: 'Pruebas General', icon: FlaskConical, path: 'pruebas/ingesta' },
     { name: 'Laboratorios', icon: TestTube, path: '/dashboard/labs' },
     { name: 'Ingesta de Datos', icon: UploadCloud, path: '/dashboard/upload' },
     { name: 'Reportes Médicos', icon: FileText, path: '/dashboard/reports' },

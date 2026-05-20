@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
-import UploadResults from './pages/UploadResults';
+import UploadResults from './pages/Ingestion';
 import Admissions from './pages/Admissions';
 import Labs from './pages/Labs';
 import Patients from './pages/Patients';
@@ -10,7 +10,7 @@ import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
 import NeuralPrototype from './pages/NeuralPrototype';
 import UISandbox from './pages/UISandbox';
-import AdmissionsView from './features/admissions/views/AdmissionsViews';
+import IngestionView from './features/ingestion/views/IngestionView';
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
 
           <Route path="sandbox" element={<UISandbox />} />
 
-          <Route path="pruebas/admisiones" element={<AdmissionsView />} />
+          <Route path="pruebas/ingesta" element={<IngestionView />} />
 
           <Route path="labs" element={<Labs />} />
           
