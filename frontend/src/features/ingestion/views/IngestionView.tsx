@@ -5,7 +5,8 @@ import { useAdmissions } from '../../admissions/hooks/useAdmissions';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Dropzone } from '../../../components/common/Dropzone';
-import { Autocomplete } from '../../../components/common/AutoComplete';
+import { Autocomplete } from '../../../components/common/Autocomplete';
+import { useNavigate } from 'react-router-dom';
 
 const IngestionView: React.FC = () => {
   const {
@@ -15,6 +16,7 @@ const IngestionView: React.FC = () => {
     uploadFiles, processOCR
   } = useIngestion();
 
+  const navigate = useNavigate();
   const { admisiones } = useAdmissions();
   const adobe = INAAQC_THEME.palette;
 
@@ -141,10 +143,25 @@ const IngestionView: React.FC = () => {
             )}
 
             {status === 'processed' && (
-              <div className="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-100 animate-in zoom-in-95">
-                <CheckCircle className="mx-auto text-emerald-500 mb-2" size={32} />
+              <div className="text-center p-4 rounded-xl border animate-in zoom-in-95" 
+                  style={{ backgroundColor: 'hsl(147, 74%, 96%)', borderColor: 'hsl(147, 74%, 85%)' }}>
+                <CheckCircle className="mx-auto mb-2" size={32} style={{ color: '#10b981' }} />
                 <p className="text-sm font-bold text-emerald-800">{successMessage}</p>
-                <button onClick={clearAll} className="mt-3 text-xs font-bold text-emerald-600 underline hover:text-emerald-800">Cargar nuevo lote</button>
+                
+                <div className="flex gap-2 mt-4">
+                  <Button 
+                    onClick={clearAll} 
+                    variant="outline" 
+                    className="flex-1 py-2 text-xs">
+                    Subir Más
+                  </Button>
+                  <Button 
+                    onClick={() => navigate(`/laboratorios?episodio=${episode}&openAudit=true`)} 
+                    variant="primary" 
+                    className="flex-1 py-2 text-xs">
+                    Ver Resultados
+                  </Button>
+                </div>
               </div>
             )}
 

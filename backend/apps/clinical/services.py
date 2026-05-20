@@ -134,6 +134,11 @@ class ObservacionBiomedicaService:
     def obtener_por_admision(id_admision):
         """Extrae todos los signos vitales/laboratorios para el Gráfico Longitudinal"""
         return ObservacionBiomedica.objects.filter(admision_id=id_admision).order_by('fecha_hora_registro')
+    
+    @staticmethod
+    def obtener_por_archivo(id_archivo):
+        """Extrae las observaciones vinculadas a un PDF/Imagen específico"""
+        return ObservacionBiomedica.objects.filter(archivo_fuente_id=id_archivo).order_by('fecha_hora_registro')
 
     @staticmethod
     def obtener_por_id(pk):

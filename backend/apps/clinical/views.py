@@ -9,6 +9,15 @@ from .services import ArchivoFuenteService, ObservacionBiomedicaService
 class ArchivoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
+    def get(self, request):
+        admision_id = request.query_params.get('admision_id')
+        if not admision_id:
+            return Response({"error": "Falta admision_id"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        archivos = ArchivoFuenteService.obtener_por_admision(admision_id)
+        serializer = ArchivoFuenteSerializer(archivos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         """Recibe el Multipart desde el Drag&Drop y delega al Servicio"""
         archivo_fisico = request.FILES.get('archivo_fisico')
@@ -26,17 +35,31 @@ class ArchivoUploadView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         
 class ObservacionBiomedicaListCreateAPIView(APIView):
-    def get(self, request, id_admision):
-        """El Frontend llama a esta ruta para armar los Gráficos de React."""
-        observaciones = ObservacionBiomedicaService.obtener_por_admision(id_admision)
-        serializer = ObservacionBiomedicaSerializer(observaciones, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # FIX: Ponemos id_admision=None para que sea opcional
+    def get(self, request, id_admision=None):
+        """Atiende al Laboratorio Principal (por episodio) o al Visualizador (por archivo)"""
+        
+        # 1. ¿El Frontend está pidiendo datos de un PDF específico? (Split-Screen)
+        archivo_id = request.query_params.get('archivo_fuente')
+        if archivo_id:
+            observaciones = ObservacionBiomedicaService.obtener_por_archivo(archivo_id)
+            serializer = ObservacionBiomedicaSerializer(observaciones, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        # 2. ¿El Frontend está pidiendo todos los datos de un episodio? (Laboratorio Principal)
+        elif id_admision:
+            observaciones = ObservacionBiomedicaService.obtener_por_admision(id_admision)
+            serializer = ObservacionBiomedicaSerializer(observaciones, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        # 3. Si no mandan nada, devolvemos error
+        return Response(
+            {"error": "Se requiere id_admision en la URL o ?archivo_fuente en la query"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     def post(self, request):
-        """
-        El OCR llama a esta ruta: Recibe una LISTA de resultados médicos 
-        y los inserta de golpe (Bulk Insert).
-        """
+        """El OCR llama a esta ruta: Recibe una LISTA de resultados médicos y los inserta de golpe."""
         if not isinstance(request.data, list):
             return Response({"error": "Se espera una lista de objetos JSON (Array)"}, status=status.HTTP_400_BAD_REQUEST)
 

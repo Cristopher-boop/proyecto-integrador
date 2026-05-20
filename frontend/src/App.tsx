@@ -4,13 +4,14 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
 import UploadResults from './pages/Ingestion';
 import Admissions from './pages/Admissions';
-import Labs from './pages/Labs';
+import Labs from './pages/Laboratory';
 import Patients from './pages/Patients';
 import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
 import NeuralPrototype from './pages/NeuralPrototype';
 import UISandbox from './pages/UISandbox';
-import IngestionView from './features/ingestion/views/IngestionView';
+import { AuditSplitView } from './features/visualizer/views/AuditSplitView';
+import { LaboratoryView } from './features/laboratory/views/LaboratoryView';
 
 function App() {
   return (
@@ -27,8 +28,6 @@ function App() {
           
           <Route index element={<DashboardHome />} />
           
-          {/* Rutas temporales funcionales para el menú clínico */}
-          
           {/* Ruta real para el Episodio Clínico */}
           <Route path="admissions" element={<Admissions />} />
 
@@ -42,7 +41,17 @@ function App() {
 
           <Route path="sandbox" element={<UISandbox />} />
 
-          <Route path="pruebas/ingesta" element={<IngestionView />} />
+          <Route path="pruebas/auditoria" element={
+            <AuditSplitView 
+              onClose={() => alert('Cerrando')} 
+              idArchivo="123" 
+              nombreArchivo="LAB_ANALISIS_001.pdf" 
+              tipo="PDF" 
+              documentoUrl="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" 
+            />
+          } />
+
+          <Route path="pruebas/laboratory" element={< LaboratoryView />} />
 
           <Route path="labs" element={<Labs />} />
           
