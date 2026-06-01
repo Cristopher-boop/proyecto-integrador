@@ -35,7 +35,6 @@ export const useLaboratory = (episodioUrl?: string) => {
 
         setAdmisiones(admisionesConNombre);
 
-        // Si venimos redireccionados desde Ingesta con un ?episodio=EP-001
         if (episodioUrl) {
           const adm = admisionesConNombre.find((a: Admision) => a.numero_episodio === episodioUrl);
           if (adm) setSelectedAdmision(adm.id_admision);
@@ -47,7 +46,6 @@ export const useLaboratory = (episodioUrl?: string) => {
     fetchAdmisiones();
   }, [episodioUrl]);
 
-  // 2. Cargar Archivos y Observaciones cuando se selecciona una admisión
   useEffect(() => {
     if (!selectedAdmision) {
       setObservaciones([]);

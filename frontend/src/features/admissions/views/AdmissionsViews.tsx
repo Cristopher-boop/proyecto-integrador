@@ -146,12 +146,12 @@ const AdmissionsView: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in-up font-sans">
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: adobe.base }}>
-            <ActivitySquare style={{ color: adobe.highlight }} className="w-7 h-7" /> Control de Admisiones
+          <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
+            <ActivitySquare style={{ color: adobe.highlight }} className="w-8 h-8" /> Control de Admisiones
           </h2>
-          <p className="mt-1" style={{ color: adobe.darkTint }}>Gestión de episodios clínicos e ingresos.</p>
+          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Gestión de episodios clínicos e ingresos.</p>
         </div>
         <Button variant="primary" icon={<Plus />} onClick={() => { setEditingAdmission(null); setShowForm(true); }}>Nueva Admisión</Button>
       </div>

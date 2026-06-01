@@ -120,12 +120,17 @@ const PatientsView: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in-up font-sans">
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: adobe.base }}><Users style={{ color: adobe.highlight }} className="w-7 h-7" /> Directorio de Pacientes</h2>
-          <p className="mt-1" style={{ color: adobe.darkTint }}>Gestiona perfiles clinicos de la institución</p>
+          <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
+            <Users style={{ color: adobe.highlight }} className="w-8 h-8" /> Directorio de Pacientes
+          </h2>
+          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Gestiona perfiles clínicos de la institución.</p>
         </div>
-        <Button variant="primary" icon={<Plus />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>Nuevo Paciente</Button>
+        
+        <Button variant="primary" icon={<Plus />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>
+          Nuevo Paciente
+        </Button>
       </div>
 
       {showForm && <PatientForm initialData={editingPatient} onSubmit={handleSavePatient} onCancel={handleCloseForm} />}
@@ -144,7 +149,6 @@ const PatientsView: React.FC = () => {
             <div className="p-10 text-center" style={{ color: adobe.midTint }}>No hay resultados.</div>
           ) : (
             <>
-              {/* ¡MAGIA! LA TABLA ENTERA SE RENDERIZA EN 1 SOLA LÍNEA */}
               <DataTable data={currentData} columns={columns} onSort={handleSort} sortConfig={sortConfig} />
               
               {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={processedData.length} itemsPerPage={itemsPerPage} onPageChange={setCurrentPage} />}

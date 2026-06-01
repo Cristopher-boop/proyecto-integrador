@@ -9,7 +9,7 @@ export interface FileWithMeta {
 export const useIngestion = () => {
   const [filesWithMeta, setFilesWithMeta] = useState<FileWithMeta[]>([]);
   const [fileIds, setFileIds] = useState<string[]>([]);
-  const [episode, setEpisode] = useState('EP-001');
+  const [episode, setEpisode] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState<'idle' | 'uploaded' | 'processed' | 'error'>('idle');

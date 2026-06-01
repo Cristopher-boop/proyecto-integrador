@@ -9,6 +9,7 @@ type FilterType = 'ALL' | 'VIT' | 'GLAS' | 'LAB' | 'PUL';
 
 export const LaboratoryView: React.FC = () => {
   const adobe = INAAQC_THEME.palette;
+  const themeStatus = INAAQC_THEME.status; // Importamos los estados HSL puros
   const [searchParams] = useSearchParams();
   const episodioUrl = searchParams.get('episodio') || undefined;
 
@@ -29,15 +30,18 @@ export const LaboratoryView: React.FC = () => {
     return 'LAB';
   };
 
+  // FIX: Uso estricto de colores del INAAQC_THEME
   const getHeatmapStyle = (valorStr: string, minStr: string | null, maxStr: string | null) => {
-    if (!minStr || !maxStr) return { rowColor: '#ffffff', badgeClass: 'bg-slate-100 text-slate-800', icon: <CheckCircle2 className="w-5 h-5 text-slate-400" /> };
+    if (!minStr || !maxStr) return { rowColor: '#ffffff', badgeStyle: { backgroundColor: '#f1f5f9', color: '#334155', borderColor: '#e2e8f0' }, iconColor: '#94a3b8', icon: <CheckCircle2 className="w-5 h-5" /> };
     const value = parseFloat(valorStr), min = parseFloat(minStr), max = parseFloat(maxStr);
     
-    if (value >= min && value <= max) return { rowColor: '#ffffff', badgeClass: 'bg-emerald-100 text-emerald-800', icon: <CheckCircle2 className="w-5 h-5 text-emerald-600" /> };
+    // Normal (Success)
+    if (value >= min && value <= max) return { rowColor: '#ffffff', badgeStyle: { backgroundColor: themeStatus.success.bg, color: themeStatus.success.text, borderColor: themeStatus.success.border }, iconColor: themeStatus.success.text, icon: <CheckCircle2 className="w-5 h-5" /> };
+    // Límite (Alert)
     const deviation = value < min ? (min - value) / min : (value - max) / max;
-    if (deviation <= 0.1) return { rowColor: '#fef3c7', badgeClass: 'bg-amber-100 text-amber-800 font-bold', icon: <AlertTriangle className="w-5 h-5 text-amber-600" /> };
-    
-    return { rowColor: '#fee2e2', badgeClass: 'bg-red-200 text-red-900 font-extrabold animate-pulse', icon: <AlertCircle className="w-5 h-5 text-red-700" /> };
+    if (deviation <= 0.1) return { rowColor: themeStatus.alert.bg, badgeStyle: { backgroundColor: themeStatus.alert.bg, color: themeStatus.alert.text, borderColor: themeStatus.alert.border }, iconColor: themeStatus.alert.text, icon: <AlertTriangle className="w-5 h-5" /> };
+    // Crítico (Warning)
+    return { rowColor: themeStatus.warning.bg, badgeStyle: { backgroundColor: themeStatus.warning.bg, color: themeStatus.warning.text, borderColor: themeStatus.warning.border }, iconColor: themeStatus.warning.text, icon: <AlertCircle className="w-5 h-5" /> };
   };
 
   const filteredObservaciones = observaciones.filter(obs => activeFilter === 'ALL' || getTipoCategoria(obs.parametro, obs.tipo_observacion) === activeFilter);
@@ -45,8 +49,8 @@ export const LaboratoryView: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans animate-fade-in-up">
       
-      {/* 1. HEADER & SELECTOR DE EPISODIOS */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border flex flex-col md:flex-row justify-between items-start md:items-center gap-4" style={{ borderColor: adobe.lightTint }}>
+      {/* HEADER UNIFICADO */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
             <Microscope style={{ color: adobe.highlight }} className="w-8 h-8" /> Control de Laboratorio
@@ -57,9 +61,10 @@ export const LaboratoryView: React.FC = () => {
         <div className="w-full md:w-96">
           <label className="block text-xs font-bold uppercase mb-1" style={{ color: adobe.midTint }}>Episodio Activo</label>
           <div className="relative">
+            {/* FIX: Bg-white aplicado */}
             <select 
-              className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer"
-              style={{ backgroundColor: adobe.lightTint, borderColor: adobe.midTint, color: adobe.base }}
+              className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer bg-white"
+              style={{ borderColor: adobe.midTint, color: adobe.base }}
               value={selectedAdmision}
               onChange={(e) => setSelectedAdmision(e.target.value)}
             >
@@ -73,7 +78,7 @@ export const LaboratoryView: React.FC = () => {
 
       {error && <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded text-red-900 font-bold">{error}</div>}
 
-      {/* 2. SECCIÓN DE ARCHIVOS (Con botón de Auditoría) */}
+      {/* SECCIÓN DE ARCHIVOS */}
       {selectedAdmision && (
         <div className="space-y-3">
           <h3 className="font-bold uppercase tracking-widest text-xs" style={{ color: adobe.darkTint }}>Documentos Fuente</h3>
@@ -84,13 +89,13 @@ export const LaboratoryView: React.FC = () => {
               {archivos.map(archivo => (
                 <div key={archivo.id_archivo} className="bg-white p-4 rounded-xl border flex items-center justify-between shadow-sm hover:shadow-md transition-all" style={{ borderColor: adobe.lightTint }}>
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="p-2 rounded-lg" style={{ backgroundColor: adobe.lightTint }}><FileText className="w-5 h-5" style={{ color: adobe.highlight }} /></div>
+                    {/* FIX: Contraste de Ícono Blanco sobre Highlight */}
+                    <div className="p-2.5 rounded-lg shadow-inner" style={{ backgroundColor: adobe.highlight }}><FileText className="w-5 h-5 text-white" /></div>
                     <div className="truncate">
                       <p className="text-sm font-bold truncate" style={{ color: adobe.base }}>{archivo.nombre_archivo}</p>
                       <p className="text-[10px] font-black uppercase tracking-wider" style={{ color: adobe.highlight }}>{archivo.tipo_documento.replace('_AUDITADO', '')}</p>
                     </div>
                   </div>
-                  {/* BOTÓN MÁGICO PARA ABRIR EL SPLIT-SCREEN */}
                   <button onClick={() => setArchivoAuditoria(archivo)} className="p-2 rounded-full hover:bg-slate-100 transition-colors" title="Auditar Documento">
                     <Eye className="w-5 h-5" style={{ color: adobe.base }} />
                   </button>
@@ -101,12 +106,10 @@ export const LaboratoryView: React.FC = () => {
         </div>
       )}
 
-      {/* 3. SECCIÓN DE DATOS (Filtros y Tabla) */}
+      {/* SECCIÓN DE DATOS */}
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden" style={{ borderColor: adobe.lightTint }}>
-        
         {selectedAdmision && !isLoading && observaciones.length > 0 && (
           <div className="border-b p-4 flex flex-wrap gap-2" style={{ borderColor: adobe.lightTint, backgroundColor: '#f8fafc' }}>
-             {/* Filtros estilizados con INAAQC_THEME */}
             {[
               { id: 'ALL', label: 'Todos', icon: <Filter size={16}/> },
               { id: 'VIT', label: 'Vitales', icon: <Activity size={16}/> },
@@ -129,7 +132,6 @@ export const LaboratoryView: React.FC = () => {
           </div>
         )}
 
-        {/* TABLA DE MAPA DE CALOR */}
         {isLoading ? (
           <div className="p-16 flex justify-center"><Loader2 className="w-10 h-10 animate-spin" style={{ color: adobe.highlight }} /></div>
         ) : filteredObservaciones.length > 0 ? (
@@ -153,14 +155,14 @@ export const LaboratoryView: React.FC = () => {
 
                   return (
                     <tr key={obs.id_observacion} className="border-b transition-colors" style={{ backgroundColor: style.rowColor, borderColor: adobe.lightTint }}>
-                      <td className="p-4 flex justify-center items-center">{style.icon}</td>
+                      <td className="p-4 flex justify-center items-center" style={{ color: style.iconColor }}>{style.icon}</td>
                       <td className="p-4">{new Date(obs.fecha_hora_registro).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
                       <td className="p-4">
                         <span className="text-[10px] font-black px-2 py-1 rounded" style={{ backgroundColor: adobe.lightTint, color: adobe.base }}>{tipoTag}</span>
                       </td>
                       <td className="p-4 font-bold" style={{ color: adobe.base }}>{obs.parametro}</td>
                       <td className="p-4 text-right">
-                        <span className={`inline-block px-3 py-1 rounded-md border font-mono text-base ${style.badgeClass}`}>
+                        <span className="inline-block px-3 py-1 rounded-md border font-mono text-base font-bold" style={style.badgeStyle}>
                           {parseFloat(obs.valor_numerico).toFixed(2)}
                         </span>
                       </td>
@@ -182,7 +184,6 @@ export const LaboratoryView: React.FC = () => {
         )}
       </div>
 
-      {/* RENDERIZADO DEL MODAL SPLIT-SCREEN (Fase 3) */}
       {archivoAuditoria && (
         <AuditSplitView 
           idArchivo={archivoAuditoria.id_archivo}
