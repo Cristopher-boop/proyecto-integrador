@@ -9,10 +9,15 @@ from apps.patients.models import Admision
 # ==========================================
 class CatComorbilidad(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
+    # NUEVO CAMPO: Para agrupar (Ej: "Respiratory", "Severe Comorbidities")
+    categoria = models.CharField(max_length=100, blank=True, null=True) 
     definicion_tecnica = models.TextField(blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "Catálogo de Comorbilidades"
+
     def __str__(self):
-        return self.nombre
+        return f"[{self.categoria}] {self.nombre}"
 
 class CatDiagnostico(models.Model):
     codigo = models.CharField(max_length=100, unique=True)
@@ -133,3 +138,50 @@ class DiagnosticoEpisodio(models.Model):
     confianza_ia = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     auditado_por_medico = models.BooleanField(default=False)
     creado_en = models.DateTimeField(auto_now_add=True)
+
+# ==========================================
+# 8. SISTEMA EXPERTO (CATÁLOGOS Y PIVOTES)
+# ==========================================
+
+class CatSoporte(models.Model):
+    """Catálogo de Soportes Orgánicos y Dispositivos Invasivos (Ej: VMI, TRR, ECMO)"""
+    nombre = models.CharField(max_length=255, unique=True)
+    categoria = models.CharField(max_length=100, blank=True, null=True) # Ej: 'Respiratorio', 'Renal'
+    
+    def __str__(self):
+        return self.nombre
+
+class SoporteAdmision(models.Model):
+    """Relación de qué soportes requirió el paciente durante su episodio"""
+    admision = models.ForeignKey('patients.Admision', on_delete=models.CASCADE)
+    soporte = models.ForeignKey(CatSoporte, on_delete=models.CASCADE)
+    fecha_hora_inicio = models.DateTimeField(null=True, blank=True)
+    fecha_hora_fin = models.DateTimeField(null=True, blank=True)
+    en_primeras_24h = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('admision', 'soporte')
+
+class PuntajesEpisodio(models.Model):
+    """Tabla para almacenar los cálculos matemáticos del Motor de Inferencia"""
+    admision = models.OneToOneField('patients.Admision', on_delete=models.CASCADE, primary_key=True)
+    
+    # SOFA
+    sofa_respiratorio = models.IntegerField(default=0)
+    sofa_cardiovascular = models.IntegerField(default=0)
+    sofa_renal = models.IntegerField(default=0)
+    sofa_hepatico = models.IntegerField(default=0)
+    sofa_coagulacion = models.IntegerField(default=0)
+    sofa_neurologico = models.IntegerField(default=0)
+    sofa_total = models.IntegerField(default=0)
+    
+    # SAPS 3
+    saps3_puntos = models.IntegerField(default=0)
+    saps3_mortalidad_estimada = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # Porcentaje %
+    
+    # Metadatos del cálculo
+    ultima_actualizacion = models.DateTimeField(auto_now=True)
+    datos_insuficientes = models.BooleanField(default=False) # Si falta Na, K, o GCS, se marca True
+
+    def __str__(self):
+        return f"Puntajes de Admisión {self.admision.numero_episodio}"

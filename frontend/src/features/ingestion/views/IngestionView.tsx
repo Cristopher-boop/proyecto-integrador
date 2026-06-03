@@ -1,7 +1,6 @@
 import React from 'react';
 import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, ChevronDown } from 'lucide-react';
 import { useIngestion } from '../hooks/useIngestion';
-import { useAdmissions } from '../../admissions/hooks/useAdmissions';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Dropzone } from '../../../components/common/Dropzone';
@@ -12,11 +11,11 @@ const IngestionView: React.FC = () => {
     filesWithMeta, addFiles, removeFile, updateFileType, clearAll,
     episode, setEpisode,
     isUploading, isProcessing, status, errorMessage, successMessage,
-    uploadFiles, processOCR
+    uploadFiles, processOCR,
+    episodeOptions
   } = useIngestion();
 
   const navigate = useNavigate();
-  const { admisiones } = useAdmissions();
   const adobe = INAAQC_THEME.palette;
   const themeStatus = INAAQC_THEME.status;
 
@@ -45,7 +44,7 @@ const IngestionView: React.FC = () => {
         <div className="w-full md:w-96">
           <label className="block text-xs font-bold uppercase mb-1" style={{ color: adobe.midTint }}>Episodio Destino</label>
           <div className="relative">
-            {/* FIX: Desplegable con episodios reales, nombre de paciente y fondo blanco */}
+            {/* FIX: Desplegable perfecto e independiente */}
             <select 
               className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer bg-white"
               style={{ borderColor: adobe.midTint, color: adobe.base }}
@@ -53,9 +52,9 @@ const IngestionView: React.FC = () => {
               onChange={(e) => setEpisode(e.target.value)}
             >
               <option value="">-- Selecciona un episodio --</option>
-              {admisiones.map((a: any) => (
-                <option key={a.id_admision} value={a.numero_episodio}>
-                  {a.numero_episodio} - {a.paciente_nombre || 'Paciente Desconocido'}
+              {episodeOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>

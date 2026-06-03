@@ -60,7 +60,6 @@ export const useLaboratory = (episodioUrl?: string) => {
         const token = localStorage.getItem('accessToken');
         const headers = { 'Authorization': `Bearer ${token}` };
         
-        // Peticiones en paralelo
         const [obsRes, archRes] = await Promise.all([
           axios.get(`http://127.0.0.1:8000/api/v1/clinical/observaciones/admision/${selectedAdmision}/`, { headers }),
           axios.get(`http://127.0.0.1:8000/api/v1/clinical/archivos/?admision_id=${selectedAdmision}`, { headers }).catch(() => ({ data: [] })) // Fallback si no existe la ruta

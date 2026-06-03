@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import axios from 'axios';
 import { ingestionService } from '../services/ingestionService';
 
 export interface FileWithMeta {
@@ -9,12 +10,41 @@ export interface FileWithMeta {
 export const useIngestion = () => {
   const [filesWithMeta, setFilesWithMeta] = useState<FileWithMeta[]>([]);
   const [fileIds, setFileIds] = useState<string[]>([]);
-  const [episode, setEpisode] = useState('');
+  const [episode, setEpisode] = useState(''); // Estado inicial vacío
   const [isUploading, setIsUploading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState<'idle' | 'uploaded' | 'processed' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // --- NUEVO: ESTADO SOLO PARA EL SELECTOR DE INGESTA ---
+  const [episodeOptions, setEpisodeOptions] = useState<{value: string, label: string}[]>([]);
+
+  // --- NUEVO: EFECTO AISLADO PARA TRAER EPISODIOS + NOMBRES ---
+  useEffect(() => {
+    const fetchEpisodes = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const [pacientesRes, admisionesRes] = await Promise.all([
+          axios.get('http://127.0.0.1:8000/api/v1/patients/', { headers: { 'Authorization': `Bearer ${token}` } }),
+          axios.get('http://127.0.0.1:8000/api/v1/patients/admisiones/', { headers: { 'Authorization': `Bearer ${token}` } })
+        ]);
+
+        const options = admisionesRes.data.map((a: any) => {
+          const px = pacientesRes.data.find((p: any) => p.id_paciente === a.paciente);
+          const nombre = px ? `${px.nombres} ${px.apellidos}` : 'Paciente Desconocido';
+          return {
+            value: a.numero_episodio, // Guardamos el número de episodio para Cloudinary
+            label: `${a.numero_episodio} - ${nombre}` // Lo que el usuario verá
+          };
+        });
+        setEpisodeOptions(options);
+      } catch (error) {
+        console.error("Error al cargar episodios para ingesta", error);
+      }
+    };
+    fetchEpisodes();
+  }, []);
 
   const inferType = (fileName: string): string => {
     const name = fileName.toUpperCase();
@@ -110,6 +140,7 @@ export const useIngestion = () => {
     filesWithMeta, addFiles, removeFile, updateFileType, clearAll,
     episode, setEpisode,
     isUploading, isProcessing, status, errorMessage, successMessage,
-    uploadFiles, processOCR
+    uploadFiles, processOCR,
+    episodeOptions // Exportamos nuestra nueva lista
   };
 };
