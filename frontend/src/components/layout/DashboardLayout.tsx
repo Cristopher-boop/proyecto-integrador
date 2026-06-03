@@ -32,10 +32,10 @@ const DashboardLayout: React.FC = () => {
     { name: 'Pacientes', icon: Users, path: '/dashboard/patients', section: 'Gestion Hospitalaria' },
     { name: 'Admisiones', icon: ClipboardList, path: '/dashboard/admissions', section: 'Gestion Hospitalaria' },
     { name: 'Ingesta de Datos', icon: UploadCloud, path: '/dashboard/upload', section: 'Ingesta de Datos' },
-    { name: 'Laboratorios', icon: UploadCloud, path: '/dashboard/laboratory', section: 'Ingesta de Datos' },
+    { name: 'Laboratorios', icon: FlaskConical, path: '/dashboard/laboratory', section: 'Ingesta de Datos' },
     { name: 'Lab-Simulación', icon: LineChart, path: '/dashboard/trends', section: 'Simulaciones' },
     { name: 'Bio-Simulación', icon: HeartPulse, path: '/dashboard/biosim', section: 'Simulaciones' },
-    { name: 'Prototipo IA', icon: BrainCircuit, path: '/dashboard/prototype', section: 'Prototipo IA' },
+    { name: 'Prototipo IA', icon: BrainCircuit, path: '/dashboard/expert-system', section: 'Prototipo IA' },
     { name: 'UI / UX', icon: Palette, path: '/dashboard/sandbox', section: 'UI / UX' },
   ];
 

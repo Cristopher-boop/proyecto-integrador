@@ -47,11 +47,16 @@ export const useIngestion = () => {
   }, []);
 
   const inferType = (fileName: string): string => {
-    const name = fileName.toUpperCase();
-    if (name.includes('VIT')) return 'VIT';
-    if (name.includes('PUL')) return 'PUL';
-    if (name.includes('GLAS')) return 'GLAS';
-    if (name.includes('LAB')) return 'LAB';
+    const name = fileName.toLowerCase(); 
+    
+    if (name.includes('vit')) return 'VIT';
+    if (name.includes('pul')) return 'PUL';
+    if (name.includes('glas')) return 'GLAS';
+    if (name.includes('lab') || name.includes('cyberlab')) return 'LAB';
+    
+    if (name.includes('prise_en_charge') || name.includes('prise') || name.includes('admission')) return 'NA';
+    if (name.includes('journalier') || name.includes('evolucion') || name.includes('evolution')) return 'NE';
+    
     return 'UNKNOWN';
   };
 

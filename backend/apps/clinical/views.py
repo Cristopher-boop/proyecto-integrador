@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import ArchivoFuenteSerializer, ObservacionBiomedicaSerializer
 from .services import ArchivoFuenteService, ObservacionBiomedicaService
+from .models import Admision, ComorbilidadAdmision, SoporteAdmision, DiagnosticoEpisodio, PuntajesEpisodio
 
 class ArchivoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -128,3 +129,56 @@ class ArchivoProcesarOCRAPIView(APIView):
             print("\n🔥 [ERROR 500] CAÍDA DEL SERVIDOR:")
             traceback.print_exc() 
             return Response({"error": f"Error interno del motor OCR: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class ExpertSystemDataAPIView(APIView):
+    """
+    Endpoint que expone la Base de Hechos completa y los puntajes inferidos
+    de un episodio clínico para alimentar la Super-Vista.
+    """
+    def get(self, request):
+        numero_episodio = request.query_params.get('numero_episodio')
+        if not numero_episodio:
+            return Response({"error": "Falta el parámetro numero_episodio"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Buscamos la admisión por su número de episodio
+            admision = Admision.objects.get(numero_episodio=numero_episodio)
+        except Admision.DoesNotExist:
+            return Response({"error": "Episodio clínico no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 1. Obtener puntajes inferidos matemáticamente
+        puntajes = PuntajesEpisodio.objects.filter(admision_id=admision.id_admision).first()
+        
+        # 2. Obtener Comorbilidades detectadas por el NLP
+        comorbilidades_qs = ComorbilidadAdmision.objects.filter(admision_id=admision.id_admision, presente=True).select_related('comorbilidad')
+        comorbilidades = [
+            {"nombre": c.comorbilidad.nombre, "categoria": c.comorbilidad.categoria}
+            for c in comorbilidades_qs
+        ]
+
+        # 3. Obtener Soportes detectados por el NLP
+        soportes_qs = SoporteAdmision.objects.filter(admision_id=admision.id_admision).select_related('soporte')
+        soportes = [
+            {"nombre": s.soporte.nombre, "categoria": s.soporte.categoria}
+            for s in soportes_qs
+        ]
+
+        # 4. Obtener Diagnósticos extraídos
+        diagnosticos_qs = DiagnosticoEpisodio.objects.filter(admision_id=admision.id_admision).select_related('catalogo_dx')
+        diagnosticos = [
+            {"nombre": d.catalogo_dx.nombre_diagnostico}
+            for d in diagnosticos_qs
+        ]
+
+        # Construimos el payload unificado de respuesta real
+        payload = {
+            "sofa": puntajes.sofa_total if puntajes else 0,
+            "saps3": puntajes.saps3_puntos if puntajes else 0,
+            "mortalidad": puntajes.saps3_mortalidad_estimada if puntajes else 0.0,
+            "datosInsuficientes": puntajes.datos_insuficientes if puntajes else True,
+            "comorbilidades": comorbilidades,
+            "soportes": soportes,
+            "diagnosticos": diagnosticos
+        }
+
+        return Response(payload, status=status.HTTP_200_OK)

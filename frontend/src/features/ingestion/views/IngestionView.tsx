@@ -1,5 +1,5 @@
 import React from 'react';
-import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, ChevronDown } from 'lucide-react';
+import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, ChevronDown, BrainCircuit } from 'lucide-react';
 import { useIngestion } from '../hooks/useIngestion';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
@@ -29,6 +29,8 @@ const IngestionView: React.FC = () => {
     }
   };
 
+  const hasExpertSystemFiles = filesWithMeta.some(f => f.detectedType === 'NA' || f.detectedType === 'NE');
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in-up font-sans">
       
@@ -36,17 +38,16 @@ const IngestionView: React.FC = () => {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
-            <UploadCloud style={{ color: adobe.highlight }} className="w-8 h-8" /> Ingesta Inteligente (OCR)
+            <UploadCloud style={{ color: adobe.highlight }} className="w-8 h-8" /> Ingesta Inteligente (OCR & NLP)
           </h2>
-          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Carga múltiple de archivos y detección por inferencia.</p>
+          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Carga múltiple de archivos, extracción de datos y minería de texto.</p>
         </div>
         
         <div className="w-full md:w-96">
           <label className="block text-xs font-bold uppercase mb-1" style={{ color: adobe.midTint }}>Episodio Destino</label>
           <div className="relative">
-            {/* FIX: Desplegable perfecto e independiente */}
             <select 
-              className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer bg-white"
+              className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer bg-white focus:border-blue-400 transition-colors"
               style={{ borderColor: adobe.midTint, color: adobe.base }}
               value={episode}
               onChange={(e) => setEpisode(e.target.value)}
@@ -85,17 +86,25 @@ const IngestionView: React.FC = () => {
                           value={item.detectedType}
                           onChange={(e) => updateFileType(idx, e.target.value)}
                           className={`text-xs font-bold px-3 py-1 rounded-md border appearance-none cursor-pointer pr-8 transition-colors
-                            ${item.detectedType === 'UNKNOWN' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+                            ${item.detectedType === 'UNKNOWN' ? 'border-amber-300 bg-amber-50 text-amber-700' : 
+                             (item.detectedType === 'NA' || item.detectedType === 'NE') ? 'border-purple-300 bg-purple-50 text-purple-700' :
+                             'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
                           style={{
-                            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23${item.detectedType === 'UNKNOWN' ? 'B45309' : '4D6173'}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234D6173' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
                             backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', backgroundSize: '14px'
                           }}
                         >
                           <option value="UNKNOWN">⚠️ SELECCIONAR TIPO</option>
-                          <option value="LAB">LABORATORIO</option>
-                          <option value="VIT">VITALES</option>
-                          <option value="GLAS">GLASGOW</option>
-                          <option value="PUL">PULMONAR</option>
+                          <optgroup label="Datos Estructurados (OCR)">
+                            <option value="LAB">LABORATORIO</option>
+                            <option value="VIT">VITALES</option>
+                            <option value="GLAS">GLASGOW</option>
+                            <option value="PUL">PULMONAR</option>
+                          </optgroup>
+                          <optgroup label="Textos Libres (NLP)">
+                            <option value="NA">NOTA DE ADMISIÓN</option>
+                            <option value="NE">NOTA DE EVOLUCIÓN</option>
+                          </optgroup>
                         </select>
                         <span className="text-xs font-medium" style={{ color: adobe.midTint }}>{(item.file.size / 1024).toFixed(1)} KB</span>
                       </div>
@@ -137,7 +146,7 @@ const IngestionView: React.FC = () => {
             {status === 'uploaded' && (
               <Button onClick={processOCR} disabled={isProcessing} className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white border-none">
                 {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Cpu className="w-5 h-5" />}
-                Ejecutar Motor OCR
+                Ejecutar Motor Inteligente
               </Button>
             )}
 
@@ -147,13 +156,22 @@ const IngestionView: React.FC = () => {
                 <CheckCircle className="mx-auto mb-2" size={32} style={{ color: themeStatus.success.text }} />
                 <p className="text-sm font-bold" style={{ color: themeStatus.success.text }}>{successMessage}</p>
                 
-                <div className="flex gap-2 mt-4">
-                  <Button onClick={clearAll} variant="outline" className="flex-1 py-2 text-xs">
-                    Subir Más
+                <div className="flex flex-col gap-2 mt-4">
+                  <Button onClick={clearAll} variant="outline" className="w-full py-2 text-xs">
+                    Subir Más Archivos
                   </Button>
-                  <Button onClick={() => navigate(`/dashboard/laboratorios?episodio=${episode}`)} variant="primary" className="flex-1 py-2 text-xs">
-                    Ver Resultados
-                  </Button>
+                  
+                  {/* BOTÓN INTELIGENTE: Navega a Laboratorios o Sistema Experto según lo subido */}
+                  {hasExpertSystemFiles ? (
+                    <Button onClick={() => navigate(`/dashboard/sistema-experto?episodio=${episode}`)} className="w-full py-2 text-xs bg-purple-600 hover:bg-purple-700 text-white border-none">
+                      <BrainCircuit className="w-4 h-4 mr-1" />
+                      Ver Sistema Experto
+                    </Button>
+                  ) : (
+                    <Button onClick={() => navigate(`/dashboard/laboratorios?episodio=${episode}`)} variant="primary" className="w-full py-2 text-xs">
+                      Ver Tabla de Resultados
+                    </Button>
+                  )}
                 </div>
               </div>
             )}

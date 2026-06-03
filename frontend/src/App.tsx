@@ -8,7 +8,7 @@ import Labs from './pages/Laboratory';
 import Patients from './pages/Patients';
 import LabTrends from './pages/LabTrends';
 import BioSimulation from './pages/BioSimulation';
-import NeuralPrototype from './pages/NeuralPrototype';
+import ExpertSystemView from './pages/ExpertSystemView';
 import UISandbox from './pages/UISandbox';
 import { AuditSplitView } from './features/visualizer/views/AuditSplitView';
 import { LaboratoryView } from './features/laboratory/views/LaboratoryView';
@@ -37,7 +37,7 @@ function App() {
 
           <Route path="biosim" element={<BioSimulation />} />
 
-          <Route path="prototype" element={<NeuralPrototype />} />
+          <Route path="expert-system" element={<ExpertSystemView />} />
 
           <Route path="sandbox" element={<UISandbox />} />
 
