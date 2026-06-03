@@ -1,27 +1,33 @@
+import re
+import unicodedata
 import pdfplumber
 import traceback
+from apps.clinical.models import CatComorbilidad, CatSoporte, CatDiagnostico
 
 class MotorNotaEvolucion:
-    """
-    Motor determinista para abrir e ingerir el texto de las Notas de Evolución (Journalier).
-    """
+    
+    @staticmethod
+    def _normalizar_texto(texto):
+        if not texto: return ""
+        texto = unicodedata.normalize('NFKD', texto).encode('ASCII', 'ignore').decode('utf-8')
+        texto = texto.lower()
+        texto = re.sub(r'[^a-z0-9\s]', ' ', texto)
+        texto = re.sub(r'\s+', ' ', texto).strip()
+        return texto
+
     @staticmethod
     def procesar_pdf(ruta_archivo):
-        texto_completo = ""
         try:
+            texto_completo = ""
             with pdfplumber.open(ruta_archivo) as pdf:
                 for pagina in pdf.pages:
                     texto = pagina.extract_text(layout=True)
-                    if texto:
-                        texto_completo += texto + "\n"
+                    if texto: texto_completo += texto + "\n"
 
-            if not texto_completo.strip():
-                raise ValueError("El PDF de la Nota de Evolución parece estar vacío.")
+            if not texto_completo.strip(): raise ValueError("PDF vacío.")
 
-            print(f"\n=== MOTOR NE: EXTRAÍDOS {len(texto_completo)} CARACTERES DEL DOCUMENTO ===")
             return texto_completo
-            
+
         except Exception as e:
-            print("\n🔥 ERROR CRÍTICO EN MOTOR NE (PDFPLUMBER) 🔥")
             traceback.print_exc()
-            raise ValueError(f"El Motor NE falló al leer el PDF: {str(e)}")
+            raise ValueError(f"Fallo al leer PDF de evolución: {str(e)}")

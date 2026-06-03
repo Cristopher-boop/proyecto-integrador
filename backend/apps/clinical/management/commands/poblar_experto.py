@@ -2,112 +2,108 @@ from django.core.management.base import BaseCommand
 from apps.clinical.models import CatComorbilidad, CatSoporte, CatDiagnostico
 
 class Command(BaseCommand):
-    help = 'Puebla los catálogos médicos de Comorbilidades y Soportes basados en los documentos oficiales.'
+    help = 'Puebla los catálogos médicos de Comorbilidades y Soportes con sinónimos en francés.'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write(self.style.WARNING("Iniciando inyección de Base de Hechos..."))
+        self.stdout.write(self.style.WARNING("Iniciando inyección de Base de Hechos con Sinónimos..."))
 
         # =====================================================================
-        # 1. COMORBILIDADES (Extraídas al 100% de 'Lista de Comorbilidades - V5')
-        # Formato: (Nombre, Categoría/Subgrupo, Definición Técnica/Detalle)
+        # 1. COMORBILIDADES (Nombre, Categoría, Definición Técnica, Palabras_Clave_FR)
         # =====================================================================
         comorbilidades = [
-            # --- Severe Comorbidities (Ahora con subgrupos) ---
-            ("NYHA Classes II-III", "Chronic heart failure (CHF)", "Fatigue, dyspnea or angina that appears with ordinary exertion..."),
-            ("NYHA Class IV", "Chronic heart failure (CHF)", "Fatigue, dyspnea or angina at rest..."),
-            ("No dialysis", "Chronic renal failure (CRF)", ""),
-            ("Dialysis", "Chronic renal failure (CRF)", "Chronic renal supportive therapy..."),
-            ("Child A-B Cirrhosis", "Cirrhosis", ""),
-            ("Child C Cirrhosis", "Cirrhosis", ""),
-            ("Severe COPD (GOLD III/IV)", "Severe COPD (GOLD III/IV)", ""), 
-            ("Hepatic failure", "Hepatic failure", ""),                     
-            ("Solid tumor, locoregional", "Solid tumor", ""),
-            ("Solid tumor, metastatic", "Solid tumor", ""),
-            ("Other sites", "Hematological malignancy", ""),
-            ("Lymphoma", "Hematological malignancy", ""),
-            ("Leukemia", "Hematological malignancy", ""),
-            ("Multiple myeloma", "Hematological malignancy", ""),
-            ("Immunosuppression", "Immunosuppression", "Disease advanced enough to suppress resistance to infection..."),
-            ("Use of steroids", "Immunosuppression", ">= 0.3 mg/kg prednisolone for >1 month"),
-            ("AIDS", "AIDS", ""),                                           
-            ("Autologous BMT", "Immunosuppression", ""),                       
-            ("Allogeneic BMT", "Immunosuppression", ""),                       
-            ("Chemotherapy", "Immunosuppression", "In the 6 months prior to admission..."),
-            ("Radiation Therapy", "Immunosuppression", "In the 6 months prior to admission..."),
-            ("Solid organ transplant", "Immunosuppression", ""),      
+            # --- Severe Comorbidities ---
+            ("NYHA Classes II-III", "Chronic heart failure (CHF)", "Fatigue, dyspnea or angina...", "insuffisance cardiaque, nyha ii, nyha iii"),
+            ("NYHA Class IV", "Chronic heart failure (CHF)", "Fatigue, dyspnea or angina at rest...", "insuffisance cardiaque, nyha iv, nyha 4"),
+            ("No dialysis", "Chronic renal failure (CRF)", "", "insuffisance renale chronique, irc, insuffisance renale"),
+            ("Dialysis", "Chronic renal failure (CRF)", "Chronic renal supportive therapy...", "dialyse, hemodialyse, hemofiltration, epuration extrarenale"),
+            ("Child A-B Cirrhosis", "Cirrhosis", "", "cirrhose, cirrhose hepatique, child a, child b"),
+            ("Child C Cirrhosis", "Cirrhosis", "", "cirrhose, cirrhose hepatique, child c"),
+            ("Severe COPD (GOLD III/IV)", "Severe COPD (GOLD III/IV)", "", "bpco, broncho pneumopathie chronique obstructive"),
+            ("Hepatic failure", "Hepatic failure", "", "insuffisance hepatique, defaillance hepatique"),                     
+            ("Solid tumor, locoregional", "Solid tumor", "", "tumeur solide, cancer, neoplasie, tumeur"),
+            ("Solid tumor, metastatic", "Solid tumor", "", "tumeur metastatique, metastases, cancer metastatique"),
+            ("Other sites", "Hematological malignancy", "", "hemopathie maligne, cancer du sang"),
+            ("Lymphoma", "Hematological malignancy", "", "lymphome, hodgkin, non-hodgkin"),
+            ("Leukemia", "Hematological malignancy", "", "leucemie"),
+            ("Multiple myeloma", "Hematological malignancy", "", "myelome multiple, myelome"),
+            ("Immunosuppression", "Immunosuppression", "Disease advanced enough...", "immunosuppression, immunodepression, immunodeprime"),
+            ("Use of steroids", "Immunosuppression", ">= 0.3 mg/kg prednisolone...", "steroides, corticoides, corticotherapie, prednisolone, prednisone"),
+            ("AIDS", "AIDS", "", "sida, vih, vih positif"),                                           
+            ("Autologous BMT", "Immunosuppression", "", "greffe de moelle, autologue, greffe autologue"),                       
+            ("Allogeneic BMT", "Immunosuppression", "", "greffe de moelle, allogenique, greffe allogenique"),                       
+            ("Chemotherapy", "Immunosuppression", "In the 6 months prior...", "chimiotherapie, chimio"),
+            ("Radiation Therapy", "Immunosuppression", "In the 6 months prior...", "radiotherapie, rayons, irradiation"),
+            ("Solid organ transplant", "Immunosuppression", "", "transplantation d'organe, greffe, transplante"),       
 
-            # --- Other Comorbidities (Grupos principales) ---
-            ("Angina", "Cardiovascular", "History of angina, coronary artery disease..."),
-            ("Arterial Hypertension", "Cardiovascular", ""),
-            ("Deep venous thrombosis", "Cardiovascular", ""),
-            ("Peripheral artery disease", "Cardiovascular", ""),
-            ("Previous myocardial infarction", "Cardiovascular", ""),
-            ("Chronic atrial fibrillation", "Cardiovascular", ""),
-            ("Cardiac arrhythmias - Other", "Cardiovascular", ""),
-
-            ("Alcoholism", "Neurological / Psychiatric Diseases", ""),
-            ("Dementia", "Neurological / Psychiatric Diseases", ""),
-            ("Psychoactive substance dependence", "Neurological / Psychiatric Diseases", ""),
-            ("Stroke with sequelae", "Neurological / Psychiatric Diseases", ""),
-            ("Stroke without sequelae", "Neurological / Psychiatric Diseases", ""),
-            ("Psychiatric diseases", "Neurological / Psychiatric Diseases", ""),
-            ("Tobacco consumption (in the last 12 months)", "Neurological / Psychiatric Diseases", ""),
-
-            ("Asthma", "Respiratory", ""),
-            ("History of pneumonia (previous 12 months)", "Respiratory", "Community-acquired or nosocomial..."),
-
-            ("Malnutrition", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Rheumatic diseases", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Hyperthyroidism", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Complicated Diabetes", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Uncomplicated Diabetes", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Morbid obesity", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Dyslipidemias", "Endocrine / Metabolic and Systemic Diseases", ""),
-            ("Hypothyroidism", "Endocrine / Metabolic and Systemic Diseases", ""),
-
-            ("Peptic ulcer disease", "Digestive", "")
+            # --- Other Comorbidities ---
+            ("Angina", "Cardiovascular", "History of angina...", "angine de poitrine, angor"),
+            ("Arterial Hypertension", "Cardiovascular", "", "hypertension arterielle, hta, hypertension"),
+            ("Deep venous thrombosis", "Cardiovascular", "", "thrombose veineuse profonde, tvp, phlebite"),
+            ("Peripheral artery disease", "Cardiovascular", "", "arteriopathie peripherique, aomi, maladie arterielle"),
+            ("Previous myocardial infarction", "Cardiovascular", "", "infarctus du myocarde, idm, crise cardiaque, infarctus"),
+            ("Chronic atrial fibrillation", "Cardiovascular", "", "fibrillation auriculaire, fa, fibrillation atriale"),
+            ("Cardiac arrhythmias - Other", "Cardiovascular", "", "arythmie, trouble du rythme"),
+            ("Alcoholism", "Neurological / Psychiatric Diseases", "", "alcoolisme, ethylisme, ethylique"),
+            ("Dementia", "Neurological / Psychiatric Diseases", "", "demence, alzheimer"),
+            ("Psychoactive substance dependence", "Neurological / Psychiatric Diseases", "", "toxicomanie, drogue, dependance, assuetude"),
+            ("Stroke with sequelae", "Neurological / Psychiatric Diseases", "", "avc avec sequelles, accident vasculaire cerebral"),
+            ("Stroke without sequelae", "Neurological / Psychiatric Diseases", "", "avc sans sequelles, avc ischemique, avc hemorragique"),
+            ("Psychiatric diseases", "Neurological / Psychiatric Diseases", "", "maladie psychiatrique, depression, trouble bipolaire, schizophrenie"),
+            ("Tobacco consumption", "Neurological / Psychiatric Diseases", "", "tabagisme, tabac, fumeur"),
+            ("Asthma", "Respiratory", "", "asthme, asthmatique"),
+            ("History of pneumonia (previous 12 months)", "Respiratory", "Community-acquired...", "pneumonie, bronchopneumonie, infection pulmonaire"),
+            ("Malnutrition", "Endocrine / Metabolic and Systemic Diseases", "", "denutrition, malnutrition"),
+            ("Rheumatic diseases", "Endocrine / Metabolic and Systemic Diseases", "", "polyarthrite, rhumatoide, rhumatisme, maladie rhumatismale"),
+            ("Hyperthyroidism", "Endocrine / Metabolic and Systemic Diseases", "", "hyperthyroidie"),
+            ("Complicated Diabetes", "Endocrine / Metabolic and Systemic Diseases", "", "diabete complique"),
+            ("Uncomplicated Diabetes", "Endocrine / Metabolic and Systemic Diseases", "", "diabete, diabetique, diabete de type"),
+            ("Morbid obesity", "Endocrine / Metabolic and Systemic Diseases", "", "obesite morbide, obesite"),
+            ("Dyslipidemias", "Endocrine / Metabolic and Systemic Diseases", "", "dyslipidemie, hypercholesterolemie"),
+            ("Hypothyroidism", "Endocrine / Metabolic and Systemic Diseases", "", "hypothyroidie"),
+            ("Peptic ulcer disease", "Digestive", "", "ulcere gastrique, ulcere peptique, ulcere")
         ]
 
-        for nombre, categoria, def_tec in comorbilidades:
-            obj, created = CatComorbilidad.objects.get_or_create(
+        for nombre, categoria, def_tec, claves in comorbilidades:
+            obj, created = CatComorbilidad.objects.update_or_create(
                 nombre=nombre, 
-                defaults={'categoria': categoria, 'definicion_tecnica': def_tec}
+                defaults={
+                    'categoria': categoria, 
+                    'definicion_tecnica': def_tec,
+                    'palabras_clave': claves
+                }
             )
-            # Si ya existía pero con una categoría vieja, la actualizamos
-            if not created and obj.categoria != categoria:
-                obj.categoria = categoria
-                obj.definicion_tecnica = def_tec
-                obj.save()
-                self.stdout.write(f"  ~ Comorbilidad actualizada: [{categoria}] {nombre}")
-            elif created:
-                self.stdout.write(f"  + Comorbilidad añadida: [{categoria}] {nombre}")
+            accion = "Añadida" if created else "Actualizada"
+            self.stdout.write(f"  [{accion}] Comorbilidad: {nombre}")
 
         # =====================================================================
-        # 2. SOPORTES Y COMPLICACIONES
+        # 2. SOPORTES Y COMPLICACIONES (Nombre, Categoría, Palabras_Clave_FR)
         # =====================================================================
         soportes = [
-            ("Vasoactive drugs > 1h", "Cardiovascular"),
-            ("Cardiac Arrhythmias", "Cardiovascular"),
-            ("Cardiopulmonary arrest", "Cardiovascular"),
-            ("Mechanical Ventilation", "Respiratory"),
-            ("Non-invasive ventilation", "Respiratory"),
-            ("Acute respiratory failure", "Respiratory"),
-            ("Renal Replacement therapy", "Renal"),
-            ("Acute kidney injury", "Renal"),
-            ("Intracranial mass effect", "Neurological"),
-            ("Gastrointestinal bleeding", "Gastrointestinal"),
-            ("Neutropenia", "Hematological")
+            ("Vasoactive drugs > 1h", "Cardiovascular", "vasopresseurs, inotropes, dopamine, dobutamine, adrenaline, epinephrine, noradrenaline, vasopressine, levophed"),
+            ("Cardiac Arrhythmias", "Cardiovascular", "arythmie, fibrillation, tachycardie, bradycardie"),
+            ("Cardiopulmonary arrest", "Cardiovascular", "arret cardiaque, reanimation, rcp, acr"),
+            ("Mechanical Ventilation", "Respiratory", "intube, ventilee, ventilation mecanique, vc, pc, vmi, tube endotracheal, intubation"),
+            ("Non-invasive ventilation", "Respiratory", "vni, cpap, optiflow, bipap, niv, masque facial"),
+            ("Acute respiratory failure", "Respiratory", "insuffisance respiratoire aigue, ira, detresse respiratoire"),
+            ("Renal Replacement therapy", "Renal", "trr, dialyse, hemodialyse, hemofiltration, cvvh, sled, ihd, prismocal, prismasol, epuration extrarenale"),
+            ("Acute kidney injury", "Renal", "insuffisance renale aigue, ira, aki, lesion renale"),
+            ("Intracranial mass effect", "Neurological", "effet de masse, hypertension intracranienne, htic, derivation ventriculaire, dve"),
+            ("Gastrointestinal bleeding", "Gastrointestinal", "saignement gastro intestinal, hemorragie digestive, melaena, hematemese"),
+            ("Neutropenia", "Hematological", "neutropenie, neutropenique")
         ]
 
-        for nombre, categoria in soportes:
-            obj, created = CatSoporte.objects.get_or_create(
+        for nombre, categoria, claves in soportes:
+            obj, created = CatSoporte.objects.update_or_create(
                 nombre=nombre, 
-                defaults={'categoria': categoria}
+                defaults={
+                    'categoria': categoria,
+                    'palabras_clave': claves
+                }
             )
-            if created:
-                self.stdout.write(f"  + Soporte/Complicación añadida: [{categoria}] {nombre}")
+            accion = "Añadido" if created else "Actualizado"
+            self.stdout.write(f"  [{accion}] Soporte: {nombre}")
 
-        self.stdout.write(self.style.SUCCESS("¡Comorbilidades (con subgrupos) y Soportes inyectados al 100%!"))
+        self.stdout.write(self.style.SUCCESS("\n¡Base de Hechos (100%) inyectada con radares en Francés!"))
 
         # =====================================================================
         # 3. DIAGNÓSTICOS (Extraídos al 100% de 'Diagnoses - V2 (AQ).docx')
@@ -127,6 +123,60 @@ class Command(BaseCommand):
             ]
         }
 
+        TRADUCCIONES_FR = {
+            "Achondroplasia": "achondroplasie",
+            "Acute abdomen": "abdomen aigu",
+            "Appendicitis": "appendicite",
+            "Appendectomy": "appendicectomie",
+            "Asthma": "asthme, crise d'asthme",
+            "Atrial fibrillation": "fibrillation auriculaire, fa",
+            "Bowel obstruction": "occlusion intestinale, obstruction intestinale",
+            "Cardiogenic shock": "choc cardiogenique",
+            "Cholecystectomy": "cholecystectomie",
+            "Cholecystitis": "cholecystite",
+            "Cirrhosis of the liver": "cirrhose du foie, cirrhose",
+            "Coronary artery bypass grafting (CABG)": "pontage coronarien, cabg, pac",
+            "COVID-19": "covid, sars-cov-2, coronavirus",
+            "Craniotomy": "craniotomie",
+            "Deep vein thrombosis (DVT)": "thrombose veineuse profonde, tvp, phlebite",
+            "Dementia": "demence",
+            "Diabetes mellitus type 1": "diabete de type 1, diabete type 1",
+            "Diabetes mellitus type 2": "diabete de type 2, diabete type 2",
+            "Diabetic ketoacidosis (DKA)": "acidocetose diabetique, cetoacidose",
+            "Esophagectomy": "oesophagectomie",
+            "Gastrectomy": "gastrectomie",
+            "Gastrointestinal bleeding": "hemorragie digestive, saignement gastro intestinal",
+            "Hepatic failure": "insuffisance hepatique, defaillance hepatique",
+            "Hypertension": "hypertension arterielle, hta",
+            "Inflammatory bowel disease": "mici, maladie inflammatoire chronique de l'intestin",
+            "Laparoscopy": "laparoscopie, coelioscopie",
+            "Laparothomy": "laparotomie",
+            "Leukemia": "leucemie",
+            "Lymphoma": "lymphome",
+            "Malaria": "paludisme, malaria",
+            "Myocardial infarction": "infarctus du myocarde, idm, crise cardiaque",
+            "Pancreatectomy": "pancreatectomie",
+            "Pancreatitis": "pancreatite",
+            "Pneumonia": "pneumonie, pneumopathie",
+            "Pulmonary embolism": "embolie pulmonaire, ep",
+            "Renal failure": "insuffisance renale",
+            "Acute kidney injury (AKI)": "insuffisance renale aigue, ira",
+            "Chronic kidney disease (CKD)": "insuffisance renale chronique, irc",
+            "Sepsis": "sepsis, septicemie",
+            "Septic shock": "choc septique",
+            "Stroke (cerebrovascular accident)": "avc, accident vasculaire cerebral",
+            "Transient ischemic attack (TIA)": "ait, accident ischemique transitoire",
+            "Tuberculosis": "tuberculose, tb",
+            "Brain tumor removal": "resection de tumeur cerebrale, tumeur cerebrale",
+            "Heart transplant": "transplantation cardiaque, greffe cardiaque",
+            "Kidney transplant": "transplantation renale, greffe renale",
+            "Liver transplant": "transplantation hepatique, greffe hepatique",
+            "Breast biopsy": "biopsie mammaire",
+            "Mastectomy": "mastectomie",
+            "Thyroidectomy": "thyroidectomie",
+            "Pacemaker insertion": "pose de pacemaker, stimulateur cardiaque"
+        }
+
         # Consolidar diagnósticos para evitar duplicados en la BD y guardar sus categorías
         diagnosticos_consolidados = {}
         
@@ -140,23 +190,23 @@ class Command(BaseCommand):
                         diagnosticos_consolidados[dx_limpio].append(categoria)
 
         for i, (nombre_dx, categorias) in enumerate(diagnosticos_consolidados.items()):
-            # Generamos un código temporal secuencial D001, D002... 
-            # (Si necesitas códigos CIE-10 reales después, esto se puede actualizar)
             codigo_gen = f"D{str(i+1).zfill(3)}"
-            
-            # Formatear categorías como un string "Medical, Scheduled surgery"
             categorias_str = ", ".join(categorias)
             
-            # Usaremos el campo nombre_diagnostico para almacenar el nombre y la categoría por ahora 
-            # (o si extiendes el modelo CatDiagnostico con 'categoria', guárdalo ahí)
+            # Buscar traducción en nuestro diccionario
+            # Si no está (ej. es un antibiótico como 'Amoxicillin'), usamos el nombre original en minúscula como fallback
+            claves_frances = TRADUCCIONES_FR.get(nombre_dx, nombre_dx.lower())
             
-            obj, created = CatDiagnostico.objects.get_or_create(
+            obj, created = CatDiagnostico.objects.update_or_create(
                 nombre_diagnostico=nombre_dx,
-                defaults={'codigo': codigo_gen}
+                defaults={
+                    'codigo': codigo_gen,
+                    'palabras_clave': claves_frances
+                }
             )
             if created:
                 self.stdout.write(f"  + Diagnóstico añadido: [{categorias_str}] {nombre_dx}")
             else:
-                self.stdout.write(f"  ~ Diagnóstico existente: {nombre_dx}")
+                self.stdout.write(f"  ~ Diagnóstico actualizado con sinónimos: {nombre_dx}")
 
-        self.stdout.write(self.style.SUCCESS("¡Diagnósticos inyectados al 100%!"))
+        self.stdout.write(self.style.SUCCESS("¡Diagnósticos inyectados con diccionarios multi-idioma al 100%!"))

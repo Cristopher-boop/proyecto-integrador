@@ -9,9 +9,9 @@ from apps.patients.models import Admision
 # ==========================================
 class CatComorbilidad(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
-    # NUEVO CAMPO: Para agrupar (Ej: "Respiratory", "Severe Comorbidities")
     categoria = models.CharField(max_length=100, blank=True, null=True) 
     definicion_tecnica = models.TextField(blank=True, null=True)
+    palabras_clave = models.TextField(blank=True, null=True, help_text="Sinónimos separados por comas")
 
     class Meta:
         verbose_name_plural = "Catálogo de Comorbilidades"
@@ -22,9 +22,10 @@ class CatComorbilidad(models.Model):
 class CatDiagnostico(models.Model):
     codigo = models.CharField(max_length=100, unique=True)
     nombre_diagnostico = models.TextField()
+    palabras_clave = models.TextField(blank=True, null=True, help_text="Sinónimos en francés separados por comas")
 
     def __str__(self):
-        return f"{self.codigo} - {self.nombre_diagnostico}"
+        return f"[{self.codigo}] {self.nombre_diagnostico}"
 
 # ==========================================
 # 3. ARCHIVOS FUENTE (Trazabilidad)
@@ -70,7 +71,7 @@ class ArchivoFuente(models.Model):
     nombre_archivo = models.CharField(max_length=255)
     tipo_documento = models.CharField(max_length=20)
     
-    archivo_fisico = models.FileField(upload_to=ruta_dinamica_inaaqc, null=True, blank=True)
+    archivo_fisico = models.FileField(upload_to=ruta_dinamica_inaaqc, max_length=500, null=True, blank=True)
 
     class Meta:
         verbose_name = "Archivo Fuente"
@@ -144,9 +145,9 @@ class DiagnosticoEpisodio(models.Model):
 # ==========================================
 
 class CatSoporte(models.Model):
-    """Catálogo de Soportes Orgánicos y Dispositivos Invasivos (Ej: VMI, TRR, ECMO)"""
     nombre = models.CharField(max_length=255, unique=True)
-    categoria = models.CharField(max_length=100, blank=True, null=True) # Ej: 'Respiratorio', 'Renal'
+    categoria = models.CharField(max_length=100, blank=True, null=True)
+    palabras_clave = models.TextField(blank=True, null=True, help_text="Sinónimos separados por comas")
     
     def __str__(self):
         return self.nombre

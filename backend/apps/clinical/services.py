@@ -7,6 +7,10 @@ from .ocr_engines.lab_cyberlab_engine import MotorIngestaClinica
 from .ocr_engines.vit_engine import MotorVitales 
 from .ocr_engines.glas_engine import MotorGlasgow
 from .ocr_engines.pul_engine import MotorPulmonar
+from .ocr_engines.na_engine import MotorNotaAdmision
+from .ocr_engines.ne_engine import MotorNotaEvolucion
+from .nlp_service import SistemaExpertoService
+from .inference_service import MotorInferenciaService
 
 class ArchivoFuenteService:
     @staticmethod
@@ -75,6 +79,8 @@ class ArchivoFuenteService:
         
         # 3. PROCESAMIENTO OCR 
         resultados_crudos = []
+        resumen_experto = None
+
         try:
             if tipo == 'VIT':
                 resultados_crudos = MotorVitales.procesar_imagen(ruta_temporal)
@@ -84,6 +90,21 @@ class ArchivoFuenteService:
                 resultados_crudos = MotorPulmonar.procesar_imagen(ruta_temporal)
             elif tipo == 'GLAS':
                 resultados_crudos = MotorGlasgow.procesar_imagen(ruta_temporal)
+
+            # ---> NUEVA RAMA NLP (NA y NE) <---
+            elif tipo == 'NA':
+                from .ocr_engines.na_engine import MotorNotaAdmision
+                from .nlp_service import SistemaExpertoService
+                
+                texto_crudo = MotorNotaAdmision.procesar_pdf(ruta_temporal)
+                resumen_experto = SistemaExpertoService.extraer_y_guardar_hechos(id_admision, id_archivo, texto_crudo, 'NA')
+                
+            elif tipo == 'NE':
+                from .ocr_engines.ne_engine import MotorNotaEvolucion
+                from .nlp_service import SistemaExpertoService
+                
+                texto_crudo = MotorNotaEvolucion.procesar_pdf(ruta_temporal)
+                resumen_experto = SistemaExpertoService.extraer_y_guardar_hechos(id_admision, id_archivo, texto_crudo, 'NE')
             else:
                 raise ValueError("Tipo de documento no soportado para procesamiento OCR automático.")
         finally:
@@ -91,28 +112,38 @@ class ArchivoFuenteService:
             if os.path.exists(ruta_temporal):
                 os.remove(ruta_temporal)
 
-        # 4. GUARDADO EN BASE DE DATOS (FIX: Sin campos fantasma)
-        observaciones_a_crear = []
-        for res in resultados_crudos:
-            obs = ObservacionBiomedica(
-                admision_id=id_admision,
-                archivo_fuente_id=id_archivo,
-                parametro=res.get('parametro'),
-                valor_numerico=res.get('valor_numerico'),
-                unidad_medida=res.get('unidad_medida'),
-                rango_referencia_min=res.get('rango_referencia_min'),
-                rango_referencia_max=res.get('rango_referencia_max'),
-                fecha_hora_registro=res.get('fecha_hora_registro'),
-                es_diario=res.get('es_diario', False)
-            )
-            observaciones_a_crear.append(obs)
+        # 4. GUARDADO EN BASE DE DATOS (Manejo bifurcado)
+        if tipo in ['VIT', 'LAB', 'PUL', 'GLAS']:
+            # Lógica original para datos estructurados
+            observaciones_a_crear = []
+            for res in resultados_crudos:
+                obs = ObservacionBiomedica(
+                    admision_id=id_admision, archivo_fuente_id=id_archivo,
+                    parametro=res.get('parametro'), valor_numerico=res.get('valor_numerico'),
+                    unidad_medida=res.get('unidad_medida'), rango_referencia_min=res.get('rango_referencia_min'),
+                    rango_referencia_max=res.get('rango_referencia_max'), fecha_hora_registro=res.get('fecha_hora_registro'),
+                    es_diario=res.get('es_diario', False)
+                )
+                observaciones_a_crear.append(obs)
+            ObservacionBiomedica.objects.bulk_create(observaciones_a_crear)
+            cantidad_extraida = len(observaciones_a_crear)
             
-        ObservacionBiomedica.objects.bulk_create(observaciones_a_crear)
-        
+        elif tipo in ['NA', 'NE']:
+            if resumen_experto:
+                cantidad_extraida = sum(resumen_experto.values())
+            else:
+                cantidad_extraida = 0
+
+        try:
+            MotorInferenciaService.calcular_sofa(id_admision)
+            MotorInferenciaService.calcular_saps3(id_admision)
+        except Exception as e:
+            print(f"⚠️ Aviso: Los scores no pudieron calcularse completamente: {str(e)}")
+
         archivo.tipo_documento = f"{tipo}_AUDITADO"
         archivo.save()
-        
-        return len(observaciones_a_crear)
+
+        return cantidad_extraida
 
 
 class ObservacionBiomedicaService:
