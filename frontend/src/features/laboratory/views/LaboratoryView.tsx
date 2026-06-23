@@ -5,6 +5,12 @@ import { useLaboratory } from '../hooks/useLaboratory';
 import { INAAQC_THEME } from '../../../config/theme';
 import { AuditSplitView } from '../../visualizer/views/AuditSplitView'; 
 
+const LAB_ORDER = [
+  'bilirubina total', 'calcio', 'creatinina', 'globulos blancos', 
+  'hematocritos', 'inr', 'lactate', 'pco2', 'ph', 'plaquetas', 
+  'po2', 'potasio', 'sodio', 'urea'
+];
+
 type FilterType = 'ALL' | 'VIT' | 'GLAS' | 'LAB' | 'PUL';
 
 export const LaboratoryView: React.FC = () => {
@@ -44,7 +50,40 @@ export const LaboratoryView: React.FC = () => {
     return { rowColor: themeStatus.warning.bg, badgeStyle: { backgroundColor: themeStatus.warning.bg, color: themeStatus.warning.text, borderColor: themeStatus.warning.border }, iconColor: themeStatus.warning.text, icon: <AlertCircle className="w-5 h-5" /> };
   };
 
-  const filteredObservaciones = observaciones.filter(obs => activeFilter === 'ALL' || getTipoCategoria(obs.parametro, obs.tipo_observacion) === activeFilter);
+  const filteredObservaciones = observaciones.filter(obs => 
+    activeFilter === 'ALL' || getTipoCategoria(obs.parametro, obs.tipo_observacion) === activeFilter
+  );
+
+  // Ordenamos primero por nuestra lista personalizada y luego por fecha (más reciente primero)
+  const sortedObservaciones = [...filteredObservaciones].sort((a, b) => {
+    const paramA = a.parametro.toLowerCase();
+    const paramB = b.parametro.toLowerCase();
+
+    let indexA = LAB_ORDER.findIndex(p => paramA.includes(p));
+    let indexB = LAB_ORDER.findIndex(p => paramB.includes(p));
+
+    if (indexA === -1) indexA = 999; // Si no está en la lista, se va al final
+    if (indexB === -1) indexB = 999;
+
+    if (indexA !== indexB) return indexA - indexB; // Orden del arreglo
+    if (indexA === 999 && indexB === 999 && paramA !== paramB) return paramA.localeCompare(paramB); // Alfabético para desconocidos
+
+    // Si es el mismo parámetro, ordenamos por fecha de mayor a menor
+    const dateA = new Date(a.fecha_hora_registro).getTime();
+    const dateB = new Date(b.fecha_hora_registro).getTime();
+    return dateB - dateA;
+  });
+
+  // Agrupamos visualmente los parámetros iguales
+  const groupedObservaciones = sortedObservaciones.reduce((acc, obs) => {
+    const lastGroup = acc[acc.length - 1];
+    if (lastGroup && lastGroup.parametro === obs.parametro) {
+      lastGroup.items.push(obs);
+    } else {
+      acc.push({ parametro: obs.parametro, tipo: getTipoCategoria(obs.parametro, obs.tipo_observacion), items: [obs] });
+    }
+    return acc;
+  }, [] as { parametro: string, tipo: string, items: typeof observaciones }[]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans animate-fade-in-up">
@@ -149,30 +188,48 @@ export const LaboratoryView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="text-sm font-medium text-slate-700">
-                {filteredObservaciones.map((obs) => {
-                  const style = getHeatmapStyle(obs.valor_numerico, obs.rango_referencia_min, obs.rango_referencia_max);
-                  const tipoTag = getTipoCategoria(obs.parametro, obs.tipo_observacion);
-
-                  return (
-                    <tr key={obs.id_observacion} className="border-b transition-colors" style={{ backgroundColor: style.rowColor, borderColor: adobe.lightTint }}>
-                      <td className="p-4 flex justify-center items-center" style={{ color: style.iconColor }}>{style.icon}</td>
-                      <td className="p-4">{new Date(obs.fecha_hora_registro).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
-                      <td className="p-4">
-                        <span className="text-[10px] font-black px-2 py-1 rounded" style={{ backgroundColor: adobe.lightTint, color: adobe.base }}>{tipoTag}</span>
-                      </td>
-                      <td className="p-4 font-bold" style={{ color: adobe.base }}>{obs.parametro}</td>
-                      <td className="p-4 text-right">
-                        <span className="inline-block px-3 py-1 rounded-md border font-mono text-base font-bold" style={style.badgeStyle}>
-                          {parseFloat(obs.valor_numerico).toFixed(2)}
-                        </span>
-                      </td>
-                      <td className="p-4 text-slate-500">{obs.unidad_medida || '-'}</td>
-                      <td className="p-4 text-slate-400 font-mono text-xs">
-                        {obs.rango_referencia_min && obs.rango_referencia_max ? `[${obs.rango_referencia_min} - ${obs.rango_referencia_max}]` : 'N/A'}
+                {groupedObservaciones.map((group, gIdx) => (
+                  <React.Fragment key={`group-${gIdx}`}>
+                    {/* CABECERA DEL GRUPO (Mejora visual) */}
+                    <tr style={{ backgroundColor: adobe.lightTint + '20' }}>
+                      <td colSpan={7} className="px-4 py-2 border-y" style={{ borderColor: adobe.lightTint }}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black px-2 py-1 rounded bg-white border" style={{ color: adobe.base, borderColor: adobe.lightTint }}>
+                            {group.tipo}
+                          </span>
+                          <span className="font-black uppercase tracking-widest text-xs" style={{ color: adobe.base }}>
+                            {group.parametro}
+                          </span>
+                          <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: adobe.lightTint, color: adobe.base }}>
+                            {group.items.length} {group.items.length === 1 ? 'registro' : 'registros'}
+                          </span>
+                        </div>
                       </td>
                     </tr>
-                  );
-                })}
+                    
+                    {/* REGISTROS ORDENADOS POR FECHA (MÁS RECIENTE PRIMERO) */}
+                    {group.items.map((obs) => {
+                      const style = getHeatmapStyle(obs.valor_numerico, obs.rango_referencia_min, obs.rango_referencia_max);
+                      return (
+                        <tr key={obs.id_observacion} className="border-b transition-colors hover:brightness-95" style={{ backgroundColor: style.rowColor, borderColor: adobe.lightTint }}>
+                          <td className="p-3 flex justify-center items-center" style={{ color: style.iconColor }}>{style.icon}</td>
+                          <td className="p-3 text-xs font-semibold">{new Date(obs.fecha_hora_registro).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
+                          <td className="p-3"><span className="text-[10px] font-black opacity-0">{/* Espacio vacío bajo la etiqueta */}</span></td>
+                          <td className="p-3 font-bold opacity-0">{/* Espacio vacío bajo el parámetro */}</td>
+                          <td className="p-3 text-right">
+                            <span className="inline-block px-3 py-1 rounded-md border font-mono text-base font-bold shadow-sm" style={style.badgeStyle}>
+                              {parseFloat(obs.valor_numerico).toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="p-3 text-slate-500 font-bold">{obs.unidad_medida || '-'}</td>
+                          <td className="p-3 text-slate-400 font-mono text-xs">
+                            {obs.rango_referencia_min && obs.rango_referencia_max ? `[${obs.rango_referencia_min} - ${obs.rango_referencia_max}]` : 'N/A'}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </React.Fragment>
+                ))}
               </tbody>
             </table>
           </div>

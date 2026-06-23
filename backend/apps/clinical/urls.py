@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ArchivoUploadView, ObservacionBiomedicaListCreateAPIView, ObservacionBiomedicaDetailAPIView, ArchivoProcesarOCRAPIView, ExpertSystemDataAPIView
+from .views import ArchivoUploadView, ObservacionBiomedicaListCreateAPIView, ObservacionBiomedicaDetailAPIView, ArchivoProcesarOCRAPIView, ExpertSystemDataAPIView, DashboardGlobalStatsAPIView
 
 urlpatterns = [
     path('archivos/', ArchivoUploadView.as_view(), name='archivo-upload'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('observaciones/<uuid:pk>/', ObservacionBiomedicaDetailAPIView.as_view(), name='observacion-detail'),
 
     path('expert-system/data/', ExpertSystemDataAPIView.as_view(), name='expert_system_data'),
+
+    path('dashboard/stats/', DashboardGlobalStatsAPIView.as_view(), name='dashboard_stats'),
 ]
