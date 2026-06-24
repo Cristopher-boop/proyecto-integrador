@@ -12,7 +12,8 @@ import {
   ClipboardList, 
   TestTube,      
   FileText,
-  LineChart 
+  LineChart,
+  PieChart
 } from 'lucide-react';
 
 import logoInaaqc from '../../assets/logo_inaaqc.svg';
@@ -41,6 +42,7 @@ const DashboardLayout: React.FC = () => {
     { name: 'Bio-Simulación', icon: HeartPulse, path: '/dashboard/biosim', section: 'Simulaciones' },
     { name: 'Sistema Experto', icon: BrainCircuit, path: '/dashboard/expert-system', section: 'Prototipo IA' },
     { name: 'UI / UX', icon: Palette, path: '/dashboard/sandbox', section: 'UI / UX' },
+    { name: 'Reportes (BI)', icon: PieChart, path: '/dashboard/reports', section: 'Analítica' },
   ];
 
   const renderSectionHeader = (section: string, index: number) => {
