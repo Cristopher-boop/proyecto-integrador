@@ -29,7 +29,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
   };
 
   return (
-    <div className="p-4 border-t flex justify-between items-center bg-white" style={{ borderColor: '#e2e8f0' }}>
+    <div className="py-2.5 px-4 border-t flex flex-col sm:flex-row justify-between items-center gap-2 bg-white" style={{ borderColor: '#e2e8f0' }}>
       <span className="text-xs font-bold" style={{ color: adobe.darkTint }}>
         Mostrando {totalItems > 0 ? 1 + (currentPage - 1) * itemsPerPage : 0} - {Math.min(currentPage * itemsPerPage, totalItems)} de {totalItems} registros
       </span>

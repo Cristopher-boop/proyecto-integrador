@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play, Pause, FastForward, RotateCcw } from 'lucide-react';
+import { INAAQC_THEME } from '../../../config/theme';
 
 interface TrendsPlaybackBarProps {
   simStatus: 'idle' | 'playing' | 'paused' | 'finished';
@@ -20,38 +21,50 @@ export const TrendsPlaybackBar: React.FC<TrendsPlaybackBarProps> = ({
   onSkipToEnd,
   onReset,
 }) => {
+  const adobe = INAAQC_THEME.palette;
+
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+    <div className="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
       <div className="flex items-center gap-2">
-        <button 
+        <button
           onClick={onPlayPause}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-white transition-all shadow-sm ${
-            simStatus === 'playing' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-indigo-600 hover:bg-indigo-700'
-          }`}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm text-white transition-all shadow-xs active:scale-95"
+          style={{
+            backgroundColor: simStatus === 'playing' ? '#E11D48' : adobe.highlight,
+          }}
         >
-          {simStatus === 'playing' ? <Pause size={18} /> : <Play size={18} />}
-          {simStatus === 'playing' ? 'Pausar' : 'Simular'}
+          {simStatus === 'playing' ? <Pause size={16} /> : <Play size={16} />}
+          {simStatus === 'playing' ? 'Pausar' : 'Iniciar Simulación'}
         </button>
-        <button 
+
+        <button
           onClick={onSkipToEnd}
           disabled={simStatus === 'finished'}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-all disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed border border-slate-200/60"
         >
-          <FastForward size={18} /> Terminar Ya
+          <FastForward size={15} /> Finalizar
         </button>
-        <button 
+
+        <button
           onClick={onReset}
-          className="p-2.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors border border-transparent hover:border-slate-200"
+          className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors border border-slate-200/60"
           title="Reiniciar Simulación"
         >
-          <RotateCcw size={18} />
+          <RotateCcw size={16} />
         </button>
       </div>
-      <div className="text-sm font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
-        Bloques de tiempo: <span className="text-indigo-600">{simStep}</span> / {totalSteps}
+
+      <div className="text-xs font-semibold text-slate-500 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/60 flex items-center justify-between sm:justify-end gap-2">
+        <span>
+          Bloques temporales:{' '}
+          <strong className="text-slate-800 font-bold">{simStep}</strong> / {totalSteps}
+        </span>
         {simStep > 0 && currentTimestamp && (
-          <span className="ml-2 text-slate-500 font-mono">
-            ({new Date(currentTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})
+          <span
+            className="font-mono font-bold px-2 py-0.5 rounded-md text-[11px]"
+            style={{ backgroundColor: `${adobe.lightTint}30`, color: adobe.base }}
+          >
+            {new Date(currentTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         )}
       </div>

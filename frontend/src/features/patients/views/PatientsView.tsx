@@ -8,6 +8,7 @@ import { Input } from '../../../components/common/Input';
 import { Pagination } from '../../../components/common/Pagination';
 import { Badge } from '../../../components/common/Badge';
 import { DataTable } from '../../../components/common/DataTable';
+import { PageHeader } from '../../../components/common/PageHeader';
 import type { Column } from '../../../components/common/DataTable';
 
 const PatientsView: React.FC = () => {
@@ -19,8 +20,8 @@ const PatientsView: React.FC = () => {
   const [editingPatient, setEditingPatient] = useState<any | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null); // Estado para el menú de 3 puntos
+  const itemsPerPage = 10;
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   const handleSort = (key: any) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -56,26 +57,50 @@ const PatientsView: React.FC = () => {
       header: 'Paciente', 
       accessorKey: 'nombres', 
       sortable: true,
-      width: 'w-[320px]',
-      render: (row) => <div className="text-sm font-semibold text-slate-800 truncate">{row.nombres} {row.apellidos}</div>
+      width: 'w-[280px]',
+      render: (row) => (
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-700 shrink-0 border border-slate-200">
+            {row.nombres?.[0]}{row.apellidos?.[0]}
+          </div>
+          <div className="min-w-0">
+            <span className="text-sm font-bold text-slate-800 block truncate">{row.nombres} {row.apellidos}</span>
+          </div>
+        </div>
+      )
     },
     { 
       header: 'Dossier Erasme', 
       accessorKey: 'dossier_erasme', 
       sortable: true,
-      render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_erasme}</span>
+      render: (row) => (
+        <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60">
+          {row.dossier_erasme}
+        </span>
+      )
     },
     { 
       header: 'Dossier MPI', 
       accessorKey: 'dossier_mpi', 
       sortable: true,
-      render: (row) => <span className="text-sm font-medium text-slate-600">{row.dossier_mpi || '-'}</span>
+      render: (row) => <span className="text-xs font-mono text-slate-500">{row.dossier_mpi || '-'}</span>
     },
     { 
-      header: 'Nacimiento', 
+      header: 'F. Nacimiento', 
       accessorKey: 'fecha_nacimiento', 
       sortable: true,
-      render: (row) => <span className="text-sm font-medium text-slate-600">{row.fecha_nacimiento}</span>
+      render: (row) => <span className="text-xs font-medium text-slate-600">{row.fecha_nacimiento || '-'}</span>
+    },
+    { 
+      header: 'Sexo', 
+      accessorKey: 'sexo', 
+      sortable: true,
+      align: 'center',
+      render: (row) => (
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+          {row.sexo === 'M' ? 'Masc' : row.sexo === 'F' ? 'Fem' : row.sexo || '-'}
+        </span>
+      )
     },
     { 
       header: 'Estado', 
@@ -89,8 +114,8 @@ const PatientsView: React.FC = () => {
       align: 'right',
       render: (row) => (
         <div className="relative inline-block text-left">
-          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_paciente ? null : row.id_paciente)} className="p-1.5 rounded transition-colors hover:bg-slate-200 text-slate-500">
-            <MoreVertical className="w-5 h-5" />
+          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_paciente ? null : row.id_paciente)} className="p-1 rounded transition-colors hover:bg-slate-200 text-slate-500">
+            <MoreVertical className="w-4 h-4" />
           </button>
           {openDropdownId === row.id_paciente && (
             <>
@@ -119,40 +144,50 @@ const PatientsView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in-up font-sans">
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
-            <Users style={{ color: adobe.highlight }} className="w-8 h-8" /> Directorio de Pacientes
-          </h2>
-          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Gestiona perfiles clínicos de la institución.</p>
-        </div>
-        
-        <Button variant="primary" icon={<Plus />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>
+    <div className="space-y-4 font-sans animate-fade-in-up">
+      {/* 1. Header Compacto Estandarizado */}
+      <PageHeader
+        title="Directorio de Pacientes"
+        subtitle={`Padrón clínico y demográfico institucional (${pacientes.length} registrados).`}
+        icon={<Users className="w-6 h-6 sm:w-7 sm:h-7" />}
+      >
+        <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>
           Nuevo Paciente
         </Button>
-      </div>
+      </PageHeader>
 
-      {showForm && <PatientForm initialData={editingPatient} onSubmit={handleSavePatient} onCancel={handleCloseForm} />}
+      {showForm && (
+        <div className="overflow-y-auto custom-scrollbar">
+          <PatientForm initialData={editingPatient} onSubmit={handleSavePatient} onCancel={handleCloseForm} />
+        </div>
+      )}
 
+      {/* 2. Tarjeta de Tabla sin espacios blancos artificiales */}
       {!showForm && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
-          <div className="p-4 border-b bg-white border-slate-100 flex justify-between items-center">
-            <div className="w-80"><Input icon={<Search className="w-4 h-4" />} placeholder="Buscar paciente o dossier..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} /></div>
+        <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
+          <div className="px-5 py-3 border-b bg-white border-slate-100 flex justify-between items-center">
+            <div className="w-72 sm:w-80">
+              <Input icon={<Search className="w-4 h-4" />} placeholder="Buscar paciente o dossier..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
+            </div>
+            <span className="text-xs font-semibold text-slate-400">
+              Página {currentPage} de {totalPages || 1}
+            </span>
           </div>
 
-          {isLoading ? (
-            <div className="p-10 flex justify-center"><Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} /></div>
-          ) : error ? (
-            <div className="p-6 text-red-500 text-center font-bold">{error}</div>
-          ) : processedData.length === 0 ? (
-            <div className="p-10 text-center" style={{ color: adobe.midTint }}>No hay resultados.</div>
-          ) : (
-            <>
+          <div className="overflow-x-auto">
+            {isLoading ? (
+              <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} /></div>
+            ) : error ? (
+              <div className="p-6 text-red-500 text-center font-bold">{error}</div>
+            ) : processedData.length === 0 ? (
+              <div className="p-10 text-center text-slate-400 font-medium">No hay pacientes registrados.</div>
+            ) : (
               <DataTable data={currentData} columns={columns} onSort={handleSort} sortConfig={sortConfig} />
-              
-              {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={processedData.length} itemsPerPage={itemsPerPage} onPageChange={setCurrentPage} />}
-            </>
+            )}
+          </div>
+
+          {!isLoading && !error && processedData.length > 0 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={processedData.length} itemsPerPage={itemsPerPage} onPageChange={setCurrentPage} />
           )}
         </div>
       )}

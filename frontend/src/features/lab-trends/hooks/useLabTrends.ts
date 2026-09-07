@@ -2,7 +2,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { trendsApi, type EpisodeTrendOption } from '../api/trendsApi';
 import type { ObservacionBiomedica } from '../../../types';
 
-export const COLOR_PALETTE = ['#4f46e5', '#e11d48', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899'];
+// Paleta armónica de gradaciones basada en la identidad INAAQC (Teal & Slate)
+export const COLOR_PALETTE = [
+  '#00A896', // INAAQC Teal Highlight
+  '#0284C7', // Cyan Clínico
+  '#2B445A', // INAAQC Deep Slate
+  '#14B8A6', // Menta / Light Teal
+  '#536878', // INAAQC Mid Tint
+  '#0891B2', // Cyan Profundo
+  '#0D9488', // Deep Teal
+  '#8FA4B2', // INAAQC Light Slate
+];
 
 export interface VisibleChartItem {
   parametro: string;

@@ -4,6 +4,7 @@ import type { ExpertoData, Paciente, Admision } from '../../../types';
 export interface EpisodeOption {
   value: string;
   label: string;
+  secondary?: string;
 }
 
 export const expertApi = {
@@ -21,7 +22,8 @@ export const expertApi = {
       const nombre = px ? `${px.nombres} ${px.apellidos}` : 'Paciente Desconocido';
       return {
         value: adm.numero_episodio,
-        label: `${adm.numero_episodio} - ${nombre}`
+        label: adm.numero_episodio,
+        secondary: nombre,
       };
     });
   },

@@ -26,18 +26,17 @@ export function DataTable<T>({ data, columns, onSort, sortConfig }: DataTablePro
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-slate-50 border-b" style={{ borderColor: '#e2e8f0' }}>
+          <tr className="bg-slate-50/80 border-b" style={{ borderColor: '#e2e8f0' }}>
             {columns.map((col, index) => (
               <th 
                 key={index}
-                // Aplicamos el 'width' que le pasemos por configuración
-                className={`p-4 text-xs font-bold uppercase tracking-wider ${col.sortable ? 'cursor-pointer group' : ''} text-${col.align || 'left'} ${col.width || ''}`} 
+                className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider ${col.sortable ? 'cursor-pointer group select-none' : ''} text-${col.align || 'left'} ${col.width || ''}`} 
                 style={{ color: adobe.darkTint }}
                 onClick={() => col.sortable && col.accessorKey && onSort && onSort(col.accessorKey)}
               >
                 {col.header}
                 {col.sortable && (
-                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-blue-500' : 'text-slate-300 group-hover:text-slate-500'}`} />
+                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-teal-600' : 'text-slate-300 group-hover:text-slate-500'}`} />
                 )}
               </th>
             ))}
@@ -45,9 +44,9 @@ export function DataTable<T>({ data, columns, onSort, sortConfig }: DataTablePro
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b transition-colors hover:bg-slate-50" style={{ borderColor: '#f1f5f9' }}>
+            <tr key={rowIndex} className="border-b transition-colors hover:bg-slate-50/80" style={{ borderColor: '#f1f5f9' }}>
               {columns.map((col, colIndex) => (
-                <td key={colIndex} className={`p-4 text-${col.align || 'left'}`}>
+                <td key={colIndex} className={`py-2.5 px-4 text-${col.align || 'left'}`}>
                   {col.render ? col.render(row) : (row[col.accessorKey as keyof T] as ReactNode)}
                 </td>
               ))}

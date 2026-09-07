@@ -14,37 +14,48 @@ export const ReportKpis: React.FC<ReportKpisProps> = ({
   sofaPromedio,
 }) => {
   const adobe = INAAQC_THEME.palette;
-  const statusColors = INAAQC_THEME.status;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-        <div className="p-3 rounded-lg" style={{ backgroundColor: adobe.lightTint + '30' }}>
-          <BrainCircuit className="w-6 h-6" style={{ color: adobe.base }} />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-3.5 hover:shadow-sm transition-all">
+        <div className="p-2.5 rounded-xl bg-teal-50 text-teal-600 shrink-0">
+          <BrainCircuit className="w-5 h-5" />
         </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: adobe.midTint }}>Precisión Algorítmica (IA)</p>
-          <p className="text-2xl font-black" style={{ color: adobe.base }}>{precisionIa}%</p>
-        </div>
-      </div>
-
-      <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-        <div className="p-3 rounded-lg" style={{ backgroundColor: statusColors.alert.bg }}>
-          <ShieldAlert className="w-6 h-6" style={{ color: statusColors.alert.text }} />
-        </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: adobe.midTint }}>Mortalidad Est. Promedio</p>
-          <p className="text-2xl font-black" style={{ color: adobe.base }}>{mortalidadPromedio}%</p>
+        <div className="min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate">
+            Precisión Algorítmica (IA)
+          </p>
+          <p className="text-xl sm:text-2xl font-black tracking-tight mt-0.5" style={{ color: adobe.base }}>
+            {precisionIa}%
+          </p>
         </div>
       </div>
 
-      <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-        <div className="p-3 rounded-lg" style={{ backgroundColor: statusColors.success.bg }}>
-          <Activity className="w-6 h-6" style={{ color: statusColors.success.text }} />
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-3.5 hover:shadow-sm transition-all">
+        <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600 shrink-0">
+          <ShieldAlert className="w-5 h-5" />
         </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: adobe.midTint }}>SOFA Promedio Global</p>
-          <p className="text-2xl font-black" style={{ color: adobe.base }}>{sofaPromedio} pts</p>
+        <div className="min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate">
+            Mortalidad Est. Promedio
+          </p>
+          <p className="text-xl sm:text-2xl font-black tracking-tight mt-0.5" style={{ color: adobe.base }}>
+            {mortalidadPromedio}%
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-3.5 hover:shadow-sm transition-all">
+        <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700 shrink-0">
+          <Activity className="w-5 h-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate">
+            SOFA Promedio Global
+          </p>
+          <p className="text-xl sm:text-2xl font-black tracking-tight mt-0.5" style={{ color: adobe.base }}>
+            {sofaPromedio} <span className="text-xs font-semibold text-slate-400">pts</span>
+          </p>
         </div>
       </div>
     </div>

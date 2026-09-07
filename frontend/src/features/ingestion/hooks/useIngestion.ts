@@ -34,8 +34,9 @@ export const useIngestion = () => {
           const px = pacientesRes.data.find((p: any) => p.id_paciente === a.paciente);
           const nombre = px ? `${px.nombres} ${px.apellidos}` : 'Paciente Desconocido';
           return {
-            value: a.numero_episodio, // Guardamos el número de episodio para Cloudinary
-            label: `${a.numero_episodio} - ${nombre}` // Lo que el usuario verá
+            value: a.numero_episodio,
+            label: a.numero_episodio,
+            secondary: nombre,
           };
         });
         setEpisodeOptions(options);

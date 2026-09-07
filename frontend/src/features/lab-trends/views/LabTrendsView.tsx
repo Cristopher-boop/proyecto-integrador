@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LineChart as ChartIcon, Loader2, AlertCircle, FileText } from 'lucide-react';
 import { useLabTrends } from '../hooks/useLabTrends';
 import { TrendsPlaybackBar } from '../components/TrendsPlaybackBar';
 import { TrendsMasterChart } from '../components/TrendsMasterChart';
 import { TrendsIndividualCards } from '../components/TrendsIndividualCards';
+import { SearchableSelect } from '../../../components/common/SearchableSelect';
+import { PageHeader } from '../../../components/common/PageHeader';
+import { INAAQC_THEME } from '../../../config/theme';
 
 export const LabTrendsView: React.FC = () => {
+  const adobe = INAAQC_THEME.palette;
   const {
     admisiones,
     selectedAdmision,
@@ -27,37 +31,40 @@ export const LabTrendsView: React.FC = () => {
     ? new Date(uniqueTimes[simStep - 1]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : '--:--';
 
+  const episodeOptions = useMemo(
+    () =>
+      admisiones.map((a) => ({
+        value: a.id_admision,
+        label: a.numero_episodio,
+        secondary: a.paciente_nombre,
+      })),
+    [admisiones]
+  );
+
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-20 font-sans">
-      {/* HEADER Y SELECTOR */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <ChartIcon className="text-indigo-600 w-8 h-8" />
-            Simulación de Tendencias LAB
-          </h2>
-          <p className="text-slate-500 font-medium">Análisis dinámico exclusivo para laboratorios de sangre.</p>
-        </div>
-        
-        <div className="w-full md:w-96">
-          <select 
-            className="w-full bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold p-3 rounded-xl focus:border-indigo-600 outline-none transition-all"
+    <div className="space-y-4 font-sans animate-fade-in-up">
+      {/* 1. Header Compacto Estandarizado */}
+      <PageHeader
+        title="Simulación de Tendencias LAB"
+        subtitle="Análisis dinámico temporal exclusivo para bioquímica y analítica sanguínea."
+        icon={<ChartIcon className="w-6 h-6 sm:w-7 sm:h-7" />}
+      >
+        <div className="w-full sm:w-80">
+          <SearchableSelect
+            options={episodeOptions}
             value={selectedAdmision}
-            onChange={(e) => setSelectedAdmision(e.target.value)}
-          >
-            <option value="">Seleccionar Episodio Clínico...</option>
-            {admisiones.map(a => (
-              <option key={a.id_admision} value={a.id_admision}>
-                {a.numero_episodio} - {a.paciente_nombre}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedAdmision}
+            placeholder="-- Seleccionar episodio clínico --"
+            searchPlaceholder="Buscar por episodio o paciente..."
+            icon={<ChartIcon className="w-4 h-4" />}
+          />
         </div>
-      </div>
+      </PageHeader>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-900 p-4 rounded text-red-900 font-medium flex items-center gap-2">
-          <AlertCircle className="w-5 h-5" /> {error}
+        <div className="bg-red-50 border border-red-200 p-3.5 rounded-xl text-red-700 font-semibold text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
         </div>
       )}
 
@@ -76,22 +83,31 @@ export const LabTrendsView: React.FC = () => {
 
       {/* ÁREA DE GRÁFICAS */}
       {!selectedAdmision ? (
-        <div className="bg-white p-16 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-slate-400 space-y-4">
-          <FileText className="w-16 h-16 opacity-20" />
-          <p className="text-lg font-medium">Selecciona un episodio para visualizar las curvas de laboratorio.</p>
+        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center text-center space-y-3">
+          <FileText className="w-12 h-12 text-slate-300" />
+          <p className="text-sm font-bold text-slate-700">
+            Selecciona un episodio para visualizar las curvas de laboratorio.
+          </p>
+          <p className="text-xs text-slate-400 max-w-md">
+            El motor sincronizará los paneles analíticos en tiempo cronológico sin alterar los registros.
+          </p>
         </div>
       ) : isLoading ? (
-        <div className="bg-white p-16 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-slate-900 space-y-4">
-          <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
-          <p className="font-bold tracking-widest uppercase text-sm">Cargando datos...</p>
+        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.highlight }} />
+          <p className="font-bold tracking-widest uppercase text-xs text-slate-500">
+            Sincronizando series temporales...
+          </p>
         </div>
       ) : observaciones.length === 0 ? (
-        <div className="bg-white p-16 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-slate-500 space-y-2">
-          <AlertCircle className="w-12 h-12 text-slate-300" />
-          <p className="text-lg font-medium text-slate-600">No hay estudios de sangre (LAB) registrados.</p>
+        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center text-center space-y-2">
+          <AlertCircle className="w-10 h-10 text-slate-300" />
+          <p className="text-sm font-bold text-slate-600">
+            No hay estudios de laboratorio (LAB) registrados en este episodio.
+          </p>
         </div>
       ) : (
-        <>
+        <div className="space-y-5">
           <TrendsMasterChart
             data={masterData}
             visibleCharts={visibleCharts}
@@ -99,10 +115,11 @@ export const LabTrendsView: React.FC = () => {
             currentTimeStr={currentTimeStr}
           />
           <TrendsIndividualCards charts={visibleCharts} />
-        </>
+        </div>
       )}
     </div>
   );
 };
 
 export default LabTrendsView;
+

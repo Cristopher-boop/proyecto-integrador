@@ -1,9 +1,11 @@
 import React from 'react';
-import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, ChevronDown, BrainCircuit } from 'lucide-react';
+import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, BrainCircuit } from 'lucide-react';
 import { useIngestion } from '../hooks/useIngestion';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Dropzone } from '../../../components/common/Dropzone';
+import { SearchableSelect } from '../../../components/common/SearchableSelect';
+import { PageHeader } from '../../../components/common/PageHeader';
 import { useNavigate } from 'react-router-dom';
 
 const IngestionView: React.FC = () => {
@@ -32,37 +34,24 @@ const IngestionView: React.FC = () => {
   const hasExpertSystemFiles = filesWithMeta.some(f => f.detectedType === 'NA' || f.detectedType === 'NE');
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in-up font-sans">
-      
-      {/* HEADER UNIFICADO */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: adobe.base }}>
-            <UploadCloud style={{ color: adobe.highlight }} className="w-8 h-8" /> Ingesta Inteligente (OCR & NLP)
-          </h2>
-          <p className="mt-1 font-medium text-sm" style={{ color: adobe.darkTint }}>Carga múltiple de archivos, extracción de datos y minería de texto.</p>
+    <div className="space-y-4 animate-fade-in-up font-sans">
+      {/* 1. Header Compacto Estandarizado */}
+      <PageHeader
+        title="Ingesta Inteligente (OCR & NLP)"
+        subtitle="Carga múltiple de archivos, extracción de datos y minería de texto."
+        icon={<UploadCloud className="w-6 h-6 sm:w-7 sm:h-7" />}
+      >
+        <div className="w-full sm:w-80">
+          <SearchableSelect
+            options={episodeOptions}
+            value={episode}
+            onChange={setEpisode}
+            placeholder="-- Selecciona un episodio destino --"
+            searchPlaceholder="Buscar por episodio o paciente..."
+            icon={<UploadCloud className="w-4 h-4" />}
+          />
         </div>
-        
-        <div className="w-full md:w-96">
-          <label className="block text-xs font-bold uppercase mb-1" style={{ color: adobe.midTint }}>Episodio Destino</label>
-          <div className="relative">
-            <select 
-              className="w-full appearance-none border-2 text-sm font-bold p-3 pl-4 pr-10 rounded-lg outline-none cursor-pointer bg-white focus:border-blue-400 transition-colors"
-              style={{ borderColor: adobe.midTint, color: adobe.base }}
-              value={episode}
-              onChange={(e) => setEpisode(e.target.value)}
-            >
-              <option value="">-- Selecciona un episodio --</option>
-              {episodeOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none" style={{ color: adobe.base }} />
-          </div>
-        </div>
-      </div>
+      </PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
