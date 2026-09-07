@@ -24,9 +24,9 @@ export const useVisualizer = (idArchivo: string, datosIniciales?: any[]) => {
     fetchDatos();
   }, [fetchDatos]);
 
-  const handleParamClick = (parametro: string, coordenadas: any) => {
+  const handleParamClick = (parametro: string, coordenadas?: any) => {
     setActiveParam(parametro);
-    setZoomCoords(coordenadas); // Le diremos al visor dónde hacer zoom
+    setZoomCoords(coordenadas || null); // Le diremos al visor dónde hacer zoom
   };
 
   const handleUpdateValue = async (idObservacion: string, nuevoValor: string) => {

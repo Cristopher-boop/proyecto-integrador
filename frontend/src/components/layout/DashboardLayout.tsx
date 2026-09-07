@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { HeartPulse, BrainCircuit, Palette, FlaskConical } from 'lucide-react';
+import { HeartPulse, BrainCircuit, FlaskConical } from 'lucide-react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
   UploadCloud, 
-  Settings, 
   LogOut, 
   Menu,
   X,
   ClipboardList, 
-  TestTube,      
-  FileText,
   LineChart,
   PieChart
 } from 'lucide-react';
 
 import logoInaaqc from '../../assets/logo_inaaqc.svg';
 import { INAAQC_THEME } from '../../config/theme';
+import { tokenStorage } from '../../features/auth/utils/tokenStorage';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -27,8 +25,7 @@ const DashboardLayout: React.FC = () => {
   const adobe = INAAQC_THEME.palette;
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    tokenStorage.clearTokens();
     navigate('/login');
   };
 

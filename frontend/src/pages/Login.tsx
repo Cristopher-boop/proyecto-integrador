@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { User, Lock, ArrowRight, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Importante para redirigir
-import axios from 'axios'; // Importante para hacer la petición al backend
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { authService } from '../features/auth/api/authService';
 
 import logoInaaqc from '../assets/logo_inaaqc.svg';
 import loginBg from '../assets/fondo_inaaqc.jpg';
@@ -10,7 +11,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(''); // Estado para mostrar errores
+  const [errorMsg, setErrorMsg] = useState('');
   
   const navigate = useNavigate();
 
@@ -20,25 +21,16 @@ const Login: React.FC = () => {
     setErrorMsg('');
     
     try {
-      // 1. El Disparo Real a Django
-      const response = await axios.post('http://127.0.0.1:8000/api/token/', {
-        username: username,
-        password: password
+      await authService.login({
+        username,
+        password
       });
 
-      // 2. Si Django responde 200 OK, sacamos los tokens de la respuesta
-      const { access, refresh } = response.data;
-
-      // 3. Guardamos los tokens en la caja fuerte del navegador (Local Storage)
-      localStorage.setItem('accessToken', access);
-      localStorage.setItem('refreshToken', refresh);
-
-      // 4. ¡Redirigimos al Dashboard!
+      // Redirigimos al Dashboard tras autenticación exitosa
       navigate('/dashboard'); 
 
-    } catch (error: any) {
-      // Si el servidor responde con error 401 (No autorizado) o está caído
-      if (error.response && error.response.status === 401) {
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
         setErrorMsg('Usuario o contraseña incorrectos.');
       } else {
         setErrorMsg('Error al conectar con el servidor.');

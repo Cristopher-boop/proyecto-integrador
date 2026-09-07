@@ -11,8 +11,6 @@ import BioSimulation from './pages/BioSimulation';
 import ExpertSystemView from './pages/ExpertSystemView';
 import UISandbox from './pages/UISandbox';
 import ReportsView from './pages/ReportsView';
-import { AuditSplitView } from './features/visualizer/views/AuditSplitView';
-import { LaboratoryView } from './features/laboratory/views/LaboratoryView';
 
 function App() {
   return (
@@ -41,18 +39,6 @@ function App() {
           <Route path="expert-system" element={<ExpertSystemView />} />
 
           <Route path="sandbox" element={<UISandbox />} />
-
-          <Route path="pruebas/auditoria" element={
-            <AuditSplitView 
-              onClose={() => alert('Cerrando')} 
-              idArchivo="123" 
-              nombreArchivo="LAB_ANALISIS_001.pdf" 
-              tipo="PDF" 
-              documentoUrl="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" 
-            />
-          } />
-
-          <Route path="pruebas/laboratory" element={< LaboratoryView />} />
 
           <Route path="laboratory" element={<Labs />} />
           

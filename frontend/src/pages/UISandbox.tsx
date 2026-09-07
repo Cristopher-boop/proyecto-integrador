@@ -13,9 +13,6 @@ const mockSodioData = [
   { time: '08:00', valor: 135 }, { time: '10:00', valor: 142 }, { time: '12:00', valor: 138 },
   { time: '14:00', valor: 145 }, { time: '16:00', valor: 140 },
 ];
-const mockGlucosaData = [
-  { time: '08:00', valor: 90 }, { time: '10:00', valor: 110 }, { time: '12:00', valor: 105 },
-];
 
 const UISandbox: React.FC = () => {
   const adobe = INAAQC_THEME.palette;
@@ -101,7 +98,7 @@ const UISandbox: React.FC = () => {
               <UploadCloud className="w-6 h-6" /> Vista de Ingesta Inteligente
             </h2>
             <div className="space-y-4">
-              <Dropzone title="Arrastra el PDF aquí" subtitle="Formatos soportados: PDF, JPG, PNG (Max 5MB)" />
+              <Dropzone title="Arrastra el PDF aquí" subtitle="Formatos soportados: PDF, JPG, PNG (Max 5MB)" onFilesDropped={() => {}} />
             </div>
           </div>
 

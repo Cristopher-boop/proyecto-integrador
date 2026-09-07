@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { type InputHTMLAttributes } from 'react';
 import { INAAQC_THEME } from '../../config/theme';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

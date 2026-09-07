@@ -16,7 +16,7 @@ interface ExtractedDataPaneProps {
   datos: Observacion[];
   isLoading: boolean;
   activeParam: string | null;
-  onParamClick: (paramName: string) => void;
+  onParamClick: (paramName: string, coordenadas?: any) => void;
   onUpdateValue: (id: string, nuevoValor: string) => void;
 }
 
@@ -121,7 +121,7 @@ export const ExtractedDataPane: React.FC<ExtractedDataPaneProps> = ({ datos, isL
                 return (
                   <div 
                     key={obs.id_observacion}
-                    onClick={() => !isEditing && onParamClick(obs.parametro)}
+                    onClick={() => !isEditing && onParamClick(obs.parametro, (obs as any).coordenadas_zoom)}
                     className={`p-3 flex items-center justify-between transition-colors cursor-pointer ${isActive ? 'bg-blue-50' : 'hover:bg-slate-50'}`}
                   >
                     <div>

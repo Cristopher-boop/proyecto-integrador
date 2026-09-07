@@ -120,7 +120,7 @@ const DashboardHome: React.FC = () => {
                     cx="50%" cy="50%" innerRadius={70} outerRadius={100}
                     paddingAngle={5} dataKey="value" stroke="none"
                   >
-                    {stats.docTypesData.map((entry, index) => (
+                    {stats.docTypesData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                     ))}
                   </Pie>
@@ -148,7 +148,7 @@ const DashboardHome: React.FC = () => {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: adobe.midTint, fontWeight: 600 }} />
                   <Tooltip cursor={{ fill: adobe.lightTint + '20' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                   <Bar dataKey="Pacientes" radius={[4, 4, 0, 0]}>
-                    {stats.severityData.map((entry, index) => (
+                    {stats.severityData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={index === 2 ? statusColors.warning.text : index === 1 ? adobe.highlight : adobe.base} />
                     ))}
                   </Bar>
