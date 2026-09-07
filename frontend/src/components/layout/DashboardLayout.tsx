@@ -41,7 +41,6 @@ const DashboardLayout: React.FC = () => {
     { name: 'Lab-Simulación', icon: LineChart, path: '/dashboard/trends', section: 'Simulaciones' },
     { name: 'Bio-Simulación', icon: HeartPulse, path: '/dashboard/biosim', section: 'Simulaciones' },
     { name: 'Sistema Experto', icon: BrainCircuit, path: '/dashboard/expert-system', section: 'Prototipo IA' },
-    { name: 'UI / UX', icon: Palette, path: '/dashboard/sandbox', section: 'UI / UX' },
     { name: 'Reportes (BI)', icon: PieChart, path: '/dashboard/reports', section: 'Analítica' },
   ];
 

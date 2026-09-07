@@ -6,7 +6,7 @@ from django.conf import settings
 ruta_tesseract = getattr(
     settings, 
     'TESSERACT_PATH', 
-    r'C:\Users\crist\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+    r'C:\Users\hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 )
 
 pytesseract.pytesseract.tesseract_cmd = ruta_tesseract
