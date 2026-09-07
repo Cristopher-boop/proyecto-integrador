@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../../api/client';
 import { ingestionService } from '../services/ingestionService';
 
 export interface FileWithMeta {
@@ -24,10 +24,9 @@ export const useIngestion = () => {
   useEffect(() => {
     const fetchEpisodes = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
         const [pacientesRes, admisionesRes] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/v1/patients/', { headers: { 'Authorization': `Bearer ${token}` } }),
-          axios.get('http://127.0.0.1:8000/api/v1/patients/admisiones/', { headers: { 'Authorization': `Bearer ${token}` } })
+          apiClient.get<any[]>('/patients/'),
+          apiClient.get<any[]>('/patients/admisiones/')
         ]);
 
         const options = admisionesRes.data.map((a: any) => {

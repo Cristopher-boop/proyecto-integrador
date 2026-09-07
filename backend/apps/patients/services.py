@@ -8,13 +8,23 @@ class PacienteService:
         return Paciente.objects.filter(esta_activo=True)
 
     @staticmethod
+    def obtener_inactivos():
+        """Retorna pacientes dados de baja lógica."""
+        return Paciente.objects.filter(esta_activo=False)
+
+    @staticmethod
+    def obtener_todos():
+        """Retorna todos los pacientes (activos e inactivos)."""
+        return Paciente.objects.all()
+
+    @staticmethod
     def crear_paciente(datos_validados):
         return Paciente.objects.create(**datos_validados)
 
     @staticmethod
     def obtener_por_id(id_paciente):
         try:
-            return Paciente.objects.get(id_paciente=id_paciente, esta_activo=True)
+            return Paciente.objects.get(id_paciente=id_paciente)
         except Paciente.DoesNotExist:
             return None
 
@@ -48,6 +58,16 @@ class AdmisionService:
     def obtener_activas():
         """Retorna todas las admisiones que no han sido dadas de baja."""
         return Admision.objects.filter(esta_activo=True)
+
+    @staticmethod
+    def obtener_inactivas():
+        """Retorna admisiones cerradas/inactivas."""
+        return Admision.objects.filter(esta_activo=False)
+
+    @staticmethod
+    def obtener_todas():
+        """Retorna todas las admisiones (activas e inactivas)."""
+        return Admision.objects.all()
 
     @staticmethod
     def crear_admision(datos_validados):

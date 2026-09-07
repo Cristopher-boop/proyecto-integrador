@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -14,57 +14,69 @@ import {
   LogOut,
   PanelLeftClose,
   ShieldCheck,
+  ScrollText,
 } from 'lucide-react';
 import logoInaaqc from '../../assets/logo_inaaqc.svg';
 import { INAAQC_THEME } from '../../config/theme';
-import { tokenStorage } from '../../features/auth/utils/tokenStorage';
+import { useAuth } from '../../features/auth';
+import type { UserRole } from '../../features/auth';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface NavItem {
+  name: string;
+  path: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  allowedRoles?: UserRole[];
+}
+
 interface NavGroup {
   id: string;
   title: string;
-  items: {
-    name: string;
-    path: string;
-    icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  }[];
+  items: NavItem[];
 }
 
-const NAV_GROUPS: NavGroup[] = [
+const ALL_NAV_GROUPS: NavGroup[] = [
   {
     id: 'gestion',
     title: 'Gestión Hospitalaria',
     items: [
-      { name: 'Pacientes', path: '/dashboard/patients', icon: Users },
-      { name: 'Admisiones UCI', path: '/dashboard/admissions', icon: ClipboardList },
+      { name: 'Pacientes', path: '/dashboard/patients', icon: Users, allowedRoles: ['TI', 'INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
+      { name: 'Admisiones UCI', path: '/dashboard/admissions', icon: ClipboardList, allowedRoles: ['TI', 'INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
     ],
   },
   {
     id: 'ingesta',
     title: 'Ingesta y Laboratorio',
     items: [
-      { name: 'Ingesta de Datos', path: '/dashboard/upload', icon: UploadCloud },
-      { name: 'Laboratorios', path: '/dashboard/laboratory', icon: FlaskConical },
+      { name: 'Ingesta de Datos', path: '/dashboard/upload', icon: UploadCloud, allowedRoles: ['TI', 'INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
+      { name: 'Laboratorios', path: '/dashboard/laboratory', icon: FlaskConical, allowedRoles: ['TI', 'INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
     ],
   },
   {
     id: 'simulacion',
     title: 'Simulaciones Biomédicas',
     items: [
-      { name: 'Lab-Simulación', path: '/dashboard/trends', icon: LineChart },
-      { name: 'Bio-Simulación', path: '/dashboard/biosim', icon: HeartPulse },
+      { name: 'Lab-Simulación', path: '/dashboard/trends', icon: LineChart, allowedRoles: ['INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
+      { name: 'Bio-Simulación', path: '/dashboard/biosim', icon: HeartPulse, allowedRoles: ['INVESTIGADOR', 'DOCTOR', 'SUPERADMIN'] },
     ],
   },
   {
     id: 'ia',
     title: 'Inteligencia Clínica & BI',
     items: [
-      { name: 'Sistema Experto', path: '/dashboard/expert-system', icon: BrainCircuit },
-      { name: 'Reportes (BI)', path: '/dashboard/reports', icon: PieChart },
+      { name: 'Sistema Experto', path: '/dashboard/expert-system', icon: BrainCircuit, allowedRoles: ['DOCTOR', 'SUPERADMIN'] },
+      { name: 'Reportes (BI)', path: '/dashboard/reports', icon: PieChart, allowedRoles: ['DOCTOR', 'SUPERADMIN'] },
+    ],
+  },
+  {
+    id: 'auditoria',
+    title: 'Auditoría & Seguridad',
+    items: [
+      { name: 'Logs del Sistema', path: '/dashboard/logs', icon: ScrollText, allowedRoles: ['SUPERADMIN'] },
     ],
   },
 ];
@@ -73,6 +85,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const adobe = INAAQC_THEME.palette;
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, hasRole, logout } = useAuth();
+
+  // Filtrar grupos e items según el rol del usuario autenticado
+  const visibleGroups = useMemo(() => {
+    return ALL_NAV_GROUPS.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => {
+        if (!item.allowedRoles) return true;
+        return hasRole(item.allowedRoles);
+      }),
+    })).filter((group) => group.items.length > 0);
+  }, [hasRole]);
 
   // Estados de los acordeones desplegables
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -80,26 +104,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     ingesta: true,
     simulacion: true,
     ia: true,
+    auditoria: true,
   });
 
   // Abrir automáticamente la sección que contenga la ruta activa
   useEffect(() => {
     const currentPath = location.pathname;
-    NAV_GROUPS.forEach((group) => {
+    visibleGroups.forEach((group) => {
       if (group.items.some((item) => currentPath.startsWith(item.path))) {
         setOpenSections((prev) => ({ ...prev, [group.id]: true }));
       }
     });
-  }, [location.pathname]);
+  }, [location.pathname, visibleGroups]);
 
   const toggleSection = (groupId: string) => {
     setOpenSections((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
   };
 
   const handleLogout = () => {
-    tokenStorage.clearTokens();
+    logout();
     navigate('/login');
   };
+
+  const displayName = user?.first_name
+    ? `${user.first_name} ${user.last_name || ''}`.trim()
+    : user?.username || 'Usuario';
+
+  const initials = user?.first_name
+    ? `${user.first_name[0]}${user.last_name?.[0] || ''}`.toUpperCase()
+    : (user?.username?.slice(0, 2) || 'US').toUpperCase();
+
+  const roleLabel = useMemo(() => {
+    switch (user?.rol) {
+      case 'TI': return 'Área de TI';
+      case 'INVESTIGADOR': return 'Investigador Clínico';
+      case 'DOCTOR': return 'Médico Especialista';
+      case 'SUPERADMIN': return 'Superadministrador';
+      default: return user?.rol || 'Usuario';
+    }
+  }, [user?.rol]);
 
   return (
     <aside
@@ -178,8 +221,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <div className="h-px bg-white/10" />
         </div>
 
-        {/* GRUPOS DESPLEGABLES (ACORDEÓN) */}
-        {NAV_GROUPS.map((group) => {
+        {/* GRUPOS DESPLEGABLES (ACORDEÓN FILTRADO POR ROL) */}
+        {visibleGroups.map((group) => {
           const isGroupOpen = !!openSections[group.id];
           const hasActiveChild = group.items.some((item) =>
             location.pathname.startsWith(item.path)
@@ -252,7 +295,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         })}
       </nav>
 
-      {/* 3. PIE DE PÁGINA: USUARIO Y LOGOUT */}
+      {/* 3. PIE DE PÁGINA: USUARIO DINÁMICO Y LOGOUT */}
       <div
         className="p-3 border-t shrink-0 space-y-2"
         style={{ borderColor: `${adobe.darkTint}40` }}
@@ -262,12 +305,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white shrink-0"
             style={{ backgroundColor: adobe.highlight }}
           >
-            CA
+            {initials}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-white truncate">Dr. Cristopher Ayala</p>
+            <p className="text-xs font-bold text-white truncate">{displayName}</p>
             <p className="text-[10px] text-slate-400 truncate flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-teal-400 inline" /> Admin Médico
+              <ShieldCheck className="w-3 h-3 text-teal-400 inline" /> {roleLabel}
             </p>
           </div>
         </div>

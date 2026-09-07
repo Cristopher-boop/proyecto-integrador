@@ -7,8 +7,11 @@ const AUTH_BASE_URL = import.meta.env.VITE_AUTH_BASE_URL || 'http://127.0.0.1:80
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const response = await axios.post<AuthResponse>(`${AUTH_BASE_URL}/token/`, credentials);
-    const { access, refresh } = response.data;
+    const { access, refresh, user } = response.data;
     tokenStorage.setTokens(access, refresh);
+    if (user) {
+      tokenStorage.setUser(user);
+    }
     return response.data;
   },
 
@@ -34,5 +37,13 @@ export const authService = {
 
   isAuthenticated: (): boolean => {
     return tokenStorage.isAuthenticated();
+  },
+
+  getUser: () => {
+    return tokenStorage.getUser();
+  },
+
+  getRole: () => {
+    return tokenStorage.getRole();
   },
 };

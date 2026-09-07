@@ -1,25 +1,17 @@
-import axios from 'axios';
+import apiClient from '../../../api/client';
 
-const API_URL = 'http://127.0.0.1:8000/api/v1/clinical/archivos/';
-
-const getHeaders = (isMultipart = false) => {
-  const token = localStorage.getItem('accessToken');
-  return {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      ...(isMultipart ? { 'Content-Type': 'multipart/form-data' } : {})
-    }
-  };
-};
+const ENDPOINT = '/clinical/archivos/';
 
 export const ingestionService = {
   uploadFile: async (formData: FormData) => {
-    const response = await axios.post(API_URL, formData, getHeaders(true));
+    const response = await apiClient.post(ENDPOINT, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
     return response.data;
   },
   
   processOCR: async (id: string) => {
-    const response = await axios.post(`${API_URL}${id}/procesar/`, {}, getHeaders());
+    const response = await apiClient.post(`${ENDPOINT}${id}/procesar/`);
     return response.data;
   }
 };

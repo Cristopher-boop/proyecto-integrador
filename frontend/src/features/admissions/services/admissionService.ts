@@ -4,8 +4,8 @@ import type { Admision, AdmisionFormData } from '../../../types';
 const ENDPOINT = '/patients/admisiones/';
 
 export const admissionService = {
-  getAll: async (): Promise<Admision[]> => {
-    const response = await apiClient.get<Admision[]>(ENDPOINT);
+  getAll: async (estado: 'activos' | 'inactivos' | 'todos' = 'activos'): Promise<Admision[]> => {
+    const response = await apiClient.get<Admision[]>(`${ENDPOINT}?estado=${estado}`);
     return response.data;
   },
   

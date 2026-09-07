@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../../api/client';
 
 interface Admision { id_admision: string; numero_episodio: string; paciente_nombre?: string; }
 interface Observacion { id_observacion: string; parametro: string; valor_numerico: string; unidad_medida: string | null; rango_referencia_min: string | null; rango_referencia_max: string | null; fecha_hora_registro: string; tipo_observacion?: string; }
@@ -22,10 +22,9 @@ export const useLaboratory = (episodioUrl?: string) => {
   useEffect(() => {
     const fetchAdmisiones = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
         const [pacientesRes, admisionesRes] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/v1/patients/', { headers: { 'Authorization': `Bearer ${token}` } }),
-          axios.get('http://127.0.0.1:8000/api/v1/patients/admisiones/', { headers: { 'Authorization': `Bearer ${token}` } })
+          apiClient.get<any[]>('/patients/'),
+          apiClient.get<any[]>('/patients/admisiones/')
         ]);
 
         const admisionesConNombre = admisionesRes.data.map((a: any) => {
@@ -57,12 +56,9 @@ export const useLaboratory = (episodioUrl?: string) => {
       setIsLoading(true);
       setError('');
       try {
-        const token = localStorage.getItem('accessToken');
-        const headers = { 'Authorization': `Bearer ${token}` };
-        
         const [obsRes, archRes] = await Promise.all([
-          axios.get(`http://127.0.0.1:8000/api/v1/clinical/observaciones/admision/${selectedAdmision}/`, { headers }),
-          axios.get(`http://127.0.0.1:8000/api/v1/clinical/archivos/?admision_id=${selectedAdmision}`, { headers }).catch(() => ({ data: [] })) // Fallback si no existe la ruta
+          apiClient.get<Observacion[]>(`/clinical/observaciones/admision/${selectedAdmision}/`),
+          apiClient.get<Archivo[]>(`/clinical/archivos/?admision_id=${selectedAdmision}`).catch(() => ({ data: [] }))
         ]);
 
         setObservaciones(obsRes.data);

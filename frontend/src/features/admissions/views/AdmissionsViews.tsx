@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ActivitySquare, Plus, Loader2, Search, MoreVertical, Edit2, Power, PowerOff } from 'lucide-react';
 import { useAdmissions } from '../hooks/useAdmissions';
 import { usePatients } from '../../patients/hooks/usePatients'; 
+import { useAuth } from '../../auth';
 import { AdmissionForm } from '../components/AdmissionForm';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
@@ -13,8 +14,19 @@ import { PageHeader } from '../../../components/common/PageHeader';
 import type { Column } from '../../../components/common/DataTable';
 
 const AdmissionsView: React.FC = () => {
-  const { admisiones, isLoading: loadingAdmissions, error, toggleStatus, createAdmission, updateAdmission } = useAdmissions();
+  const { 
+    admisiones, 
+    isLoading: loadingAdmissions, 
+    error, 
+    estadoFilter, 
+    setEstadoFilter, 
+    toggleStatus, 
+    createAdmission, 
+    updateAdmission 
+  } = useAdmissions();
   const { pacientes, isLoading: loadingPatients } = usePatients(); 
+  const { user } = useAuth();
+  const canManage = user?.is_superuser || (user?.rol && user.rol !== 'TI');
 
   const adobe = INAAQC_THEME.palette;
   
@@ -135,10 +147,10 @@ const AdmissionsView: React.FC = () => {
       align: 'center',
       render: (row) => <Badge status={row.esta_activo ? 'success' : 'neutral'}>{row.esta_activo ? 'Activo' : 'Cerrado'}</Badge>
     },
-    { 
+    ...(canManage ? [{ 
       header: 'Acción', 
-      align: 'right',
-      render: (row) => (
+      align: 'right' as const,
+      render: (row: any) => (
         <div className="relative inline-block text-left">
           <button onClick={() => setOpenDropdownId(openDropdownId === row.id_admision ? null : row.id_admision)} className="p-1 rounded transition-colors hover:bg-slate-200 text-slate-500">
             <MoreVertical className="w-4 h-4" />
@@ -159,7 +171,7 @@ const AdmissionsView: React.FC = () => {
           )}
         </div>
       )
-    }
+    }] : [])
   ];
 
   const handleCloseForm = () => { setShowForm(false); setEditingAdmission(null); };
@@ -179,12 +191,14 @@ const AdmissionsView: React.FC = () => {
         subtitle={`Gestión de episodios clínicos e ingresos a UCI (${admisiones.length} registrados).`}
         icon={<ActivitySquare className="w-6 h-6 sm:w-7 sm:h-7" />}
       >
-        <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingAdmission(null); setShowForm(true); }}>
-          Nueva Admisión
-        </Button>
+        {canManage && (
+          <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingAdmission(null); setShowForm(true); }}>
+            Nueva Admisión
+          </Button>
+        )}
       </PageHeader>
 
-      {showForm && (
+      {showForm && canManage && (
         <div className="overflow-y-auto custom-scrollbar">
           <AdmissionForm pacientes={pacientes} initialData={editingAdmission} onSubmit={handleSaveAdmission} onCancel={handleCloseForm} />
         </div>
@@ -193,10 +207,34 @@ const AdmissionsView: React.FC = () => {
       {/* 2. Tarjeta de Tabla sin espacios blancos artificiales */}
       {!showForm && (
         <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
-          <div className="px-5 py-3 border-b bg-white border-slate-100 flex justify-between items-center">
-            <div className="w-72 sm:w-80">
-              <Input icon={<Search className="w-4 h-4" />} placeholder="Buscar episodio o paciente..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
+          <div className="px-5 py-3 border-b bg-white border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <div className="w-72 sm:w-80">
+                <Input icon={<Search className="w-4 h-4" />} placeholder="Buscar episodio o paciente..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
+              </div>
+
+              {/* Selector de Estado Activos / Cerrados / Todos */}
+              <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+                {(['activos', 'inactivos', 'todos'] as const).map((est) => (
+                  <button
+                    key={est}
+                    type="button"
+                    onClick={() => {
+                      setEstadoFilter(est);
+                      setCurrentPage(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-150 ${
+                      estadoFilter === est
+                        ? 'bg-white text-teal-700 shadow-xs border border-slate-200/60'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    {est === 'activos' ? 'Activos' : est === 'inactivos' ? 'Cerrados' : 'Todos'}
+                  </button>
+                ))}
+              </div>
             </div>
+
             <span className="text-xs font-semibold text-slate-400">
               Página {currentPage} de {totalPages || 1}
             </span>

@@ -1,8 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer
-from .services import UserService
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.db.models import Q
+from .serializers import UserSerializer, CustomTokenObtainPairSerializer, AuditLogSerializer
+from .services import UserService, AuditLogService
+from .permissions import CanAccessAuditLogs
+from .models import AuditLog
 
 class UserListCreateAPIView(APIView):
     def get(self, request):
@@ -54,3 +59,57 @@ class UserReactivarAPIView(APIView):
             return Response({"error": "Usuario no encontrado o ya activo"}, status=status.HTTP_400_BAD_REQUEST)
             
         return Response({"mensaje": f"El usuario {usuario.username} ha sido reactivado."}, status=status.HTTP_200_OK)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            username = request.data.get('username', '')
+            user_data = response.data.get('user', {})
+            rol = user_data.get('rol', '')
+            AuditLogService.registrar(
+                usuario=None,
+                rol=rol,
+                accion='LOGIN',
+                modulo='AUTH',
+                descripcion=f"Inicio de sesión exitoso del usuario '{username}' con rol '{rol}'.",
+                request=request,
+                estado='EXITO'
+            )
+        return response
+
+
+class AuditLogListAPIView(APIView):
+    permission_classes = [IsAuthenticated, CanAccessAuditLogs]
+
+    def get(self, request):
+        modulo = request.query_params.get('modulo', '').strip()
+        rol = request.query_params.get('rol', '').strip()
+        accion = request.query_params.get('accion', '').strip()
+        estado = request.query_params.get('estado', '').strip()
+        search = request.query_params.get('search', '').strip()
+
+        logs = AuditLog.objects.all()
+
+        if modulo:
+            logs = logs.filter(modulo__iexact=modulo)
+        if rol:
+            logs = logs.filter(rol__iexact=rol)
+        if accion:
+            logs = logs.filter(accion__iexact=accion)
+        if estado:
+            logs = logs.filter(estado__iexact=estado)
+        if search:
+            logs = logs.filter(
+                Q(usuario_nombre__icontains=search) |
+                Q(descripcion__icontains=search) |
+                Q(ip_address__icontains=search)
+            )
+
+        # Limitar a los últimos 300 logs para alta performance
+        logs = logs[:300]
+        serializer = AuditLogSerializer(logs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

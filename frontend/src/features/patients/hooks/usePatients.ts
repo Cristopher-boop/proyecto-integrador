@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { patientService } from '../services/patientService';
 
-export const usePatients = () => {
+export const usePatients = (initialEstado: 'activos' | 'inactivos' | 'todos' = 'activos') => {
   const [pacientes, setPacientes] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [estadoFilter, setEstadoFilter] = useState<'activos' | 'inactivos' | 'todos'>(initialEstado);
 
-  const fetchPacientes = useCallback(async () => {
+  const fetchPacientes = useCallback(async (estado = estadoFilter) => {
     setIsLoading(true);
     try {
-      const data = await patientService.getAll();
+      const data = await patientService.getAll(estado);
       setPacientes(data);
       setError('');
     } catch (err: any) {
@@ -17,11 +18,11 @@ export const usePatients = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [estadoFilter]);
 
   useEffect(() => {
-    fetchPacientes();
-  }, [fetchPacientes]);
+    fetchPacientes(estadoFilter);
+  }, [fetchPacientes, estadoFilter]);
 
   const toggleStatus = async (id: string, esta_activo: boolean) => {
     if (!window.confirm(`¿Estás seguro de que deseas ${esta_activo ? 'desactivar' : 'activar'} a este paciente?`)) return;
@@ -31,7 +32,7 @@ export const usePatients = () => {
       } else {
         await patientService.reactivate(id);
       }
-      await fetchPacientes();
+      await fetchPacientes(estadoFilter);
     } catch (err) {
       alert('Error al cambiar el estado del paciente.');
     }
@@ -40,13 +41,23 @@ export const usePatients = () => {
   // NUEVO: Funciones de Creación y Edición
   const createPatient = async (data: any) => {
     await patientService.create(data);
-    await fetchPacientes(); // Recargamos la tabla al terminar
+    await fetchPacientes(estadoFilter); // Recargamos la tabla al terminar
   };
 
   const updatePatient = async (id: string, data: any) => {
     await patientService.update(id, data);
-    await fetchPacientes(); // Recargamos la tabla al terminar
+    await fetchPacientes(estadoFilter); // Recargamos la tabla al terminar
   };
 
-  return { pacientes, isLoading, error, fetchPacientes, toggleStatus, createPatient, updatePatient };
+  return {
+    pacientes,
+    isLoading,
+    error,
+    estadoFilter,
+    setEstadoFilter,
+    fetchPacientes,
+    toggleStatus,
+    createPatient,
+    updatePatient,
+  };
 };

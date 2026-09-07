@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { authService } from '../api/authService';
+import { useAuth } from '../context/AuthContext';
+import { tokenStorage } from '../utils/tokenStorage';
 import { INAAQC_THEME } from '../../../config/theme';
 
 import logoInaaqc from '../../../assets/logo_inaaqc.svg';
@@ -14,8 +15,16 @@ export const LoginView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { palette } = INAAQC_THEME;
+
+  // Si el usuario ya está autenticado, redirigir inmediatamente al dashboard
+  useEffect(() => {
+    if (isAuthenticated || tokenStorage.isAuthenticated()) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,11 +32,11 @@ export const LoginView: React.FC = () => {
     setErrorMsg('');
 
     try {
-      await authService.login({
+      await login({
         username,
         password,
       });
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         setErrorMsg('Credenciales inválidas. Verifique su usuario y contraseña.');

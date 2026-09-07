@@ -7,6 +7,13 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import ArchivoFuenteSerializer, ObservacionBiomedicaSerializer
 from .services import ArchivoFuenteService, ObservacionBiomedicaService
+from apps.users.permissions import (
+    CanUploadClinicalDocuments,
+    CanModifyObservations,
+    CanAccessExpertSystem,
+    CanAccessReports,
+)
+from apps.users.services import AuditLogService
 from apps.clinical.application.use_cases import (
     GetExpertSystemDataUseCase,
     GetDashboardStatsUseCase,
@@ -17,6 +24,7 @@ from apps.clinical.application.use_cases import (
 
 class ArchivoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [CanUploadClinicalDocuments]
 
     def get(self, request, id_admision=None):
         target_admision = id_admision or request.query_params.get('admision_id')
@@ -38,6 +46,22 @@ class ArchivoUploadView(APIView):
 
         try:
             archivo = ArchivoFuenteService.crear_archivo_fisico(archivo_fisico, tipo_documento, numero_episodio)
+            
+            # Registrar auditoría detallada de vinculación de documento a paciente/episodio
+            paciente_nombre = ""
+            if archivo.admision and archivo.admision.paciente:
+                paciente_nombre = f" del paciente {archivo.admision.paciente.apellidos} {archivo.admision.paciente.nombres}"
+            
+            AuditLogService.registrar(
+                request=request,
+                accion='VINCULAR_DOCUMENTO_EPISODIO',
+                modulo='INGESTA',
+                descripcion=(
+                    f"Subió y vinculó el documento '{archivo.nombre_archivo}' ({archivo.tipo_documento}) "
+                    f"al episodio {numero_episodio}{paciente_nombre}."
+                )
+            )
+
             serializer = ArchivoFuenteSerializer(archivo)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValueError as e:
@@ -45,6 +69,8 @@ class ArchivoUploadView(APIView):
 
 
 class ObservacionBiomedicaListCreateAPIView(APIView):
+    permission_classes = [CanModifyObservations]
+
     def get(self, request, id_admision=None):
         """Atiende al Laboratorio Principal (por episodio) o al Visualizador (por archivo)."""
         archivo_id = request.query_params.get('archivo_fuente')
@@ -70,6 +96,14 @@ class ObservacionBiomedicaListCreateAPIView(APIView):
         serializer = ObservacionBiomedicaSerializer(data=request.data, many=True)
         if serializer.is_valid():
             ObservacionBiomedicaService.crear_multiples_observaciones(serializer.validated_data)
+            
+            AuditLogService.registrar(
+                request=request,
+                accion='CREACION',
+                modulo='LABORATORIOS',
+                descripcion=f"Registró masivamente {len(serializer.validated_data)} resultados biomédicos."
+            )
+
             return Response(
                 {"mensaje": f"Se guardaron {len(serializer.validated_data)} resultados biomédicos exitosamente."},
                 status=status.HTTP_201_CREATED
@@ -78,6 +112,8 @@ class ObservacionBiomedicaListCreateAPIView(APIView):
 
 
 class ObservacionBiomedicaDetailAPIView(APIView):
+    permission_classes = [CanModifyObservations]
+
     def get(self, request, pk):
         observacion = ObservacionBiomedicaService.obtener_por_id(pk)
         if not observacion:
@@ -92,6 +128,15 @@ class ObservacionBiomedicaDetailAPIView(APIView):
         serializer = ObservacionBiomedicaSerializer(observacion, data=request.data, partial=True)
         if serializer.is_valid():
             obs_act = ObservacionBiomedicaService.actualizar_observacion(observacion, serializer.validated_data)
+            param_nombre = obs_act.parametro_biomedico.nombre if obs_act.parametro_biomedico else f"ID {pk}"
+            
+            AuditLogService.registrar(
+                request=request,
+                accion='EDICION',
+                modulo='LABORATORIOS',
+                descripcion=f"Modificó el resultado de '{param_nombre}' (ID: {pk}) a valor '{obs_act.valor_numerico}'."
+            )
+
             return Response(ObservacionBiomedicaSerializer(obs_act).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -100,11 +145,22 @@ class ObservacionBiomedicaDetailAPIView(APIView):
         if not observacion:
             return Response({"error": "Resultado no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
+        param_nombre = observacion.parametro_biomedico.nombre if observacion.parametro_biomedico else f"ID {pk}"
         ObservacionBiomedicaService.eliminar_observacion(observacion)
+
+        AuditLogService.registrar(
+            request=request,
+            accion='ELIMINACION',
+            modulo='LABORATORIOS',
+            descripcion=f"Eliminó el resultado de '{param_nombre}' (ID: {pk})."
+        )
+
         return Response({"mensaje": "Resultado clínico eliminado correctamente"}, status=status.HTTP_200_OK)
 
 
 class ArchivoProcesarOCRAPIView(APIView):
+    permission_classes = [CanUploadClinicalDocuments]
+
     def post(self, request, pk):
         """Inicia el procesamiento OCR del archivo físico."""
         archivo = ArchivoFuenteService.obtener_por_id(pk)
@@ -113,6 +169,17 @@ class ArchivoProcesarOCRAPIView(APIView):
 
         try:
             cantidad_registros = ArchivoFuenteService.procesar_ocr_archivo(archivo)
+            
+            AuditLogService.registrar(
+                request=request,
+                accion='PROCESAR_OCR',
+                modulo='INGESTA',
+                descripcion=(
+                    f"Procesó OCR para el documento '{archivo.nombre_archivo}' "
+                    f"(Episodio {archivo.admision.numero_episodio}). Se extrajeron {cantidad_registros} resultados."
+                )
+            )
+
             if cantidad_registros == 0:
                 return Response({
                     "mensaje": "El procesamiento finalizó sin detectar nuevos parámetros biomédicos conocidos."
@@ -130,6 +197,8 @@ class ArchivoProcesarOCRAPIView(APIView):
 
 class ExpertSystemDataAPIView(APIView):
     """Endpoint delegado que expone hechos y puntajes inferidos del episodio clínico."""
+    permission_classes = [CanAccessExpertSystem]
+
     def get(self, request):
         numero_episodio = request.query_params.get('numero_episodio')
         if not numero_episodio:
@@ -144,6 +213,8 @@ class ExpertSystemDataAPIView(APIView):
 
 class DashboardGlobalStatsAPIView(APIView):
     """Endpoint delegado de analítica global para el dashboard principal."""
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             payload = GetDashboardStatsUseCase.execute()
@@ -154,6 +225,8 @@ class DashboardGlobalStatsAPIView(APIView):
 
 class ReportsDataAPIView(APIView):
     """Endpoint delegado de Inteligencia de Negocios y Analítica Avanzada."""
+    permission_classes = [CanAccessReports]
+
     def get(self, request):
         try:
             payload = GetReportsAnalyticsUseCase.execute()
@@ -164,12 +237,20 @@ class ReportsDataAPIView(APIView):
 
 class ExportReportsAPIView(APIView):
     """Endpoint delegado para generación y descarga de reportes Excel (.xlsx) o PDF (.pdf)."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CanAccessReports]
 
     def get(self, request):
         report_type = request.query_params.get('type', 'pacientes')
         try:
             buffer, content_type, filename = ExportReportsUseCase.execute(report_type)
+            
+            AuditLogService.registrar(
+                request=request,
+                accion='EXPORTACION',
+                modulo='REPORTES',
+                descripcion=f"Exportó reporte clínico '{filename}' (tipo: {report_type})."
+            )
+
             response = HttpResponse(buffer.getvalue(), content_type=content_type)
             response['Content-Disposition'] = f'attachment; filename="{filename}"'
             return response

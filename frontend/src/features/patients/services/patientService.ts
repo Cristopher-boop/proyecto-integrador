@@ -1,34 +1,31 @@
-import axios from 'axios';
+import apiClient from '../../../api/client';
+import type { Paciente, PacienteFormData } from '../../../types';
 
-const API_URL = 'http://127.0.0.1:8000/api/v1/patients/';
-
-const getHeaders = () => ({
-  headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
-});
+const ENDPOINT = '/patients/';
 
 export const patientService = {
-  getAll: async () => {
-    const response = await axios.get(API_URL, getHeaders());
+  getAll: async (estado: 'activos' | 'inactivos' | 'todos' = 'activos'): Promise<Paciente[]> => {
+    const response = await apiClient.get<Paciente[]>(`${ENDPOINT}?estado=${estado}`);
     return response.data;
   },
   
-  create: async (data: any) => {
-    const response = await axios.post(API_URL, data, getHeaders());
+  create: async (data: PacienteFormData | Partial<Paciente>): Promise<Paciente> => {
+    const response = await apiClient.post<Paciente>(ENDPOINT, data);
     return response.data;
   },
   
-  update: async (id: string, data: any) => {
-    const response = await axios.put(`${API_URL}${id}/`, data, getHeaders());
+  update: async (id: string, data: Partial<PacienteFormData | Paciente>): Promise<Paciente> => {
+    const response = await apiClient.put<Paciente>(`${ENDPOINT}${id}/`, data);
     return response.data;
   },
   
-  deactivate: async (id: string) => {
-    const response = await axios.delete(`${API_URL}${id}/`, getHeaders());
+  deactivate: async (id: string): Promise<void> => {
+    const response = await apiClient.delete(`${ENDPOINT}${id}/`);
     return response.data;
   },
   
-  reactivate: async (id: string) => {
-    const response = await axios.post(`${API_URL}${id}/reactivar/`, {}, getHeaders());
+  reactivate: async (id: string): Promise<Paciente> => {
+    const response = await apiClient.post<Paciente>(`${ENDPOINT}${id}/reactivar/`);
     return response.data;
   }
 };

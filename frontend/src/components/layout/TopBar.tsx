@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { PanelLeftOpen, ShieldCheck, Stethoscope } from 'lucide-react';
 import { INAAQC_THEME } from '../../config/theme';
+import { useAuth } from '../../features/auth';
 
 interface TopBarProps {
   isSidebarOpen: boolean;
@@ -18,17 +19,37 @@ const ROUTE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/biosim': { title: 'Bio-Simulación de Parámetros', subtitle: 'Monitoreo dinámico hemodinámico' },
   '/dashboard/expert-system': { title: 'Sistema Experto Clínico', subtitle: 'Inferencia diagnóstica, SOFA y SAPS 3' },
   '/dashboard/reports': { title: 'Reportes y Analítica (BI)', subtitle: 'Exportación institucional y estadísticas' },
+  '/dashboard/logs': { title: 'Auditoría del Sistema', subtitle: 'Trazabilidad y registro de eventos críticos' },
   '/dashboard/settings': { title: 'Configuración', subtitle: 'Ajustes del sistema y parámetros' },
 };
 
 export const TopBar: React.FC<TopBarProps> = ({ isSidebarOpen, onToggleSidebar }) => {
   const adobe = INAAQC_THEME.palette;
   const location = useLocation();
+  const { user } = useAuth();
 
   const currentMeta = ROUTE_TITLES[location.pathname] || {
     title: 'Panel de Control',
     subtitle: 'Instituto Académico-Científico Quispe-Cornejo',
   };
+
+  const displayName = user?.first_name
+    ? `${user.first_name} ${user.last_name || ''}`.trim()
+    : user?.username || 'Usuario';
+
+  const initials = user?.first_name
+    ? `${user.first_name[0]}${user.last_name?.[0] || ''}`.toUpperCase()
+    : (user?.username?.slice(0, 2) || 'US').toUpperCase();
+
+  const roleLabel = (() => {
+    switch (user?.rol) {
+      case 'TI': return 'Área de TI';
+      case 'INVESTIGADOR': return 'Investigador Clínico';
+      case 'DOCTOR': return 'Médico Especialista';
+      case 'SUPERADMIN': return 'Superadministrador';
+      default: return user?.rol || 'Usuario';
+    }
+  })();
 
   return (
     <header className="bg-white h-16 shadow-xs border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
@@ -75,14 +96,14 @@ export const TopBar: React.FC<TopBarProps> = ({ isSidebarOpen, onToggleSidebar }
             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white shadow-xs"
             style={{ backgroundColor: adobe.base }}
           >
-            CA
+            {initials}
           </div>
           <div className="hidden md:block text-left">
             <p className="text-xs font-bold leading-tight" style={{ color: adobe.base }}>
-              Dr. Cristopher Ayala
+              {displayName}
             </p>
             <p className="text-[10px] text-teal-600 font-semibold flex items-center gap-0.5">
-              <ShieldCheck className="w-2.5 h-2.5" /> Administrador
+              <ShieldCheck className="w-2.5 h-2.5" /> {roleLabel}
             </p>
           </div>
         </div>
