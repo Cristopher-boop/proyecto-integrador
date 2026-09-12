@@ -9,7 +9,7 @@ export interface SearchableOption {
   badge?: string;
 }
 
-interface SearchableSelectProps {
+export interface SearchableSelectProps {
   options: SearchableOption[];
   value: string;
   onChange: (value: string) => void;
@@ -18,6 +18,10 @@ interface SearchableSelectProps {
   disabled?: boolean;
   className?: string;
   icon?: React.ReactNode;
+  searchable?: boolean;
+  size?: 'sm' | 'md';
+  showClear?: boolean;
+  dropdownWidth?: string;
 }
 
 export const SearchableSelect: React.FC<SearchableSelectProps> = ({
@@ -29,6 +33,10 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   disabled = false,
   className = '',
   icon,
+  searchable = true,
+  size = 'md',
+  showClear = true,
+  dropdownWidth,
 }) => {
   const adobe = INAAQC_THEME.palette;
   const [isOpen, setIsOpen] = useState(false);
@@ -106,7 +114,9 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-bold transition-all outline-none bg-white ${
+        className={`w-full flex items-center justify-between border text-left font-bold transition-all outline-none bg-white ${
+          size === 'sm' ? 'px-2.5 py-1.5 rounded-lg text-xs' : 'px-3.5 py-2.5 rounded-xl text-xs sm:text-sm'
+        } ${
           disabled ? 'opacity-50 cursor-not-allowed bg-slate-50' : 'cursor-pointer hover:border-slate-300'
         }`}
         style={{
@@ -115,11 +125,16 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           color: adobe.base,
         }}
       >
-        <div className="flex items-center gap-2.5 truncate flex-1 mr-2">
+        <div className="flex items-center gap-2 truncate flex-1 mr-1">
           {icon && <span className="shrink-0 text-slate-400">{icon}</span>}
           {selectedOption ? (
-            <div className="truncate flex items-center gap-2">
+            <div className="truncate flex items-center gap-1.5">
               <span className="truncate">{selectedOption.label}</span>
+              {selectedOption.badge && (
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-200 shrink-0">
+                  {selectedOption.badge}
+                </span>
+              )}
               {selectedOption.secondary && (
                 <span className="text-xs font-normal text-slate-400 truncate hidden sm:inline">
                   • {selectedOption.secondary}
@@ -131,18 +146,18 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          {value && !disabled && (
+        <div className="flex items-center gap-1 shrink-0">
+          {value && !disabled && showClear && (
             <span
               onClick={handleClear}
               className="p-1 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-600 transition-colors"
               title="Limpiar selección"
             >
-              <X size={13} />
+              <X size={size === 'sm' ? 12 : 13} />
             </span>
           )}
           <ChevronDown
-            size={16}
+            size={size === 'sm' ? 14 : 16}
             className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-teal-600' : ''}`}
           />
         </div>
@@ -150,36 +165,40 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
       {/* DROPDOWN FLOTANTE */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in-up">
+        <div className={`absolute top-full left-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in-up ${
+          dropdownWidth ? dropdownWidth : 'w-full min-w-full'
+        }`}>
           {/* BARRA DE BÚSQUEDA INTERNA */}
-          <div className="p-2 border-b border-slate-100 bg-slate-50/70">
-            <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={searchPlaceholder}
-                className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 rounded-lg outline-none bg-white text-slate-800 placeholder-slate-400 focus:border-teal-500 transition-colors"
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                >
-                  <X size={12} />
-                </button>
-              )}
+          {searchable && (
+            <div className="p-2 border-b border-slate-100 bg-slate-50/70">
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={searchPlaceholder}
+                  className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 rounded-lg outline-none bg-white text-slate-800 placeholder-slate-400 focus:border-teal-500 transition-colors"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* LISTA DE OPCIONES */}
           <div className="max-h-56 overflow-y-auto p-1 divide-y divide-slate-50">
             {filteredOptions.length === 0 ? (
               <div className="p-4 text-center text-xs text-slate-400 font-medium">
-                No se encontraron opciones para &quot;{query}&quot;
+                {query ? `No se encontraron opciones para "${query}"` : 'No hay opciones disponibles'}
               </div>
             ) : (
               filteredOptions.map((opt) => {
@@ -189,16 +208,25 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     key={opt.value}
                     type="button"
                     onClick={() => handleSelect(opt.value)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center justify-between transition-colors ${
+                    className={`w-full text-left rounded-lg text-xs font-medium flex items-center justify-between transition-colors ${
+                      size === 'sm' ? 'px-2.5 py-1.5' : 'px-3 py-2'
+                    } ${
                       isSelected
                         ? 'bg-teal-50/70 text-teal-900 font-bold'
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
-                    <div className="flex flex-col truncate pr-2">
-                      <span className="truncate">{opt.label}</span>
+                    <div className="flex flex-col truncate pr-2 min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate font-semibold">{opt.label}</span>
+                        {opt.badge && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-teal-800 border border-slate-200/80 shrink-0">
+                            {opt.badge}
+                          </span>
+                        )}
+                      </div>
                       {opt.secondary && (
-                        <span className="text-[11px] text-slate-400 font-normal truncate">
+                        <span className="text-[11px] text-slate-400 font-normal truncate mt-0.5">
                           {opt.secondary}
                         </span>
                       )}

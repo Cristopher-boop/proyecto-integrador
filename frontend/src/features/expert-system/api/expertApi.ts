@@ -5,6 +5,7 @@ export interface EpisodeOption {
   value: string;
   label: string;
   secondary?: string;
+  fecha_ingreso?: string;
 }
 
 export const expertApi = {
@@ -24,6 +25,7 @@ export const expertApi = {
         value: adm.numero_episodio,
         label: adm.numero_episodio,
         secondary: nombre,
+        fecha_ingreso: adm.fecha_ingreso,
       };
     });
   },

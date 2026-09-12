@@ -18,7 +18,9 @@ export const useIngestion = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   // --- NUEVO: ESTADO SOLO PARA EL SELECTOR DE INGESTA ---
-  const [episodeOptions, setEpisodeOptions] = useState<{value: string, label: string}[]>([]);
+  const [episodeOptions, setEpisodeOptions] = useState<
+    { value: string; label: string; secondary?: string; fecha_ingreso?: string }[]
+  >([]);
 
   // --- NUEVO: EFECTO AISLADO PARA TRAER EPISODIOS + NOMBRES ---
   useEffect(() => {
@@ -36,6 +38,7 @@ export const useIngestion = () => {
             value: a.numero_episodio,
             label: a.numero_episodio,
             secondary: nombre,
+            fecha_ingreso: a.fecha_ingreso,
           };
         });
         setEpisodeOptions(options);

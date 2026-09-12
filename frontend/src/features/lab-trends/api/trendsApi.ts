@@ -5,6 +5,7 @@ export interface EpisodeTrendOption {
   id_admision: string;
   numero_episodio: string;
   paciente_nombre: string;
+  fecha_ingreso?: string;
 }
 
 export const trendsApi = {
@@ -22,7 +23,8 @@ export const trendsApi = {
       return {
         id_admision: a.id_admision,
         numero_episodio: a.numero_episodio,
-        paciente_nombre: px ? `${px.nombres} ${px.apellidos}` : 'Desconocido'
+        paciente_nombre: px ? `${px.nombres} ${px.apellidos}` : 'Desconocido',
+        fecha_ingreso: a.fecha_ingreso,
       };
     });
   },

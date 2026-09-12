@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { UploadCloud, FileType, FileText, CheckCircle, AlertCircle, X, Loader2, Cpu, Info, BrainCircuit } from 'lucide-react';
 import { useIngestion } from '../hooks/useIngestion';
 import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Dropzone } from '../../../components/common/Dropzone';
-import { SearchableSelect } from '../../../components/common/SearchableSelect';
-import { PageHeader } from '../../../components/common/PageHeader';
+import { ClinicalHeader } from '../../../components/common/ClinicalHeader';
+import { useEpisodeDateFilter, formatDateBadge } from '../../../hooks/useEpisodeDateFilter';
 import { useNavigate } from 'react-router-dom';
 
 const IngestionView: React.FC = () => {
@@ -20,6 +20,24 @@ const IngestionView: React.FC = () => {
   const navigate = useNavigate();
   const adobe = INAAQC_THEME.palette;
   const themeStatus = INAAQC_THEME.status;
+
+  const {
+    selectedYear,
+    selectedMonth,
+    setSelectedYear,
+    setSelectedMonth,
+    availableYears,
+    filteredEpisodes,
+  } = useEpisodeDateFilter(episodeOptions, episode, (opt) => opt.value);
+
+  const displayEpisodeOptions = useMemo(
+    () =>
+      filteredEpisodes.map((opt) => ({
+        ...opt,
+        badge: formatDateBadge(opt.fecha_ingreso),
+      })),
+    [filteredEpisodes]
+  );
 
   const getStatusInfo = (s: string) => {
     switch(s) {
@@ -36,22 +54,21 @@ const IngestionView: React.FC = () => {
   return (
     <div className="space-y-4 animate-fade-in-up font-sans">
       {/* 1. Header Compacto Estandarizado */}
-      <PageHeader
+      <ClinicalHeader
         title="Ingesta Inteligente (OCR & NLP)"
         subtitle="Carga múltiple de archivos, extracción de datos y minería de texto."
         icon={<UploadCloud className="w-6 h-6 sm:w-7 sm:h-7" />}
-      >
-        <div className="w-full sm:w-80">
-          <SearchableSelect
-            options={episodeOptions}
-            value={episode}
-            onChange={setEpisode}
-            placeholder="-- Selecciona un episodio destino --"
-            searchPlaceholder="Buscar por episodio o paciente..."
-            icon={<UploadCloud className="w-4 h-4" />}
-          />
-        </div>
-      </PageHeader>
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+        onChangeYear={setSelectedYear}
+        onChangeMonth={setSelectedMonth}
+        availableYears={availableYears}
+        episodes={displayEpisodeOptions}
+        selectedEpisode={episode}
+        onEpisodeChange={setEpisode}
+        episodePlaceholder="-- Selecciona un episodio destino --"
+        episodeIcon={<UploadCloud className="w-4 h-4" />}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">

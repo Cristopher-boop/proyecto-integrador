@@ -10,6 +10,7 @@ import { Pagination } from '../../../components/common/Pagination';
 import { Badge } from '../../../components/common/Badge';
 import { DataTable } from '../../../components/common/DataTable';
 import { PageHeader } from '../../../components/common/PageHeader';
+import { YearMonthFilter } from '../../../components/common/YearMonthFilter';
 import type { Column } from '../../../components/common/DataTable';
 
 const PatientsView: React.FC = () => {
@@ -27,6 +28,21 @@ const PatientsView: React.FC = () => {
   const canManage = user?.is_superuser || (user?.rol && user.rol !== 'TI');
   const adobe = INAAQC_THEME.palette;
   
+  const now = new Date();
+  const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(now.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>(now.getMonth() + 1);
+
+  const availableYears = useMemo(() => {
+    const yearsSet = new Set<number>([now.getFullYear()]);
+    pacientes.forEach((p) => {
+      if (p.creado_en) {
+        const d = new Date(p.creado_en);
+        if (!isNaN(d.getTime())) yearsSet.add(d.getFullYear());
+      }
+    });
+    return Array.from(yearsSet).sort((a, b) => b - a);
+  }, [pacientes]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingPatient, setEditingPatient] = useState<any | null>(null);
@@ -42,11 +58,22 @@ const PatientsView: React.FC = () => {
   };
 
   const processedData = useMemo(() => {
-    let filtered = pacientes.filter(p => 
-      p.nombres.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      p.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.dossier_erasme.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let filtered = pacientes.filter(p => {
+      const matchSearch = p.nombres.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        p.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.dossier_erasme.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!matchSearch) return false;
+
+      // Filtro de Año y Mes
+      if (p.creado_en) {
+        const d = new Date(p.creado_en);
+        if (!isNaN(d.getTime())) {
+          if (selectedYear !== 'ALL' && d.getFullYear() !== selectedYear) return false;
+          if (selectedMonth !== 'ALL' && (d.getMonth() + 1) !== selectedMonth) return false;
+        }
+      }
+      return true;
+    });
 
     if (sortConfig !== null) {
       filtered.sort((a, b) => {
@@ -59,7 +86,7 @@ const PatientsView: React.FC = () => {
       });
     }
     return filtered;
-  }, [pacientes, searchTerm, sortConfig]);
+  }, [pacientes, searchTerm, sortConfig, selectedYear, selectedMonth]);
 
   const totalPages = Math.ceil(processedData.length / itemsPerPage);
   const currentData = processedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -113,6 +140,24 @@ const PatientsView: React.FC = () => {
           {row.sexo === 'M' ? 'Masc' : row.sexo === 'F' ? 'Fem' : row.sexo || '-'}
         </span>
       )
+    },
+    { 
+      header: 'Registro', 
+      accessorKey: 'creado_en', 
+      sortable: true,
+      render: (row) => {
+        if (!row.creado_en) return <span className="text-xs text-slate-400">-</span>;
+        try {
+          const d = new Date(row.creado_en);
+          return (
+            <span className="text-xs font-medium text-slate-600">
+              {d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </span>
+          );
+        } catch {
+          return <span className="text-xs text-slate-600">{row.creado_en}</span>;
+        }
+      }
     },
     { 
       header: 'Estado', 
@@ -205,6 +250,21 @@ const PatientsView: React.FC = () => {
                   </button>
                 ))}
               </div>
+
+              {/* Filtro Jerárquico de Año y Mes */}
+              <YearMonthFilter
+                selectedYear={selectedYear}
+                selectedMonth={selectedMonth}
+                onChangeYear={(yr) => {
+                  setSelectedYear(yr);
+                  setCurrentPage(1);
+                }}
+                onChangeMonth={(m) => {
+                  setSelectedMonth(m);
+                  setCurrentPage(1);
+                }}
+                availableYears={availableYears}
+              />
             </div>
 
             <span className="text-xs font-semibold text-slate-400">

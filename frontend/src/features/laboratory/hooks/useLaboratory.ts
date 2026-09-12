@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../../../api/client';
 
-interface Admision { id_admision: string; numero_episodio: string; paciente_nombre?: string; }
+interface Admision { id_admision: string; numero_episodio: string; paciente_nombre?: string; fecha_ingreso?: string; cama_sala?: string; }
 interface Observacion { id_observacion: string; parametro: string; valor_numerico: string; unidad_medida: string | null; rango_referencia_min: string | null; rango_referencia_max: string | null; fecha_hora_registro: string; tipo_observacion?: string; }
 interface Archivo { id_archivo: string; nombre_archivo: string; tipo_documento: string; archivo_fisico: string; }
 

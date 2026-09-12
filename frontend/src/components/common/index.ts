@@ -7,3 +7,5 @@ export * from './DatePicker';
 export * from './Dropzone';
 export * from './SearchableSelect';
 export * from './PageHeader';
+export * from './YearMonthFilter';
+export * from './ClinicalHeader';

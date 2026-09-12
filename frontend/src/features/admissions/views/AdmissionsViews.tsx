@@ -11,6 +11,7 @@ import { Pagination } from '../../../components/common/Pagination';
 import { Badge } from '../../../components/common/Badge';
 import { DataTable } from '../../../components/common/DataTable';
 import { PageHeader } from '../../../components/common/PageHeader';
+import { YearMonthFilter } from '../../../components/common/YearMonthFilter';
 import type { Column } from '../../../components/common/DataTable';
 
 const AdmissionsView: React.FC = () => {
@@ -30,6 +31,21 @@ const AdmissionsView: React.FC = () => {
 
   const adobe = INAAQC_THEME.palette;
   
+  const now = new Date();
+  const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(now.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>(now.getMonth() + 1);
+
+  const availableYears = useMemo(() => {
+    const yearsSet = new Set<number>([now.getFullYear()]);
+    admisiones.forEach((a) => {
+      if (a.fecha_ingreso) {
+        const d = new Date(a.fecha_ingreso);
+        if (!isNaN(d.getTime())) yearsSet.add(d.getFullYear());
+      }
+    });
+    return Array.from(yearsSet).sort((a, b) => b - a);
+  }, [admisiones]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingAdmission, setEditingAdmission] = useState<any | null>(null);
@@ -49,8 +65,19 @@ const AdmissionsView: React.FC = () => {
       const pacienteInfo = pacientes.find(p => p.id_paciente === a.paciente);
       const nombreCompleto = pacienteInfo ? `${pacienteInfo.nombres} ${pacienteInfo.apellidos}`.toLowerCase() : '';
       
-      return (a.numero_episodio || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const matchSearch = (a.numero_episodio || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
             nombreCompleto.includes(searchTerm.toLowerCase());
+      if (!matchSearch) return false;
+
+      // Filtro de Año y Mes
+      if (a.fecha_ingreso) {
+        const d = new Date(a.fecha_ingreso);
+        if (!isNaN(d.getTime())) {
+          if (selectedYear !== 'ALL' && d.getFullYear() !== selectedYear) return false;
+          if (selectedMonth !== 'ALL' && (d.getMonth() + 1) !== selectedMonth) return false;
+        }
+      }
+      return true;
     });
 
     if (sortConfig !== null) {
@@ -64,7 +91,7 @@ const AdmissionsView: React.FC = () => {
       });
     }
     return filtered;
-  }, [admisiones, pacientes, searchTerm, sortConfig]);
+  }, [admisiones, pacientes, searchTerm, sortConfig, selectedYear, selectedMonth]);
 
   const totalPages = Math.ceil(processedData.length / itemsPerPage);
   const currentData = processedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -233,6 +260,21 @@ const AdmissionsView: React.FC = () => {
                   </button>
                 ))}
               </div>
+
+              {/* Filtro Jerárquico de Año y Mes */}
+              <YearMonthFilter
+                selectedYear={selectedYear}
+                selectedMonth={selectedMonth}
+                onChangeYear={(yr) => {
+                  setSelectedYear(yr);
+                  setCurrentPage(1);
+                }}
+                onChangeMonth={(m) => {
+                  setSelectedMonth(m);
+                  setCurrentPage(1);
+                }}
+                availableYears={availableYears}
+              />
             </div>
 
             <span className="text-xs font-semibold text-slate-400">

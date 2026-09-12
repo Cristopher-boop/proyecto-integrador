@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { BrainCircuit, AlertTriangle, HeartPulse, Activity, Loader2 } from 'lucide-react';
 import { INAAQC_THEME } from '../../../config/theme';
@@ -7,8 +7,8 @@ import { expertApi, type EpisodeOption } from '../api/expertApi';
 import { SofaCard } from '../components/SofaCard';
 import { Saps3Card } from '../components/Saps3Card';
 import { EntityBadges } from '../components/EntityBadges';
-import { SearchableSelect } from '../../../components/common/SearchableSelect';
-import { PageHeader } from '../../../components/common/PageHeader';
+import { ClinicalHeader } from '../../../components/common/ClinicalHeader';
+import { useEpisodeDateFilter, formatDateBadge } from '../../../hooks/useEpisodeDateFilter';
 
 export const ExpertSystemView: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +22,24 @@ export const ExpertSystemView: React.FC = () => {
   const [data, setData] = useState<ExpertoData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const {
+    selectedYear,
+    selectedMonth,
+    setSelectedYear,
+    setSelectedMonth,
+    availableYears,
+    filteredEpisodes,
+  } = useEpisodeDateFilter(episodeOptions, selectedEpisode, (opt) => opt.value);
+
+  const displayEpisodeOptions = useMemo(
+    () =>
+      filteredEpisodes.map((opt) => ({
+        ...opt,
+        badge: formatDateBadge(opt.fecha_ingreso),
+      })),
+    [filteredEpisodes]
+  );
 
   // 1. Cargar lista de episodios activos
   useEffect(() => {
@@ -79,22 +97,21 @@ export const ExpertSystemView: React.FC = () => {
   return (
     <div className="space-y-4 font-sans animate-fade-in-up">
       {/* 1. Header Compacto Estandarizado */}
-      <PageHeader
+      <ClinicalHeader
         title="Sistema Experto: Control Predictivo"
         subtitle="Perfil de disfunción orgánica basado en hechos reales extraídos."
         icon={<BrainCircuit className="w-6 h-6 sm:w-7 sm:h-7" />}
-      >
-        <div className="w-full sm:w-80">
-          <SearchableSelect
-            options={episodeOptions}
-            value={selectedEpisode}
-            onChange={handleEpisodeChange}
-            placeholder="-- Selecciona un episodio activo --"
-            searchPlaceholder="Buscar por episodio o paciente..."
-            icon={<BrainCircuit className="w-4 h-4" />}
-          />
-        </div>
-      </PageHeader>
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+        onChangeYear={setSelectedYear}
+        onChangeMonth={setSelectedMonth}
+        availableYears={availableYears}
+        episodes={displayEpisodeOptions}
+        selectedEpisode={selectedEpisode}
+        onEpisodeChange={handleEpisodeChange}
+        episodePlaceholder="-- Selecciona un episodio activo --"
+        episodeIcon={<BrainCircuit className="w-4 h-4" />}
+      />
 
       {/* ÁREA CENTRAL */}
       {!selectedEpisode ? (

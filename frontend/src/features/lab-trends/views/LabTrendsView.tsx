@@ -4,8 +4,8 @@ import { useLabTrends } from '../hooks/useLabTrends';
 import { TrendsPlaybackBar } from '../components/TrendsPlaybackBar';
 import { TrendsMasterChart } from '../components/TrendsMasterChart';
 import { TrendsIndividualCards } from '../components/TrendsIndividualCards';
-import { SearchableSelect } from '../../../components/common/SearchableSelect';
-import { PageHeader } from '../../../components/common/PageHeader';
+import { ClinicalHeader } from '../../../components/common/ClinicalHeader';
+import { useEpisodeDateFilter, formatDateBadge } from '../../../hooks/useEpisodeDateFilter';
 import { INAAQC_THEME } from '../../../config/theme';
 
 export const LabTrendsView: React.FC = () => {
@@ -31,35 +31,43 @@ export const LabTrendsView: React.FC = () => {
     ? new Date(uniqueTimes[simStep - 1]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : '--:--';
 
+  const {
+    selectedYear,
+    selectedMonth,
+    setSelectedYear,
+    setSelectedMonth,
+    availableYears,
+    filteredEpisodes,
+  } = useEpisodeDateFilter(admisiones, selectedAdmision, (a) => a.id_admision);
+
   const episodeOptions = useMemo(
     () =>
-      admisiones.map((a) => ({
+      filteredEpisodes.map((a) => ({
         value: a.id_admision,
         label: a.numero_episodio,
         secondary: a.paciente_nombre,
+        badge: formatDateBadge(a.fecha_ingreso),
       })),
-    [admisiones]
+    [filteredEpisodes]
   );
 
   return (
     <div className="space-y-4 font-sans animate-fade-in-up">
       {/* 1. Header Compacto Estandarizado */}
-      <PageHeader
+      <ClinicalHeader
         title="Simulación de Tendencias LAB"
         subtitle="Análisis dinámico temporal exclusivo para bioquímica y analítica sanguínea."
         icon={<ChartIcon className="w-6 h-6 sm:w-7 sm:h-7" />}
-      >
-        <div className="w-full sm:w-80">
-          <SearchableSelect
-            options={episodeOptions}
-            value={selectedAdmision}
-            onChange={setSelectedAdmision}
-            placeholder="-- Seleccionar episodio clínico --"
-            searchPlaceholder="Buscar por episodio o paciente..."
-            icon={<ChartIcon className="w-4 h-4" />}
-          />
-        </div>
-      </PageHeader>
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+        onChangeYear={setSelectedYear}
+        onChangeMonth={setSelectedMonth}
+        availableYears={availableYears}
+        episodes={episodeOptions}
+        selectedEpisode={selectedAdmision}
+        onEpisodeChange={setSelectedAdmision}
+        episodeIcon={<ChartIcon className="w-4 h-4" />}
+      />
 
       {error && (
         <div className="bg-red-50 border border-red-200 p-3.5 rounded-xl text-red-700 font-semibold text-xs flex items-center gap-2">

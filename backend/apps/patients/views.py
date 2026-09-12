@@ -12,12 +12,23 @@ class PacienteListCreateAPIView(APIView):
 
     def get(self, request):
         estado = request.query_params.get('estado', 'activos').lower().strip()
+        anio = request.query_params.get('anio')
+        mes = request.query_params.get('mes')
+        try:
+            anio = int(anio) if anio is not None and anio != '' else None
+        except (ValueError, TypeError):
+            anio = None
+        try:
+            mes = int(mes) if mes is not None and mes != '' else None
+        except (ValueError, TypeError):
+            mes = None
+
         if estado == 'inactivos':
-            pacientes = PacienteService.obtener_inactivos()
+            pacientes = PacienteService.obtener_inactivos(anio=anio, mes=mes)
         elif estado == 'todos':
-            pacientes = PacienteService.obtener_todos()
+            pacientes = PacienteService.obtener_todos(anio=anio, mes=mes)
         else:
-            pacientes = PacienteService.obtener_activos()
+            pacientes = PacienteService.obtener_activos(anio=anio, mes=mes)
             
         serializer = PacienteSerializer(pacientes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -116,14 +127,25 @@ class AdmisionListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated, CanManageAdmissions]
 
     def get(self, request):
-        """Lista admisiones según filtro de estado"""
+        """Lista admisiones según filtro de estado y periodo"""
         estado = request.query_params.get('estado', 'activos').lower().strip()
+        anio = request.query_params.get('anio')
+        mes = request.query_params.get('mes')
+        try:
+            anio = int(anio) if anio is not None and anio != '' else None
+        except (ValueError, TypeError):
+            anio = None
+        try:
+            mes = int(mes) if mes is not None and mes != '' else None
+        except (ValueError, TypeError):
+            mes = None
+
         if estado == 'inactivos':
-            admisiones = AdmisionService.obtener_inactivas()
+            admisiones = AdmisionService.obtener_inactivas(anio=anio, mes=mes)
         elif estado == 'todos':
-            admisiones = AdmisionService.obtener_todas()
+            admisiones = AdmisionService.obtener_todas(anio=anio, mes=mes)
         else:
-            admisiones = AdmisionService.obtener_activas()
+            admisiones = AdmisionService.obtener_activas(anio=anio, mes=mes)
             
         serializer = AdmisionSerializer(admisiones, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

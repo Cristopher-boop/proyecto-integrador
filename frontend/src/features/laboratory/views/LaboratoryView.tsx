@@ -18,8 +18,8 @@ import { useLaboratory } from '../hooks/useLaboratory';
 import { INAAQC_THEME } from '../../../config/theme';
 import { AuditSplitView } from '../../visualizer/views/AuditSplitView';
 import { Pagination } from '../../../components/common/Pagination';
-import { SearchableSelect } from '../../../components/common/SearchableSelect';
-import { PageHeader } from '../../../components/common/PageHeader';
+import { ClinicalHeader } from '../../../components/common/ClinicalHeader';
+import { useEpisodeDateFilter, formatDateBadge } from '../../../hooks/useEpisodeDateFilter';
 
 const LAB_ORDER = [
   'bilirubina total',
@@ -62,14 +62,24 @@ export const LaboratoryView: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const {
+    selectedYear,
+    selectedMonth,
+    setSelectedYear,
+    setSelectedMonth,
+    availableYears,
+    filteredEpisodes,
+  } = useEpisodeDateFilter(admisiones, selectedAdmision, (a) => a.id_admision);
+
   const episodeOptions = useMemo(
     () =>
-      admisiones.map((a) => ({
+      filteredEpisodes.map((a) => ({
         value: a.id_admision,
         label: a.numero_episodio,
         secondary: a.paciente_nombre,
+        badge: formatDateBadge(a.fecha_ingreso),
       })),
-    [admisiones]
+    [filteredEpisodes]
   );
 
   const getTipoCategoria = (parametro: string, tipoDb?: string): FilterType => {
@@ -197,22 +207,21 @@ export const LaboratoryView: React.FC = () => {
   return (
     <div className="space-y-4 font-sans animate-fade-in-up">
       {/* 1. Header Compacto Estandarizado */}
-      <PageHeader
+      <ClinicalHeader
         title="Control de Laboratorio"
         subtitle="Resultados analíticos y parámetros biomédicos extraídos por OCR."
         icon={<Microscope className="w-6 h-6 sm:w-7 sm:h-7" />}
-      >
-        <div className="w-full sm:w-80">
-          <SearchableSelect
-            options={episodeOptions}
-            value={selectedAdmision}
-            onChange={handleAdmisionChange}
-            placeholder="-- Selecciona un episodio activo --"
-            searchPlaceholder="Buscar por episodio o paciente..."
-            icon={<Microscope className="w-4 h-4 text-slate-400" />}
-          />
-        </div>
-      </PageHeader>
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+        onChangeYear={setSelectedYear}
+        onChangeMonth={setSelectedMonth}
+        availableYears={availableYears}
+        episodes={episodeOptions}
+        selectedEpisode={selectedAdmision}
+        onEpisodeChange={handleAdmisionChange}
+        episodePlaceholder="-- Selecciona un episodio activo --"
+        episodeIcon={<Microscope className="w-4 h-4 text-slate-400" />}
+      />
 
       {error && (
         <div className="bg-red-50 border border-red-200 p-3 rounded-xl text-red-700 text-xs font-bold">

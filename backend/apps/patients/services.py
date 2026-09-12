@@ -3,19 +3,34 @@ from .models import Admision
 
 class PacienteService:
     @staticmethod
-    def obtener_activos():
+    def obtener_activos(anio=None, mes=None):
         """Solo retorna pacientes que no han sido borrados lógicamente."""
-        return Paciente.objects.filter(esta_activo=True)
+        qs = Paciente.objects.filter(esta_activo=True)
+        if anio:
+            qs = qs.filter(creado_en__year=anio)
+        if mes:
+            qs = qs.filter(creado_en__month=mes)
+        return qs
 
     @staticmethod
-    def obtener_inactivos():
+    def obtener_inactivos(anio=None, mes=None):
         """Retorna pacientes dados de baja lógica."""
-        return Paciente.objects.filter(esta_activo=False)
+        qs = Paciente.objects.filter(esta_activo=False)
+        if anio:
+            qs = qs.filter(creado_en__year=anio)
+        if mes:
+            qs = qs.filter(creado_en__month=mes)
+        return qs
 
     @staticmethod
-    def obtener_todos():
+    def obtener_todos(anio=None, mes=None):
         """Retorna todos los pacientes (activos e inactivos)."""
-        return Paciente.objects.all()
+        qs = Paciente.objects.all()
+        if anio:
+            qs = qs.filter(creado_en__year=anio)
+        if mes:
+            qs = qs.filter(creado_en__month=mes)
+        return qs
 
     @staticmethod
     def crear_paciente(datos_validados):
@@ -55,19 +70,34 @@ class PacienteService:
         
 class AdmisionService:
     @staticmethod
-    def obtener_activas():
+    def obtener_activas(anio=None, mes=None):
         """Retorna todas las admisiones que no han sido dadas de baja."""
-        return Admision.objects.filter(esta_activo=True)
+        qs = Admision.objects.filter(esta_activo=True)
+        if anio:
+            qs = qs.filter(fecha_ingreso__year=anio)
+        if mes:
+            qs = qs.filter(fecha_ingreso__month=mes)
+        return qs
 
     @staticmethod
-    def obtener_inactivas():
+    def obtener_inactivas(anio=None, mes=None):
         """Retorna admisiones cerradas/inactivas."""
-        return Admision.objects.filter(esta_activo=False)
+        qs = Admision.objects.filter(esta_activo=False)
+        if anio:
+            qs = qs.filter(fecha_ingreso__year=anio)
+        if mes:
+            qs = qs.filter(fecha_ingreso__month=mes)
+        return qs
 
     @staticmethod
-    def obtener_todas():
+    def obtener_todas(anio=None, mes=None):
         """Retorna todas las admisiones (activas e inactivas)."""
-        return Admision.objects.all()
+        qs = Admision.objects.all()
+        if anio:
+            qs = qs.filter(fecha_ingreso__year=anio)
+        if mes:
+            qs = qs.filter(fecha_ingreso__month=mes)
+        return qs
 
     @staticmethod
     def crear_admision(datos_validados):
