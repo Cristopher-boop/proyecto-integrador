@@ -71,17 +71,17 @@ export const DashboardHomeView: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in-up font-sans">
       {/* Cabecera de Sección */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-200/60">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-200/60 dark:border-[#334759]">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight" style={{ color: adobe.base }}>
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1E3040] dark:text-[#F1F5F9]">
             Visión General del Sistema
           </h2>
-          <p className="text-xs sm:text-sm font-medium mt-1 text-slate-500">
+          <p className="text-xs sm:text-sm font-medium mt-1 text-slate-500 dark:text-slate-400">
             Métricas operativas del Instituto Académico-Científico Quispe-Cornejo (INAAQC) • Hospital Erasme
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#9EBDD9]/30 border border-[#9FB0BF] text-[#1E3040] text-xs font-bold">
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#1E3040]" />
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#9EBDD9]/30 dark:bg-[#15232F] border border-[#9FB0BF] dark:border-[#334759] text-[#1E3040] dark:text-[#87C7FF] text-xs font-bold">
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#1E3040] dark:text-[#87C7FF]" />
           <span>Servidores Activos</span>
         </div>
       </div>
@@ -96,7 +96,7 @@ export const DashboardHomeView: React.FC = () => {
       </div>
 
       {/* 3. Barra de Estado de la Infraestructura */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#1E3040] p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-[#334759] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-colors duration-200">
         <div className="flex items-center gap-3.5">
           <div
             className="p-2.5 rounded-xl shrink-0"
@@ -105,15 +105,15 @@ export const DashboardHomeView: React.FC = () => {
             <Activity className="w-5 h-5" style={{ color: statusColors.success.text }} />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-[#F1F5F9]">
               Pipeline Clínico y Algoritmos Deterministas Operativos
             </h4>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Conexión activa con PostgreSQL, Motores OCR Tesseract y Reglas de Inferencia KDIGO/SAPS3.
             </p>
           </div>
         </div>
-        <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-mono font-bold border border-slate-200 shrink-0">
+        <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-[#15232F] text-slate-600 dark:text-slate-300 text-xs font-mono font-bold border border-slate-200 dark:border-[#334759] shrink-0">
           v2.2.0-clean
         </span>
       </div>

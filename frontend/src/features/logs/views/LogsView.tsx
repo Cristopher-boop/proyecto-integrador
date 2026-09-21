@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import { useAuditLogs } from '../hooks/useAuditLogs';
 import { useSystemBackups } from '../hooks/useSystemBackups';
-import { INAAQC_THEME } from '../../../config/theme';
 import { PageHeader } from '../../../components/common/PageHeader';
 import { Input } from '../../../components/common/Input';
 import { DataTable } from '../../../components/common/DataTable';
@@ -59,7 +58,6 @@ const ESTADOS = [
 
 export const LogsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'logs' | 'backups'>('logs');
-  const adobe = INAAQC_THEME.palette;
 
   // Logs Hook
   const { logs, isLoading: isLoadingLogs, error: errorLogs, filters, updateFilter, refetch: refetchLogs, stats } = useAuditLogs();
@@ -243,8 +241,8 @@ export const LogsView: React.FC = () => {
         const hora = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         return (
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-slate-800">{fecha}</span>
-            <span className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-100">{fecha}</span>
+            <span className="text-[11px] font-mono text-slate-400 dark:text-slate-400 flex items-center gap-1">
               <Clock className="w-2.5 h-2.5" /> {hora}
             </span>
           </div>
@@ -258,7 +256,7 @@ export const LogsView: React.FC = () => {
       width: 'w-[170px]',
       render: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold text-slate-800 flex items-center gap-1 truncate">
+          <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1 truncate">
             {row.usuario_nombre}
           </span>
           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border inline-block w-max ${getRoleBadgeColor(row.rol)}`}>
@@ -274,7 +272,7 @@ export const LogsView: React.FC = () => {
       width: 'w-[200px]',
       render: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">
             {row.modulo}
           </span>
           {getAccionBadge(row.accion)}
@@ -285,7 +283,7 @@ export const LogsView: React.FC = () => {
       header: 'Descripción del Evento',
       accessorKey: 'descripcion',
       render: (row) => (
-        <div className="text-xs font-medium text-slate-600 leading-relaxed py-1 max-w-xl">
+        <div className="text-xs font-medium text-slate-600 dark:text-slate-300 leading-relaxed py-1 max-w-xl">
           {row.descripcion}
         </div>
       ),
@@ -295,7 +293,7 @@ export const LogsView: React.FC = () => {
       accessorKey: 'ip_address',
       width: 'w-[120px]',
       render: (row) => (
-        <span className="text-xs font-mono text-slate-400">
+        <span className="text-xs font-mono text-slate-400 dark:text-slate-400">
           {row.ip_address || 'Local / Interno'}
         </span>
       ),
@@ -311,12 +309,12 @@ export const LogsView: React.FC = () => {
         return (
           <span className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 rounded-full ${
             isExito
-              ? 'bg-[#9EBDD9]/40 text-[#1E3040] border border-[#9FB0BF]'
+              ? 'bg-[#9EBDD9]/40 dark:bg-[#334759] text-[#1E3040] dark:text-[#87C7FF] border border-[#9FB0BF] dark:border-[#4D6173]'
               : isAdvertencia
-              ? 'bg-amber-100 text-amber-800 border border-amber-200'
-              : 'bg-rose-100 text-rose-800 border border-rose-200'
+              ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
+              : 'bg-rose-100 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
           }`}>
-            {isExito ? <CheckCircle2 className="w-3 h-3 text-[#1E3040]" /> : <AlertTriangle className="w-3 h-3" />}
+            {isExito ? <CheckCircle2 className="w-3 h-3 text-[#1E3040] dark:text-[#87C7FF]" /> : <AlertTriangle className="w-3 h-3" />}
             {row.estado}
           </span>
         );
@@ -336,13 +334,13 @@ export const LogsView: React.FC = () => {
           <div className="flex flex-col gap-1">
             <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg border w-max ${
               isQuincenal 
-                ? 'bg-[#9EBDD9]/30 text-[#1E3040] border-[#9FB0BF]' 
-                : 'bg-[#1E3040] text-white border-[#1E3040]'
+                ? 'bg-[#9EBDD9]/30 dark:bg-[#334759] text-[#1E3040] dark:text-[#87C7FF] border-[#9FB0BF] dark:border-[#4D6173]' 
+                : 'bg-[#1E3040] dark:bg-[#15232F] text-white border-[#1E3040] dark:border-[#334759]'
             }`}>
-              {isQuincenal ? <Calendar className="w-3.5 h-3.5 text-[#4D6173]" /> : <ShieldCheck className="w-3.5 h-3.5 text-[#87C7FF]" />}
+              {isQuincenal ? <Calendar className="w-3.5 h-3.5 text-[#4D6173] dark:text-[#87C7FF]" /> : <ShieldCheck className="w-3.5 h-3.5 text-[#87C7FF]" />}
               {row.tipo_display}
             </span>
-            <span className="text-[10px] text-slate-400 font-medium">
+            <span className="text-[10px] text-slate-400 dark:text-slate-400 font-medium">
               Por: {row.creado_por_nombre}
             </span>
           </div>
@@ -360,11 +358,11 @@ export const LogsView: React.FC = () => {
         const hora = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
         return (
           <div className="flex flex-col">
-            <span className="text-xs font-mono font-bold text-slate-800 flex items-center gap-1.5 truncate">
-              <FileArchive className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 truncate">
+              <FileArchive className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400 shrink-0" />
               {row.nombre_archivo}
             </span>
-            <span className="text-[11px] text-slate-400 mt-0.5">
+            <span className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
               Generado: {fecha} a las {hora}
             </span>
           </div>
@@ -379,10 +377,10 @@ export const LogsView: React.FC = () => {
         const total = Object.values(reg).reduce((acc: number, curr: any) => acc + (Number(curr) || 0), 0);
         return (
           <div className="flex flex-col gap-1 py-1">
-            <span className="text-xs font-bold text-slate-700">
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
               {total.toLocaleString()} registros
             </span>
-            <div className="flex flex-wrap gap-1 text-[10px] text-slate-400">
+            <div className="flex flex-wrap gap-1 text-[10px] text-slate-400 dark:text-slate-400">
               {reg.pacientes !== undefined && <span>Px: {reg.pacientes} •</span>}
               {reg.admisiones !== undefined && <span>Adm: {reg.admisiones} •</span>}
               {reg.observaciones_biomedicas !== undefined && <span>Obs: {reg.observaciones_biomedicas} •</span>}
@@ -399,7 +397,7 @@ export const LogsView: React.FC = () => {
       align: 'center',
       width: 'w-[100px]',
       render: (row) => (
-        <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+        <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-[#15232F] px-2 py-0.5 rounded border border-slate-200 dark:border-[#334759]">
           {row.tamanio_legible}
         </span>
       ),
@@ -412,15 +410,15 @@ export const LogsView: React.FC = () => {
         const isCopied = copiedChecksum === row.checksum_sha256;
         return (
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-mono text-slate-500 truncate" title={row.checksum_sha256}>
+            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate" title={row.checksum_sha256}>
               {row.checksum_sha256.substring(0, 10)}...
             </span>
             <button
               onClick={() => handleCopyChecksum(row.checksum_sha256)}
-              className="p-1 text-slate-400 hover:text-slate-600 rounded transition-colors"
+              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded transition-colors"
               title="Copiar hash SHA-256 completo"
             >
-              {isCopied ? <Check className="w-3 h-3 text-[#1E3040]" /> : <Copy className="w-3 h-3" />}
+              {isCopied ? <Check className="w-3 h-3 text-[#1E3040] dark:text-[#87C7FF]" /> : <Copy className="w-3 h-3" />}
             </button>
           </div>
         );
@@ -491,19 +489,19 @@ export const LogsView: React.FC = () => {
       </PageHeader>
 
       {/* 2. Pestañas de Navegación del Módulo */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-[#334759] pb-2">
         <button
           onClick={() => setActiveTab('logs')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
             activeTab === 'logs'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24] shadow-xs'
+              : 'bg-white dark:bg-[#1E3040] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759] border border-slate-200 dark:border-[#334759]'
           }`}
         >
           <ScrollText className="w-4 h-4" />
           Logs de Auditoría en Vivo
           <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-            activeTab === 'logs' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'
+            activeTab === 'logs' ? 'bg-slate-800 dark:bg-[#0F1A24]/30 text-slate-200 dark:text-[#0F1A24]' : 'bg-slate-100 dark:bg-[#15232F] text-slate-600 dark:text-slate-300'
           }`}>
             {stats.total}
           </span>
@@ -513,14 +511,14 @@ export const LogsView: React.FC = () => {
           onClick={() => setActiveTab('backups')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
             activeTab === 'backups'
-              ? 'bg-[#1E3040] text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24] shadow-xs'
+              : 'bg-white dark:bg-[#1E3040] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759] border border-slate-200 dark:border-[#334759]'
           }`}
         >
           <Database className="w-4 h-4 text-[#87C7FF]" />
           Respaldos & Cortes Quincenales
           {scheduleStatus && (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#9EBDD9]/40 text-[#1E3040] border border-[#9FB0BF]">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#9EBDD9]/40 dark:bg-[#334759] text-[#1E3040] dark:text-[#87C7FF] border border-[#9FB0BF] dark:border-[#4D6173]">
               Corte en {scheduleStatus.dias_restantes}d
             </span>
           )}
@@ -532,49 +530,49 @@ export const LogsView: React.FC = () => {
         <div className="space-y-4 animate-fade-in-up">
           {/* Tarjetas de Resumen Rápido */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E3040] p-4 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Eventos</p>
-                <p className="text-2xl font-black text-slate-800 mt-0.5">{stats.total}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">Total Eventos</p>
+                <p className="text-2xl font-black text-slate-800 dark:text-[#F1F5F9] mt-0.5">{stats.total}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/20 flex items-center justify-center text-[#1E3040]">
+              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/20 dark:bg-[#15232F] flex items-center justify-center text-[#1E3040] dark:text-[#87C7FF]">
                 <ScrollText className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E3040] p-4 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#4D6173]">Ingesta & Docs</p>
-                <p className="text-2xl font-black text-[#1E3040] mt-0.5">{stats.vinculaciones}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#4D6173] dark:text-[#9EBDD9]">Ingesta & Docs</p>
+                <p className="text-2xl font-black text-[#1E3040] dark:text-[#87C7FF] mt-0.5">{stats.vinculaciones}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/30 border border-[#9FB0BF] flex items-center justify-center text-[#1E3040]">
+              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/30 dark:bg-[#15232F] border border-[#9FB0BF] dark:border-[#4D6173] flex items-center justify-center text-[#1E3040] dark:text-[#87C7FF]">
                 <Link2 className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E3040] p-4 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#4D6173]">Exitosos</p>
-                <p className="text-2xl font-black text-[#1E3040] mt-0.5">{stats.exitosos}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#4D6173] dark:text-[#9EBDD9]">Exitosos</p>
+                <p className="text-2xl font-black text-[#1E3040] dark:text-[#87C7FF] mt-0.5">{stats.exitosos}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/40 border border-[#9FB0BF] flex items-center justify-center text-[#1E3040]">
+              <div className="w-10 h-10 rounded-xl bg-[#9EBDD9]/40 dark:bg-[#15232F] border border-[#9FB0BF] dark:border-[#4D6173] flex items-center justify-center text-[#1E3040] dark:text-[#87C7FF]">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E3040] p-4 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-rose-600">Denegados / Error</p>
-                <p className="text-2xl font-black text-rose-700 mt-0.5">{stats.fallidos}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Denegados / Error</p>
+                <p className="text-2xl font-black text-rose-700 dark:text-rose-300 mt-0.5">{stats.fallidos}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900 flex items-center justify-center text-rose-600 dark:text-rose-400">
                 <AlertTriangle className="w-5 h-5" />
               </div>
             </div>
           </div>
 
           {/* Barra de Filtros */}
-          <div className="bg-white p-4 rounded-2xl shadow-xs border border-slate-100 flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div className="bg-white dark:bg-[#1E3040] p-4 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex flex-col md:flex-row gap-3 items-center justify-between">
             <div className="w-full md:w-80">
               <Input
                 icon={<Search className="w-4 h-4" />}
@@ -588,7 +586,7 @@ export const LogsView: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 mr-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
                 <Filter className="w-3.5 h-3.5" />
                 <span>Filtros:</span>
               </div>
@@ -599,10 +597,10 @@ export const LogsView: React.FC = () => {
                   updateFilter('modulo', e.target.value);
                   setLogsPage(1);
                 }}
-                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 transition-colors cursor-pointer"
               >
                 {MODULOS.map((m) => (
-                  <option key={m.value} value={m.value}>{m.label}</option>
+                  <option key={m.value} value={m.value} className="bg-white dark:bg-[#1E3040] text-slate-800 dark:text-slate-100">{m.label}</option>
                 ))}
               </select>
 
@@ -612,10 +610,10 @@ export const LogsView: React.FC = () => {
                   updateFilter('rol', e.target.value);
                   setLogsPage(1);
                 }}
-                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 transition-colors cursor-pointer"
               >
                 {ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>{r.label}</option>
+                  <option key={r.value} value={r.value} className="bg-white dark:bg-[#1E3040] text-slate-800 dark:text-slate-100">{r.label}</option>
                 ))}
               </select>
 
@@ -625,10 +623,10 @@ export const LogsView: React.FC = () => {
                   updateFilter('estado', e.target.value);
                   setLogsPage(1);
                 }}
-                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 transition-colors cursor-pointer"
               >
                 {ESTADOS.map((es) => (
-                  <option key={es.value} value={es.value}>{es.label}</option>
+                  <option key={es.value} value={es.value} className="bg-white dark:bg-[#1E3040] text-slate-800 dark:text-slate-100">{es.label}</option>
                 ))}
               </select>
 
@@ -641,7 +639,7 @@ export const LogsView: React.FC = () => {
                     updateFilter('search', '');
                     setLogsPage(1);
                   }}
-                  className="text-xs font-bold text-[#1E3040] hover:text-[#334759] px-2 py-1 underline transition-colors cursor-pointer"
+                  className="text-xs font-bold text-[#1E3040] dark:text-[#87C7FF] hover:text-[#334759] dark:hover:text-white px-2 py-1 underline transition-colors cursor-pointer"
                 >
                   Limpiar
                 </button>
@@ -650,9 +648,9 @@ export const LogsView: React.FC = () => {
           </div>
 
           {/* Tabla de Logs */}
-          <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
-            <div className="px-5 py-3 border-b bg-white border-slate-100 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-600">
+          <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col transition-colors duration-200">
+            <div className="px-5 py-3 border-b bg-white dark:bg-[#1E3040] border-slate-100 dark:border-[#334759] flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                 Mostrando {sortedLogs.length} transacciones registradas
               </span>
               <span className="text-xs font-semibold text-slate-400">
@@ -663,10 +661,10 @@ export const LogsView: React.FC = () => {
             <div className="overflow-x-auto">
               {isLoadingLogs ? (
                 <div className="p-12 flex justify-center items-center">
-                  <Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} />
+                  <Loader2 className="w-8 h-8 animate-spin text-[#1E3040] dark:text-[#87C7FF]" />
                 </div>
               ) : errorLogs ? (
-                <div className="p-8 text-rose-600 text-center font-bold">{errorLogs}</div>
+                <div className="p-8 text-rose-600 dark:text-rose-400 text-center font-bold">{errorLogs}</div>
               ) : sortedLogs.length === 0 ? (
                 <div className="p-12 text-center text-slate-400 font-medium">
                   No se encontraron registros de auditoría para los filtros seleccionados.
@@ -699,14 +697,14 @@ export const LogsView: React.FC = () => {
         <div className="space-y-4 animate-fade-in-up">
           {/* Alertas de Éxito / Error */}
           {successMessage && (
-            <div className="p-3.5 bg-[#9EBDD9]/30 border border-[#9FB0BF] rounded-xl text-xs font-bold text-[#1E3040] flex items-center justify-between">
+            <div className="p-3.5 bg-[#9EBDD9]/30 dark:bg-[#15232F] border border-[#9FB0BF] dark:border-[#334759] rounded-xl text-xs font-bold text-[#1E3040] dark:text-[#87C7FF] flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#1E3040]" />
+                <CheckCircle2 className="w-4 h-4 text-[#1E3040] dark:text-[#87C7FF]" />
                 {successMessage}
               </span>
               <button 
                 onClick={() => setSuccessMessage(null)}
-                className="text-[#1E3040] hover:text-[#334759] font-bold underline cursor-pointer"
+                className="text-[#1E3040] dark:text-[#87C7FF] hover:text-[#334759] dark:hover:text-white font-bold underline cursor-pointer"
               >
                 Cerrar
               </button>
@@ -714,14 +712,14 @@ export const LogsView: React.FC = () => {
           )}
 
           {errorBackups && (
-            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs font-bold text-rose-800 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-xs font-bold text-rose-800 dark:text-rose-300 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
               <span>{errorBackups}</span>
             </div>
           )}
 
           {/* Tarjeta 1: Cronograma de Cortes Quincenales */}
-          <div className="bg-gradient-to-br from-[#1E3040] to-[#334759] text-white p-5 rounded-2xl shadow-sm">
+          <div className="bg-gradient-to-br from-[#1E3040] to-[#334759] text-white p-5 rounded-2xl shadow-sm border border-slate-700/40">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -774,14 +772,14 @@ export const LogsView: React.FC = () => {
           </div>
 
           {/* Tarjeta 2: Generar Respaldo Bajo Demanda */}
-          <div className="bg-white p-5 rounded-2xl shadow-xs border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="bg-white dark:bg-[#1E3040] p-5 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-colors duration-200">
             <div className="max-w-xl">
               <div className="flex items-center gap-2">
-                <Database className="w-5 h-5 text-[#1E3040]" />
-                <h4 className="text-base font-black text-slate-800">Generar Respaldo Completo Bajo Demanda</h4>
+                <Database className="w-5 h-5 text-[#1E3040] dark:text-[#87C7FF]" />
+                <h4 className="text-base font-black text-slate-800 dark:text-[#F1F5F9]">Generar Respaldo Completo Bajo Demanda</h4>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                Como <strong>Superadministrador</strong>, puedes solicitar un volcado integral e inmediato de toda la base de datos (Pacientes, Admisiones UCI, Bio-parámetros, Archivos y Logs) empaquetado en archivo ZIP cifrado con SHA-256.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Como <strong className="dark:text-slate-200">Superadministrador</strong>, puedes solicitar un volcado integral e inmediato de toda la base de datos (Pacientes, Admisiones UCI, Bio-parámetros, Archivos y Logs) empaquetado en archivo ZIP cifrado con SHA-256.
               </p>
               <div className="mt-3">
                 <input
@@ -789,7 +787,7 @@ export const LogsView: React.FC = () => {
                   placeholder="Nota o motivo del respaldo (opcional, ej. Mantenimiento / Auditoría)..."
                   value={backupNotas}
                   onChange={(e) => setBackupNotas(e.target.value)}
-                  className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#87C7FF]"
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#87C7FF]"
                 />
               </div>
             </div>
@@ -800,7 +798,7 @@ export const LogsView: React.FC = () => {
                 icon={isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                 disabled={isGenerating}
                 onClick={handleTriggerBackup}
-                className="w-full md:w-auto bg-[#1E3040] hover:bg-[#334759] text-white font-bold py-2.5 px-4 rounded-xl shadow-xs cursor-pointer"
+                className="w-full md:w-auto font-bold py-2.5 px-4 rounded-xl shadow-xs cursor-pointer"
               >
                 {isGenerating ? 'Generando Respaldo Completo...' : 'Generar Backup de Todo Ahora'}
               </Button>
@@ -808,9 +806,9 @@ export const LogsView: React.FC = () => {
           </div>
 
           {/* Tarjeta 3: Tabla de Historial de Respaldos */}
-          <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
-            <div className="px-5 py-3 border-b bg-white border-slate-100 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-600">
+          <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col transition-colors duration-200">
+            <div className="px-5 py-3 border-b bg-white dark:bg-[#1E3040] border-slate-100 dark:border-[#334759] flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                 Historial de Respaldos Almacenados ({backups.length})
               </span>
               <span className="text-xs font-semibold text-slate-400">
@@ -821,7 +819,7 @@ export const LogsView: React.FC = () => {
             <div className="overflow-x-auto">
               {isLoadingBackups ? (
                 <div className="p-12 flex justify-center items-center">
-                  <Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} />
+                  <Loader2 className="w-8 h-8 animate-spin text-[#1E3040] dark:text-[#87C7FF]" />
                 </div>
               ) : backups.length === 0 ? (
                 <div className="p-12 text-center text-slate-400 font-medium">

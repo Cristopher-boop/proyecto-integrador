@@ -113,12 +113,8 @@ export const LaboratoryView: React.FC = () => {
   ) => {
     if (!minStr || !maxStr)
       return {
-        rowColor: '#ffffff',
-        badgeStyle: {
-          backgroundColor: '#f1f5f9',
-          color: '#334155',
-          borderColor: '#e2e8f0',
-        },
+        rowClass: 'hover:bg-slate-50/80 dark:hover:bg-[#334759]/30',
+        badgeClass: 'bg-slate-100 dark:bg-[#15232F] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#334759]',
         iconColor: '#94a3b8',
         icon: <CheckCircle2 className="w-4 h-4" />,
       };
@@ -128,12 +124,8 @@ export const LaboratoryView: React.FC = () => {
 
     if (value >= min && value <= max)
       return {
-        rowColor: '#ffffff',
-        badgeStyle: {
-          backgroundColor: themeStatus.success.bg,
-          color: themeStatus.success.text,
-          borderColor: themeStatus.success.border,
-        },
+        rowClass: 'hover:bg-slate-50/80 dark:hover:bg-[#334759]/30',
+        badgeClass: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60',
         iconColor: themeStatus.success.text,
         icon: <CheckCircle2 className="w-4 h-4" />,
       };
@@ -141,23 +133,15 @@ export const LaboratoryView: React.FC = () => {
     const deviation = value < min ? (min - value) / min : (value - max) / max;
     if (deviation <= 0.1)
       return {
-        rowColor: themeStatus.alert.bg,
-        badgeStyle: {
-          backgroundColor: themeStatus.alert.bg,
-          color: themeStatus.alert.text,
-          borderColor: themeStatus.alert.border,
-        },
+        rowClass: 'bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/60 dark:hover:bg-amber-950/30',
+        badgeClass: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60',
         iconColor: themeStatus.alert.text,
         icon: <AlertTriangle className="w-4 h-4" />,
       };
 
     return {
-      rowColor: themeStatus.warning.bg,
-      badgeStyle: {
-        backgroundColor: themeStatus.warning.bg,
-        color: themeStatus.warning.text,
-        borderColor: themeStatus.warning.border,
-      },
+      rowClass: 'bg-rose-50/40 dark:bg-rose-950/20 hover:bg-rose-50/60 dark:hover:bg-rose-950/30',
+      badgeClass: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800/60',
       iconColor: themeStatus.warning.text,
       icon: <AlertCircle className="w-4 h-4" />,
     };
@@ -231,29 +215,28 @@ export const LaboratoryView: React.FC = () => {
 
       {/* 2. Chips de Documentos Fuente */}
       {selectedAdmision && archivos.length > 0 && (
-        <div className="bg-white px-4 py-2 rounded-xl shadow-xs border border-slate-100 flex items-center gap-2.5 overflow-x-auto custom-scrollbar">
-          <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0">
+        <div className="bg-white dark:bg-[#1E3040] px-4 py-2 rounded-xl shadow-xs border border-slate-100 dark:border-[#334759] flex items-center gap-2.5 overflow-x-auto custom-scrollbar">
+          <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 shrink-0">
             Archivos ({archivos.length}):
           </span>
           <div className="flex items-center gap-2">
             {archivos.map((archivo) => (
               <div
                 key={archivo.id_archivo}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs shrink-0"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-[#15232F] border border-slate-200 dark:border-[#334759] text-xs shrink-0"
               >
-                <FileText className="w-3.5 h-3.5 text-[#4D6173]" />
+                <FileText className="w-3.5 h-3.5 text-[#4D6173] dark:text-slate-400" />
                 <span
-                  className="font-bold text-[11px] truncate max-w-[140px]"
-                  style={{ color: adobe.base }}
+                  className="font-bold text-[11px] truncate max-w-[140px] text-slate-800 dark:text-white"
                 >
                   {archivo.nombre_archivo}
                 </span>
-                <span className="text-[9px] font-black px-1 py-0.2 rounded bg-[#9EBDD9]/40 text-[#1E3040]">
+                <span className="text-[9px] font-black px-1 py-0.2 rounded bg-[#9EBDD9]/40 text-[#1E3040] dark:bg-[#87C7FF]/20 dark:text-[#87C7FF]">
                   {archivo.tipo_documento.replace('_AUDITADO', '')}
                 </span>
                 <button
                   onClick={() => setArchivoAuditoria(archivo)}
-                  className="p-1 rounded hover:bg-slate-200 text-slate-500 transition-colors ml-0.5"
+                  className="p-1 rounded hover:bg-slate-200 dark:hover:bg-[#334759] text-slate-500 dark:text-slate-400 transition-colors ml-0.5"
                   title="Auditar documento OCR"
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -265,10 +248,10 @@ export const LaboratoryView: React.FC = () => {
       )}
 
       {/* 3. Tarjeta de Tabla sin espacios blancos artificiales */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col">
         {/* Barra de Filtros */}
         {selectedAdmision && !isLoading && observaciones.length > 0 && (
-          <div className="px-5 py-2.5 border-b bg-slate-50/60 flex items-center justify-between gap-2">
+          <div className="px-5 py-2.5 border-b border-slate-100 dark:border-[#334759] bg-slate-50/60 dark:bg-[#15232F]/60 flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 overflow-x-auto">
               {[
                 { id: 'ALL', label: 'Todos', icon: <Filter size={13} /> },
@@ -282,15 +265,15 @@ export const LaboratoryView: React.FC = () => {
                   onClick={() => handleFilterChange(f.id as FilterType)}
                   className={`px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all border shrink-0 ${
                     activeFilter === f.id
-                      ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-slate-800 dark:bg-[#87C7FF]/20 text-white dark:text-[#87C7FF] border-slate-800 dark:border-[#87C7FF] shadow-xs'
+                      : 'bg-white dark:bg-[#1E3040] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#334759] hover:bg-slate-100 dark:hover:bg-[#334759]/40'
                   }`}
                 >
                   {f.icon} {f.label}
                 </button>
               ))}
             </div>
-            <span className="text-xs font-semibold text-slate-400 hidden sm:inline">
+            <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 hidden sm:inline">
               Página {currentPage} de {totalPages || 1} ({filteredObservaciones.length} datos)
             </span>
           </div>
@@ -308,20 +291,17 @@ export const LaboratoryView: React.FC = () => {
           ) : currentObservaciones.length > 0 ? (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr
-                  className="border-b"
-                  style={{ backgroundColor: `${adobe.lightTint}15`, borderColor: '#e2e8f0' }}
-                >
-                  <th className="py-2.5 px-4 text-center w-16 text-xs font-bold uppercase tracking-wider text-slate-600">Estado</th>
-                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600">Fecha / Hora</th>
-                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600">Categoría</th>
-                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600">Parámetro</th>
-                  <th className="py-2.5 px-4 text-right text-xs font-bold uppercase tracking-wider text-slate-600">Valor Detectado</th>
-                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600">Unidad</th>
-                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600">Rango Ref.</th>
+                <tr className="border-b border-slate-200 dark:border-[#334759] bg-slate-50/80 dark:bg-[#15232F]">
+                  <th className="py-2.5 px-4 text-center w-16 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Estado</th>
+                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Fecha / Hora</th>
+                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Categoría</th>
+                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Parámetro</th>
+                  <th className="py-2.5 px-4 text-right text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Valor Detectado</th>
+                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Unidad</th>
+                  <th className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Rango Ref.</th>
                 </tr>
               </thead>
-              <tbody className="text-xs font-medium text-slate-700">
+              <tbody className="text-xs font-medium text-slate-700 dark:text-slate-200">
                 {currentObservaciones.map((obs) => {
                   const style = getHeatmapStyle(
                     obs.valor_numerico,
@@ -336,11 +316,7 @@ export const LaboratoryView: React.FC = () => {
                   return (
                     <tr
                       key={obs.id_observacion}
-                      className="border-b transition-colors hover:bg-slate-50/80"
-                      style={{
-                        backgroundColor: style.rowColor,
-                        borderColor: '#f1f5f9',
-                      }}
+                      className={`border-b border-slate-100 dark:border-[#334759]/40 transition-colors ${style.rowClass}`}
                     >
                       <td
                         className="py-2 px-4 text-center"
@@ -348,7 +324,7 @@ export const LaboratoryView: React.FC = () => {
                       >
                         <div className="flex justify-center">{style.icon}</div>
                       </td>
-                      <td className="py-2 px-4 text-slate-600 font-semibold">
+                      <td className="py-2 px-4 text-slate-600 dark:text-slate-300 font-semibold">
                         {obs.fecha_hora_registro
                           ? new Date(obs.fecha_hora_registro).toLocaleString(
                               'es-ES',
@@ -364,31 +340,25 @@ export const LaboratoryView: React.FC = () => {
                       </td>
                       <td className="py-2 px-4">
                         <span
-                          className="text-[10px] font-black px-2 py-0.5 rounded border"
-                          style={{
-                            backgroundColor: `${adobe.lightTint}25`,
-                            color: adobe.base,
-                            borderColor: `${adobe.lightTint}60`,
-                          }}
+                          className="text-[10px] font-black px-2 py-0.5 rounded border bg-[#9EBDD9]/25 text-[#1E3040] dark:bg-[#87C7FF]/15 dark:text-[#87C7FF] border-slate-200 dark:border-[#334759]"
                         >
                           {cat}
                         </span>
                       </td>
-                      <td className="py-2 px-4 font-bold text-slate-800">
+                      <td className="py-2 px-4 font-bold text-slate-800 dark:text-white">
                         {obs.parametro}
                       </td>
                       <td className="py-2 px-4 text-right">
                         <span
-                          className="inline-block px-2.5 py-0.5 rounded-md border font-mono text-sm font-bold shadow-xs"
-                          style={style.badgeStyle}
+                          className={`inline-block px-2.5 py-0.5 rounded-md border font-mono text-sm font-bold shadow-xs ${style.badgeClass}`}
                         >
                           {parseFloat(obs.valor_numerico).toFixed(2)}
                         </span>
                       </td>
-                      <td className="py-2 px-4 text-slate-500 font-semibold">
+                      <td className="py-2 px-4 text-slate-500 dark:text-slate-400 font-semibold">
                         {obs.unidad_medida || '-'}
                       </td>
-                      <td className="py-2 px-4 text-slate-400 font-mono text-xs">
+                      <td className="py-2 px-4 text-slate-400 dark:text-slate-400 font-mono text-xs">
                         {obs.rango_referencia_min && obs.rango_referencia_max
                           ? `[${obs.rango_referencia_min} - ${obs.rango_referencia_max}]`
                           : '-'}
@@ -400,8 +370,8 @@ export const LaboratoryView: React.FC = () => {
             </table>
           ) : selectedAdmision ? (
             <div className="p-12 flex flex-col items-center justify-center text-center">
-              <Filter className="w-10 h-10 mb-2 text-slate-300" />
-              <p className="font-bold text-sm text-slate-600">
+              <Filter className="w-10 h-10 mb-2 text-slate-300 dark:text-slate-600" />
+              <p className="font-bold text-sm text-slate-600 dark:text-slate-300">
                 No hay observaciones que coincidan con el filtro seleccionado.
               </p>
             </div>
@@ -411,10 +381,10 @@ export const LaboratoryView: React.FC = () => {
                 className="w-12 h-12 mb-3"
                 style={{ color: adobe.highlight }}
               />
-              <p className="font-bold text-sm text-slate-700">
+              <p className="font-bold text-sm text-slate-700 dark:text-slate-200">
                 Selecciona un episodio activo arriba para consultar los datos de laboratorio.
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
                 Visualizarás el desglose analítico, rangos y documentos asociados sin desplazamientos.
               </p>
             </div>

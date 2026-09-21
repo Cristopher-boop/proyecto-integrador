@@ -4,7 +4,6 @@ import { useAdmissions } from '../hooks/useAdmissions';
 import { usePatients } from '../../patients/hooks/usePatients'; 
 import { useAuth } from '../../auth';
 import { AdmissionForm } from '../components/AdmissionForm';
-import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
 import { Pagination } from '../../../components/common/Pagination';
@@ -29,8 +28,6 @@ const AdmissionsView: React.FC = () => {
   const { user } = useAuth();
   const canManage = user?.is_superuser || (user?.rol && user.rol !== 'TI');
 
-  const adobe = INAAQC_THEME.palette;
-  
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>(now.getMonth() + 1);
@@ -103,7 +100,7 @@ const AdmissionsView: React.FC = () => {
       sortable: true,
       width: 'w-[140px]',
       render: (row) => (
-        <span className="text-xs font-mono font-bold text-[#1E3040] bg-[#9EBDD9]/40 px-2.5 py-1 rounded-md border border-[#9FB0BF]">
+        <span className="text-xs font-mono font-bold text-[#1E3040] dark:text-[#87C7FF] bg-[#9EBDD9]/40 dark:bg-[#334759] px-2.5 py-1 rounded-md border border-[#9FB0BF] dark:border-[#4D6173]">
           {row.numero_episodio}
         </span>
       )
@@ -116,7 +113,7 @@ const AdmissionsView: React.FC = () => {
       render: (row) => {
         const pInfo = pacientes.find(p => p.id_paciente === row.paciente);
         const displayName = pInfo ? `${pInfo.nombres} ${pInfo.apellidos}` : 'ID: ' + row.paciente;
-        return <span className="text-sm font-bold text-slate-800 truncate block">{displayName}</span>;
+        return <span className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate block">{displayName}</span>;
       }
     },
     { 
@@ -124,7 +121,7 @@ const AdmissionsView: React.FC = () => {
       accessorKey: 'cama_sala',
       sortable: true,
       render: (row) => (
-        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-[#15232F] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#334759]">
           {row.cama_sala || 'UCI General'}
         </span>
       )
@@ -134,11 +131,11 @@ const AdmissionsView: React.FC = () => {
       accessorKey: 'fecha_ingreso', 
       sortable: true,
       render: (row) => {
-        if (!row.fecha_ingreso) return <span className="text-xs text-slate-400">-</span>;
+        if (!row.fecha_ingreso) return <span className="text-xs text-slate-400 dark:text-slate-500">-</span>;
         try {
           const dateObj = new Date(row.fecha_ingreso);
           return (
-            <span className="text-xs font-medium text-slate-600">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
               {dateObj.toLocaleString('es-ES', { 
                 day: '2-digit', month: '2-digit', year: 'numeric', 
                 hour: '2-digit', minute: '2-digit' 
@@ -146,7 +143,7 @@ const AdmissionsView: React.FC = () => {
             </span>
           );
         } catch {
-          return <span className="text-xs text-slate-600">{row.fecha_ingreso}</span>;
+          return <span className="text-xs text-slate-600 dark:text-slate-300">{row.fecha_ingreso}</span>;
         }
       }
     },
@@ -155,10 +152,10 @@ const AdmissionsView: React.FC = () => {
       accessorKey: 'fecha_salida', 
       sortable: true,
       render: (row) => {
-        if (!row.fecha_salida) return <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">En Internación</span>;
+        if (!row.fecha_salida) return <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800/60">En Internación</span>;
         const dateObj = new Date(row.fecha_salida);
         return (
-          <span className="text-xs font-medium text-slate-600">
+          <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
             {dateObj.toLocaleString('es-ES', { 
               day: '2-digit', month: '2-digit', year: 'numeric', 
               hour: '2-digit', minute: '2-digit' 
@@ -179,17 +176,17 @@ const AdmissionsView: React.FC = () => {
       align: 'right' as const,
       render: (row: any) => (
         <div className="relative inline-block text-left">
-          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_admision ? null : row.id_admision)} className="p-1 rounded transition-colors hover:bg-slate-200 text-slate-500">
+          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_admision ? null : row.id_admision)} className="p-1 rounded transition-colors hover:bg-slate-200 dark:hover:bg-[#334759] text-slate-500 dark:text-slate-400">
             <MoreVertical className="w-4 h-4" />
           </button>
           {openDropdownId === row.id_admision && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setOpenDropdownId(null)}></div>
-              <div className="absolute right-8 top-0 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden animate-in fade-in zoom-in-95">
-                <button onClick={() => { setEditingAdmission(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+              <div className="absolute right-8 top-0 w-40 bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] rounded-xl shadow-lg dark:shadow-2xl z-20 overflow-hidden animate-in fade-in zoom-in-95">
+                <button onClick={() => { setEditingAdmission(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 transition-colors">
                   <Edit2 className="w-4 h-4 text-slate-400" /> Editar Registro
                 </button>
-                <button onClick={() => { toggleStatus(row.id_admision, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-[#4D6173] hover:bg-[#9EBDD9]/20'}`}>
+                <button onClick={() => { toggleStatus(row.id_admision, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30' : 'text-[#4D6173] dark:text-[#87C7FF] hover:bg-[#9EBDD9]/20 dark:hover:bg-[#334759]/40'}`}>
                   {row.esta_activo ? <PowerOff className="w-4 h-4 opacity-70" /> : <Power className="w-4 h-4 opacity-70" />}
                   {row.esta_activo ? 'Cerrar Episodio' : 'Reactivar'}
                 </button>
@@ -218,11 +215,26 @@ const AdmissionsView: React.FC = () => {
         subtitle={`Gestión de episodios clínicos e ingresos a UCI (${admisiones.length} registrados).`}
         icon={<ActivitySquare className="w-6 h-6 sm:w-7 sm:h-7" />}
       >
-        {canManage && (
-          <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingAdmission(null); setShowForm(true); }}>
-            Nueva Admisión
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+          <YearMonthFilter
+            selectedYear={selectedYear}
+            selectedMonth={selectedMonth}
+            onChangeYear={(yr) => {
+              setSelectedYear(yr);
+              setCurrentPage(1);
+            }}
+            onChangeMonth={(m) => {
+              setSelectedMonth(m);
+              setCurrentPage(1);
+            }}
+            availableYears={availableYears}
+          />
+          {canManage && (
+            <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingAdmission(null); setShowForm(true); }}>
+              Nueva Admisión
+            </Button>
+          )}
+        </div>
       </PageHeader>
 
       {showForm && canManage && (
@@ -231,17 +243,17 @@ const AdmissionsView: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Tarjeta de Tabla sin espacios blancos artificiales */}
+      {/* 2. Tarjeta de Tabla */}
       {!showForm && (
-        <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
-          <div className="px-5 py-3 border-b bg-white border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col transition-colors duration-200">
+          <div className="px-5 py-3 border-b bg-white dark:bg-[#1E3040] border-slate-100 dark:border-[#334759] flex flex-col sm:flex-row justify-between items-center gap-3">
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <div className="w-72 sm:w-80">
                 <Input icon={<Search className="w-4 h-4" />} placeholder="Buscar episodio o paciente..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
               </div>
 
               {/* Selector de Estado Activos / Cerrados / Todos */}
-              <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+              <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-[#15232F] rounded-xl border border-slate-200/80 dark:border-[#334759]">
                 {(['activos', 'inactivos', 'todos'] as const).map((est) => (
                   <button
                     key={est}
@@ -252,29 +264,14 @@ const AdmissionsView: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-150 ${
                       estadoFilter === est
-                        ? 'bg-white text-[#1E3040] shadow-xs border border-slate-200/60'
-                        : 'text-slate-500 hover:text-slate-800'
+                        ? 'bg-white dark:bg-[#1E3040] text-[#1E3040] dark:text-[#87C7FF] shadow-xs border border-slate-200/60 dark:border-[#334759]'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                     }`}
                   >
                     {est === 'activos' ? 'Activos' : est === 'inactivos' ? 'Cerrados' : 'Todos'}
                   </button>
                 ))}
               </div>
-
-              {/* Filtro Jerárquico de Año y Mes */}
-              <YearMonthFilter
-                selectedYear={selectedYear}
-                selectedMonth={selectedMonth}
-                onChangeYear={(yr) => {
-                  setSelectedYear(yr);
-                  setCurrentPage(1);
-                }}
-                onChangeMonth={(m) => {
-                  setSelectedMonth(m);
-                  setCurrentPage(1);
-                }}
-                availableYears={availableYears}
-              />
             </div>
 
             <span className="text-xs font-semibold text-slate-400">
@@ -284,7 +281,7 @@ const AdmissionsView: React.FC = () => {
 
           <div className="overflow-x-auto">
             {isLoading ? (
-              <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} /></div>
+              <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin text-[#1E3040] dark:text-[#87C7FF]" /></div>
             ) : error ? (
               <div className="p-6 text-red-500 text-center font-bold">{error}</div>
             ) : processedData.length === 0 ? (

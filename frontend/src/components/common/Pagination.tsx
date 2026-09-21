@@ -1,5 +1,4 @@
 import React from 'react';
-import { INAAQC_THEME } from '../../config/theme';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'; // Importamos las flechas
 
 interface PaginationProps {
@@ -11,7 +10,6 @@ interface PaginationProps {
 }
 
 export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange }) => {
-  const adobe = INAAQC_THEME.palette;
 
   const getPageNumbers = () => {
     let start = Math.max(1, currentPage - 2);
@@ -29,8 +27,8 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
   };
 
   return (
-    <div className="py-2.5 px-4 border-t flex flex-col sm:flex-row justify-between items-center gap-2 bg-white" style={{ borderColor: '#e2e8f0' }}>
-      <span className="text-xs font-bold" style={{ color: adobe.darkTint }}>
+    <div className="py-2.5 px-4 border-t flex flex-col sm:flex-row justify-between items-center gap-2 bg-white dark:bg-[#1E3040] border-slate-200 dark:border-[#334759] transition-colors duration-200">
+      <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
         Mostrando {totalItems > 0 ? 1 + (currentPage - 1) * itemsPerPage : 0} - {Math.min(currentPage * itemsPerPage, totalItems)} de {totalItems} registros
       </span>
       
@@ -39,8 +37,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
         <button 
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="p-1.5 rounded border transition-colors disabled:opacity-50 hover:bg-slate-50" 
-          style={{ borderColor: '#e2e8f0', color: adobe.darkTint }}
+          className="p-1.5 rounded border border-slate-200 dark:border-[#334759] text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-[#334759]" 
           title="Ir al inicio"
         >
           <ChevronsLeft className="w-4 h-4" />
@@ -50,8 +47,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
         <button 
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-1.5 rounded border transition-colors disabled:opacity-50 hover:bg-slate-50 mr-2" 
-          style={{ borderColor: '#e2e8f0', color: adobe.darkTint }}
+          className="p-1.5 rounded border border-slate-200 dark:border-[#334759] text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-[#334759] mr-2" 
           title="Página anterior"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -62,12 +58,11 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
           <button 
             key={page}
             onClick={() => onPageChange(page)}
-            className={`px-3 py-1 text-xs font-bold rounded transition-colors ${currentPage === page ? 'shadow-sm' : 'border hover:bg-slate-50'}`} 
-            style={{ 
-              backgroundColor: currentPage === page ? adobe.base : 'transparent', 
-              color: currentPage === page ? '#fff' : adobe.darkTint,
-              borderColor: currentPage === page ? 'transparent' : '#e2e8f0'
-            }}
+            className={`px-3 py-1 text-xs font-bold rounded transition-colors ${
+              currentPage === page 
+                ? 'bg-[#1E3040] text-white dark:bg-[#87C7FF] dark:text-[#0F1A24] shadow-xs' 
+                : 'border border-slate-200 dark:border-[#334759] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#334759]'
+            }`} 
           >
             {page}
           </button>
@@ -77,8 +72,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
         <button 
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="p-1.5 rounded border transition-colors hover:bg-slate-50 disabled:opacity-50 ml-2" 
-          style={{ borderColor: '#e2e8f0', color: adobe.darkTint }}
+          className="p-1.5 rounded border border-slate-200 dark:border-[#334759] text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-[#334759] disabled:opacity-50 ml-2" 
           title="Página siguiente"
         >
           <ChevronRight className="w-4 h-4" />
@@ -88,8 +82,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
         <button 
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="p-1.5 rounded border transition-colors disabled:opacity-50 hover:bg-slate-50" 
-          style={{ borderColor: '#e2e8f0', color: adobe.darkTint }}
+          className="p-1.5 rounded border border-slate-200 dark:border-[#334759] text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-[#334759]" 
           title="Ir al final"
         >
           <ChevronsRight className="w-4 h-4" />

@@ -84,21 +84,20 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
           required={required}
           value={formatDisplayDate(value)}
           placeholder="Seleccionar fecha (DD/MM/YYYY)..."
-          className="w-full rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 pl-9 pr-4 py-2 cursor-pointer transition-all"
-          style={{ backgroundColor: '#fff', borderColor: '#e2e8f0', color: adobe.base, outlineColor: adobe.lightTint }}
+          className="w-full rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 pl-9 pr-4 py-2 cursor-pointer transition-all bg-white dark:bg-[#15232F] border-slate-200 dark:border-[#334759] text-[#1E3040] dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-[#87C7FF]/40 focus:border-[#87C7FF]"
         />
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 bottom-full mb-2 w-72 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-4 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute left-0 bottom-full mb-2 w-72 bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] rounded-xl shadow-xl dark:shadow-2xl z-50 p-4 animate-in fade-in zoom-in-95 duration-100">
           
           {/* Controles del Calendario */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-1">
-              <button type="button" onClick={handlePrevYear} className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors" title="Año anterior">
+              <button type="button" onClick={handlePrevYear} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#334759] text-slate-600 dark:text-slate-300 transition-colors" title="Año anterior">
                 <ChevronsLeft className="w-4 h-4" />
               </button>
-              <button type="button" onClick={handlePrevMonth} className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors" title="Mes anterior">
+              <button type="button" onClick={handlePrevMonth} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#334759] text-slate-600 dark:text-slate-300 transition-colors" title="Mes anterior">
                 <ChevronLeft className="w-4 h-4" />
               </button>
             </div>
@@ -107,17 +106,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
             <button 
               type="button"
               onClick={() => setViewMode(viewMode === 'calendar' ? 'years' : 'calendar')}
-              className="text-sm font-bold px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors"
-              style={{ color: adobe.base }}
+              className="text-sm font-bold px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#334759] text-[#1E3040] dark:text-[#F1F5F9] transition-colors"
             >
               {viewMode === 'calendar' ? `${meses[currentMonth]} ${currentYear}` : 'Volver a Días'}
             </button>
             
             <div className="flex gap-1">
-              <button type="button" onClick={handleNextMonth} className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors" title="Mes siguiente">
+              <button type="button" onClick={handleNextMonth} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#334759] text-slate-600 dark:text-slate-300 transition-colors" title="Mes siguiente">
                 <ChevronRight className="w-4 h-4" />
               </button>
-              <button type="button" onClick={handleNextYear} className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors" title="Año siguiente">
+              <button type="button" onClick={handleNextYear} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#334759] text-slate-600 dark:text-slate-300 transition-colors" title="Año siguiente">
                 <ChevronsRight className="w-4 h-4" />
               </button>
             </div>
@@ -131,8 +129,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
                   key={year}
                   type="button"
                   onClick={() => handleSelectYear(year)}
-                  className={`py-2 text-sm font-semibold rounded-lg transition-colors hover:bg-slate-100`}
-                  style={year === currentYear ? { backgroundColor: adobe.base, color: '#fff' } : { color: adobe.darkTint }}
+                  className={`py-2 text-sm font-semibold rounded-lg transition-colors ${year === currentYear ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24]' : 'text-[#334759] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759]'}`}
                 >
                   {year}
                 </button>
@@ -141,7 +138,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
           ) : (
             <>
               <div className="grid grid-cols-7 gap-1 text-center mb-2">
-                {diasSemana.map((d, i) => <div key={i} className="text-xs font-bold text-slate-400 py-1">{d}</div>)}
+                {diasSemana.map((d, i) => <div key={i} className="text-xs font-bold text-slate-400 dark:text-slate-400 py-1">{d}</div>)}
               </div>
 
               <div className="grid grid-cols-7 gap-1 text-center">
@@ -158,8 +155,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
                       key={day}
                       type="button"
                       onClick={() => handleSelectDay(day)}
-                      className={`py-1.5 text-xs font-semibold rounded-lg transition-all hover:bg-slate-100`}
-                      style={isSelected ? { backgroundColor: adobe.base, color: '#fff' } : { color: adobe.darkTint }}
+                      className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${isSelected ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24]' : 'text-[#334759] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759]'}`}
                     >
                       {day}
                     </button>

@@ -3,7 +3,6 @@ import { Users, Plus, Loader2, Search, MoreVertical, Edit2, Power, PowerOff } fr
 import { usePatients } from '../hooks/usePatients';
 import { PatientForm } from '../components/PatientForm';
 import { useAuth } from '../../auth';
-import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
 import { Pagination } from '../../../components/common/Pagination';
@@ -26,7 +25,6 @@ const PatientsView: React.FC = () => {
   } = usePatients();
   const { user } = useAuth();
   const canManage = user?.is_superuser || (user?.rol && user.rol !== 'TI');
-  const adobe = INAAQC_THEME.palette;
   
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(now.getFullYear());
@@ -99,11 +97,11 @@ const PatientsView: React.FC = () => {
       width: 'w-[280px]',
       render: (row) => (
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-700 shrink-0 border border-slate-200">
+          <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-[#15232F] flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 shrink-0 border border-slate-200 dark:border-[#334759]">
             {row.nombres?.[0]}{row.apellidos?.[0]}
           </div>
           <div className="min-w-0">
-            <span className="text-sm font-bold text-slate-800 block truncate">{row.nombres} {row.apellidos}</span>
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-100 block truncate">{row.nombres} {row.apellidos}</span>
           </div>
         </div>
       )
@@ -113,7 +111,7 @@ const PatientsView: React.FC = () => {
       accessorKey: 'dossier_erasme', 
       sortable: true,
       render: (row) => (
-        <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60">
+        <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-[#15232F] px-2 py-0.5 rounded border border-slate-200/60 dark:border-[#334759]">
           {row.dossier_erasme}
         </span>
       )
@@ -122,13 +120,13 @@ const PatientsView: React.FC = () => {
       header: 'Dossier MPI', 
       accessorKey: 'dossier_mpi', 
       sortable: true,
-      render: (row) => <span className="text-xs font-mono text-slate-500">{row.dossier_mpi || '-'}</span>
+      render: (row) => <span className="text-xs font-mono text-slate-500 dark:text-slate-400">{row.dossier_mpi || '-'}</span>
     },
     { 
       header: 'F. Nacimiento', 
       accessorKey: 'fecha_nacimiento', 
       sortable: true,
-      render: (row) => <span className="text-xs font-medium text-slate-600">{row.fecha_nacimiento || '-'}</span>
+      render: (row) => <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{row.fecha_nacimiento || '-'}</span>
     },
     { 
       header: 'Sexo', 
@@ -136,7 +134,7 @@ const PatientsView: React.FC = () => {
       sortable: true,
       align: 'center',
       render: (row) => (
-        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-[#15232F] text-slate-600 dark:text-slate-300">
           {row.sexo === 'M' ? 'Masc' : row.sexo === 'F' ? 'Fem' : row.sexo || '-'}
         </span>
       )
@@ -146,16 +144,16 @@ const PatientsView: React.FC = () => {
       accessorKey: 'creado_en', 
       sortable: true,
       render: (row) => {
-        if (!row.creado_en) return <span className="text-xs text-slate-400">-</span>;
+        if (!row.creado_en) return <span className="text-xs text-slate-400 dark:text-slate-500">-</span>;
         try {
           const d = new Date(row.creado_en);
           return (
-            <span className="text-xs font-medium text-slate-600">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
               {d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
             </span>
           );
         } catch {
-          return <span className="text-xs text-slate-600">{row.creado_en}</span>;
+          return <span className="text-xs text-slate-600 dark:text-slate-300">{row.creado_en}</span>;
         }
       }
     },
@@ -171,17 +169,17 @@ const PatientsView: React.FC = () => {
       align: 'right' as const,
       render: (row: any) => (
         <div className="relative inline-block text-left">
-          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_paciente ? null : row.id_paciente)} className="p-1 rounded transition-colors hover:bg-slate-200 text-slate-500">
+          <button onClick={() => setOpenDropdownId(openDropdownId === row.id_paciente ? null : row.id_paciente)} className="p-1 rounded transition-colors hover:bg-slate-200 dark:hover:bg-[#334759] text-slate-500 dark:text-slate-400">
             <MoreVertical className="w-4 h-4" />
           </button>
           {openDropdownId === row.id_paciente && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setOpenDropdownId(null)}></div>
-              <div className="absolute right-8 top-0 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden animate-in fade-in zoom-in-95">
-                <button onClick={() => { setEditingPatient(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+              <div className="absolute right-8 top-0 w-40 bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] rounded-xl shadow-lg dark:shadow-2xl z-20 overflow-hidden animate-in fade-in zoom-in-95">
+                <button onClick={() => { setEditingPatient(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 transition-colors">
                   <Edit2 className="w-4 h-4 text-slate-400" /> Editar Perfil
                 </button>
-                <button onClick={() => { toggleStatus(row.id_paciente, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-[#4D6173] hover:bg-[#9EBDD9]/20'}`}>
+                <button onClick={() => { toggleStatus(row.id_paciente, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30' : 'text-[#4D6173] dark:text-[#87C7FF] hover:bg-[#9EBDD9]/20 dark:hover:bg-[#334759]/40'}`}>
                   {row.esta_activo ? <PowerOff className="w-4 h-4 opacity-70" /> : <Power className="w-4 h-4 opacity-70" />}
                   {row.esta_activo ? 'Dar de Baja' : 'Reactivar'}
                 </button>
@@ -208,11 +206,26 @@ const PatientsView: React.FC = () => {
         subtitle={`Padrón clínico y demográfico institucional (${pacientes.length} registrados).`}
         icon={<Users className="w-6 h-6 sm:w-7 sm:h-7" />}
       >
-        {canManage && (
-          <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>
-            Nuevo Paciente
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+          <YearMonthFilter
+            selectedYear={selectedYear}
+            selectedMonth={selectedMonth}
+            onChangeYear={(yr) => {
+              setSelectedYear(yr);
+              setCurrentPage(1);
+            }}
+            onChangeMonth={(m) => {
+              setSelectedMonth(m);
+              setCurrentPage(1);
+            }}
+            availableYears={availableYears}
+          />
+          {canManage && (
+            <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={() => { setEditingPatient(null); setShowForm(true); }}>
+              Nuevo Paciente
+            </Button>
+          )}
+        </div>
       </PageHeader>
 
       {showForm && canManage && (
@@ -221,17 +234,17 @@ const PatientsView: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Tarjeta de Tabla sin espacios blancos artificiales */}
+      {/* 2. Tarjeta de Tabla */}
       {!showForm && (
-        <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col">
-          <div className="px-5 py-3 border-b bg-white border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col transition-colors duration-200">
+          <div className="px-5 py-3 border-b bg-white dark:bg-[#1E3040] border-slate-100 dark:border-[#334759] flex flex-col sm:flex-row justify-between items-center gap-3">
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <div className="w-72 sm:w-80">
                 <Input icon={<Search className="w-4 h-4" />} placeholder="Buscar paciente o dossier..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
               </div>
 
               {/* Selector de Estado Activos / Inactivos / Todos */}
-              <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+              <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-[#15232F] rounded-xl border border-slate-200/80 dark:border-[#334759]">
                 {(['activos', 'inactivos', 'todos'] as const).map((est) => (
                   <button
                     key={est}
@@ -242,29 +255,14 @@ const PatientsView: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-150 ${
                       estadoFilter === est
-                        ? 'bg-white text-[#1E3040] shadow-xs border border-slate-200/60'
-                        : 'text-slate-500 hover:text-slate-800'
+                        ? 'bg-white dark:bg-[#1E3040] text-[#1E3040] dark:text-[#87C7FF] shadow-xs border border-slate-200/60 dark:border-[#334759]'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                     }`}
                   >
                     {est === 'activos' ? 'Activos' : est === 'inactivos' ? 'Inactivos' : 'Todos'}
                   </button>
                 ))}
               </div>
-
-              {/* Filtro Jerárquico de Año y Mes */}
-              <YearMonthFilter
-                selectedYear={selectedYear}
-                selectedMonth={selectedMonth}
-                onChangeYear={(yr) => {
-                  setSelectedYear(yr);
-                  setCurrentPage(1);
-                }}
-                onChangeMonth={(m) => {
-                  setSelectedMonth(m);
-                  setCurrentPage(1);
-                }}
-                availableYears={availableYears}
-              />
             </div>
 
             <span className="text-xs font-semibold text-slate-400">
@@ -274,7 +272,7 @@ const PatientsView: React.FC = () => {
 
           <div className="overflow-x-auto">
             {isLoading ? (
-              <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.base }} /></div>
+              <div className="p-10 flex justify-center items-center"><Loader2 className="w-8 h-8 animate-spin text-[#1E3040] dark:text-[#87C7FF]" /></div>
             ) : error ? (
               <div className="p-6 text-red-500 text-center font-bold">{error}</div>
             ) : processedData.length === 0 ? (

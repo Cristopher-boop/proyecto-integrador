@@ -114,35 +114,34 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between border text-left font-bold transition-all outline-none bg-white ${
+        className={`w-full flex items-center justify-between border text-left font-bold transition-all outline-none bg-white dark:bg-[#1E3040] border-slate-200 dark:border-[#334759] ${
           size === 'sm' ? 'px-2.5 py-1.5 rounded-lg text-xs' : 'px-3.5 py-2.5 rounded-xl text-xs sm:text-sm'
         } ${
-          disabled ? 'opacity-50 cursor-not-allowed bg-slate-50' : 'cursor-pointer hover:border-slate-300'
+          disabled ? 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-[#15232F]' : 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-500'
         }`}
         style={{
-          borderColor: isOpen ? adobe.highlight : '#e2e8f0',
+          borderColor: isOpen ? adobe.highlight : undefined,
           boxShadow: isOpen ? `0 0 0 3px ${adobe.highlight}20` : 'none',
-          color: adobe.base,
         }}
       >
-        <div className="flex items-center gap-2 truncate flex-1 mr-1">
-          {icon && <span className="shrink-0 text-slate-400">{icon}</span>}
+        <div className="flex items-center gap-2 truncate flex-1 mr-1 text-[#1E3040] dark:text-[#F1F5F9]">
+          {icon && <span className="shrink-0 text-slate-400 dark:text-slate-400">{icon}</span>}
           {selectedOption ? (
             <div className="truncate flex items-center gap-1.5">
               <span className="truncate">{selectedOption.label}</span>
               {selectedOption.badge && (
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-[#9EBDD9]/40 text-[#1E3040] border border-[#9FB0BF] shrink-0">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-[#9EBDD9]/40 dark:bg-[#334759] text-[#1E3040] dark:text-[#87C7FF] border border-[#9FB0BF] dark:border-[#4D6173] shrink-0">
                   {selectedOption.badge}
                 </span>
               )}
               {selectedOption.secondary && (
-                <span className="text-xs font-normal text-slate-400 truncate hidden sm:inline">
+                <span className="text-xs font-normal text-slate-400 dark:text-slate-400 truncate hidden sm:inline">
                   • {selectedOption.secondary}
                 </span>
               )}
             </div>
           ) : (
-            <span className="text-slate-400 font-medium truncate">{placeholder}</span>
+            <span className="text-slate-400 dark:text-slate-400 font-medium truncate">{placeholder}</span>
           )}
         </div>
 
@@ -150,7 +149,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           {value && !disabled && showClear && (
             <span
               onClick={handleClear}
-              className="p-1 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-1 hover:bg-slate-100 dark:hover:bg-[#334759] rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
               title="Limpiar selección"
             >
               <X size={size === 'sm' ? 12 : 13} />
@@ -158,34 +157,34 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           )}
           <ChevronDown
             size={size === 'sm' ? 14 : 16}
-            className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#1E3040]' : ''}`}
+            className={`text-slate-400 dark:text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#1E3040] dark:text-[#87C7FF]' : ''}`}
           />
         </div>
       </button>
 
       {/* DROPDOWN FLOTANTE */}
       {isOpen && (
-        <div className={`absolute top-full left-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in-up ${
+        <div className={`absolute top-full left-0 mt-1.5 bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] rounded-xl shadow-xl dark:shadow-2xl z-50 overflow-hidden animate-fade-in-up ${
           dropdownWidth ? dropdownWidth : 'w-full min-w-full'
         }`}>
           {/* BARRA DE BÚSQUEDA INTERNA */}
           {searchable && (
-            <div className="p-2 border-b border-slate-100 bg-slate-50/70">
+            <div className="p-2 border-b border-slate-100 dark:border-[#334759] bg-slate-50/70 dark:bg-[#15232F]">
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-400" />
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 rounded-lg outline-none bg-white text-slate-800 placeholder-slate-400 focus:border-[#87C7FF] transition-colors"
+                  className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 dark:border-[#334759] rounded-lg outline-none bg-white dark:bg-[#1E3040] text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#87C7FF] transition-colors"
                 />
                 {query && (
                   <button
                     type="button"
                     onClick={() => setQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     <X size={12} />
                   </button>
@@ -195,9 +194,9 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           )}
 
           {/* LISTA DE OPCIONES */}
-          <div className="max-h-56 overflow-y-auto p-1 divide-y divide-slate-50">
+          <div className="max-h-56 overflow-y-auto p-1 divide-y divide-slate-50 dark:divide-[#334759]/40 custom-scrollbar">
             {filteredOptions.length === 0 ? (
-              <div className="p-4 text-center text-xs text-slate-400 font-medium">
+              <div className="p-4 text-center text-xs text-slate-400 dark:text-slate-400 font-medium">
                 {query ? `No se encontraron opciones para "${query}"` : 'No hay opciones disponibles'}
               </div>
             ) : (
@@ -212,27 +211,27 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                       size === 'sm' ? 'px-2.5 py-1.5' : 'px-3 py-2'
                     } ${
                       isSelected
-                        ? 'bg-[#9EBDD9]/30 text-[#1E3040] font-bold'
-                        : 'text-slate-700 hover:bg-slate-50'
+                        ? 'bg-[#9EBDD9]/30 dark:bg-[#334759] text-[#1E3040] dark:text-[#87C7FF] font-bold'
+                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40'
                     }`}
                   >
                     <div className="flex flex-col truncate pr-2 min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="truncate font-semibold">{opt.label}</span>
                         {opt.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-[#1E3040] border border-slate-200/80 shrink-0">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-[#15232F] text-[#1E3040] dark:text-slate-200 border border-slate-200/80 dark:border-[#334759] shrink-0">
                             {opt.badge}
                           </span>
                         )}
                       </div>
                       {opt.secondary && (
-                        <span className="text-[11px] text-slate-400 font-normal truncate mt-0.5">
+                        <span className="text-[11px] text-slate-400 dark:text-slate-400 font-normal truncate mt-0.5">
                           {opt.secondary}
                         </span>
                       )}
                     </div>
                     {isSelected && (
-                      <Check size={14} className="shrink-0 text-[#1E3040]" />
+                      <Check size={14} className="shrink-0 text-[#1E3040] dark:text-[#87C7FF]" />
                     )}
                   </button>
                 );

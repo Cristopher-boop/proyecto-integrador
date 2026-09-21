@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { INAAQC_THEME } from '../../../config/theme';
+import { useTheme } from '../../../context';
 import type { DocTypeItem } from '../types/dashboard.types';
 
 interface DocTypesDonutProps {
@@ -8,7 +9,7 @@ interface DocTypesDonutProps {
 }
 
 export const DocTypesDonut: React.FC<DocTypesDonutProps> = ({ data }) => {
-  const adobe = INAAQC_THEME.palette;
+  const { isDark } = useTheme();
   const PIE_COLORS = [
     INAAQC_THEME.scale[900],
     INAAQC_THEME.scale[700],
@@ -19,17 +20,17 @@ export const DocTypesDonut: React.FC<DocTypesDonutProps> = ({ data }) => {
   const totalCount = data.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full">
+    <div className="bg-white dark:bg-[#1E3040] p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-[#334759] flex flex-col h-full transition-colors duration-200">
       <div className="mb-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: adobe.darkTint }}>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[#334759] dark:text-slate-200">
           Distribución de Ingesta Documental
         </h3>
-        <p className="text-xs text-slate-400 mt-1">Clasificación por tipo de archivo auditado</p>
+        <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">Clasificación por tipo de archivo auditado</p>
       </div>
 
       <div className="flex-1 min-h-[280px]">
         {totalCount === 0 ? (
-          <div className="h-full flex items-center justify-center text-sm font-semibold text-slate-400 italic">
+          <div className="h-full flex items-center justify-center text-sm font-semibold text-slate-400 dark:text-slate-400 italic">
             No hay documentos procesados aún.
           </div>
         ) : (
@@ -51,17 +52,18 @@ export const DocTypesDonut: React.FC<DocTypesDonutProps> = ({ data }) => {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: isDark ? '#1E3040' : '#FFFFFF',
                   borderRadius: '12px',
-                  border: '1px solid #E2E8F0',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  border: isDark ? '1px solid #334759' : '1px solid #E2E8F0',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
                   fontSize: '12px',
+                  color: isDark ? '#F1F5F9' : '#1E3040',
                 }}
-                itemStyle={{ fontWeight: 'bold' }}
+                itemStyle={{ fontWeight: 'bold', color: isDark ? '#F1F5F9' : '#1E3040' }}
               />
               <Legend
                 iconType="circle"
-                wrapperStyle={{ fontSize: '12px', fontWeight: '600', color: adobe.darkTint }}
+                wrapperStyle={{ fontSize: '12px', fontWeight: '600', color: isDark ? '#9EBDD9' : '#334759' }}
               />
             </PieChart>
           </ResponsiveContainer>

@@ -47,28 +47,22 @@ export const DashboardKpis: React.FC<DashboardKpisProps> = ({ kpis }) => {
       {cards.map((stat, index) => (
         <div
           key={index}
-          className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+          className="bg-white dark:bg-[#1E3040] p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-[#334759] flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
         >
           <div
-            className="p-3.5 rounded-xl flex items-center justify-center shrink-0"
+            className="p-3.5 rounded-xl flex items-center justify-center shrink-0 dark:bg-[#15232F]"
             style={{ backgroundColor: stat.bgColor }}
           >
             <stat.icon
-              className="w-5 h-5"
+              className="w-5 h-5 dark:text-[#87C7FF]"
               style={{ color: stat.iconColor }}
             />
           </div>
           <div className="min-w-0">
-            <p
-              className="text-[11px] font-bold uppercase tracking-wider truncate"
-              style={{ color: adobe.midTint }}
-            >
+            <p className="text-[11px] font-bold uppercase tracking-wider truncate text-[#4D6173] dark:text-[#9EBDD9]">
               {stat.title}
             </p>
-            <p
-              className="text-2xl font-black mt-0.5"
-              style={{ color: adobe.base }}
-            >
+            <p className="text-2xl font-black mt-0.5 text-[#1E3040] dark:text-[#F1F5F9]">
               {stat.value.toLocaleString()}
             </p>
           </div>

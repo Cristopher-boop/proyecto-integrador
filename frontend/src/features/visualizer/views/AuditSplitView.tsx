@@ -1,6 +1,5 @@
 import React from 'react';
 import { FileSearch, CheckCircle, X } from 'lucide-react';
-import { INAAQC_THEME } from '../../../config/theme';
 import { Button } from '../../../components/common/Button';
 import { useVisualizer } from '../hooks/useVisualizer';
 import { DocumentPane } from '../components/DocumentPane';
@@ -15,7 +14,6 @@ interface AuditProps {
 }
 
 export const AuditSplitView: React.FC<AuditProps> = ({ onClose, idArchivo, documentoUrl, tipo, nombreArchivo }) => {
-  const adobe = INAAQC_THEME.palette;
   const { datosExtraidos, isLoading, activeParam, zoomCoords, handleParamClick, handleUpdateValue } = useVisualizer(idArchivo);
 
   return (
@@ -23,17 +21,17 @@ export const AuditSplitView: React.FC<AuditProps> = ({ onClose, idArchivo, docum
     <div className="fixed inset-0 z-[100] flex flex-col animate-in fade-in zoom-in-95 duration-200 bg-slate-900/50 backdrop-blur-sm p-4 md:p-8">
       
       {/* CUERPO DEL MODAL (Esquinas redondeadas, sombra elegante) */}
-      <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden border" style={{ borderColor: adobe.midTint }}>
+      <div className="flex-1 flex flex-col bg-white dark:bg-[#1E3040] rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-[#334759]">
         
         {/* HEADER TOP-BAR */}
-        <div className="h-16 flex items-center justify-between px-6 shrink-0 shadow-sm z-20 border-b" style={{ backgroundColor: adobe.base, borderColor: adobe.darkTint }}>
+        <div className="h-16 flex items-center justify-between px-6 shrink-0 shadow-sm z-20 border-b border-[#334759]/60 bg-[#1E3040]">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-white/10">
-              <FileSearch className="w-5 h-5" style={{ color: adobe.highlight }} />
+              <FileSearch className="w-5 h-5 text-[#87C7FF]" />
             </div>
             <div>
               <h2 className="font-black leading-tight text-white tracking-wide">Auditoría de Ingesta Clínica</h2>
-              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: adobe.lightTint }}>Documento: {nombreArchivo}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#9EBDD9]">Documento: {nombreArchivo}</p>
             </div>
           </div>
           
@@ -55,15 +53,15 @@ export const AuditSplitView: React.FC<AuditProps> = ({ onClose, idArchivo, docum
         </div>
 
         {/* SPLIT SCREEN WORKSPACE */}
-        <div className="flex-1 flex overflow-hidden bg-slate-100 gap-1 p-1">
+        <div className="flex-1 flex overflow-hidden bg-slate-100 dark:bg-[#0F1A24] gap-1 p-1">
           
           {/* PANEL IZQUIERDO: VISUALIZADOR DEL DOCUMENTO (60%) */}
-          <div className="w-3/5 relative bg-white rounded-xl overflow-hidden shadow-inner border border-slate-200">
+          <div className="w-3/5 relative bg-white dark:bg-[#1E3040] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-[#334759]">
             <DocumentPane url={documentoUrl} tipo={tipo} zoomCoords={zoomCoords} />
           </div>
 
           {/* PANEL DERECHO: DATOS EXTRAÍDOS (40%) */}
-          <div className="w-2/5 flex flex-col bg-white rounded-xl overflow-hidden shadow-inner border border-slate-200">
+          <div className="w-2/5 flex flex-col bg-white dark:bg-[#1E3040] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-[#334759]">
             <ExtractedDataPane 
               datos={datosExtraidos} 
               isLoading={isLoading} 

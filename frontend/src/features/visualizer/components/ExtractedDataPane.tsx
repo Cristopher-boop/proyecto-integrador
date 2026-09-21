@@ -86,7 +86,7 @@ export const ExtractedDataPane: React.FC<ExtractedDataPaneProps> = ({ datos, isL
 
   if (datos.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-slate-50 p-6 text-center">
+      <div className="flex-1 flex flex-col items-center justify-center bg-slate-50 p-6 text-center">
         <p className="text-sm font-medium text-slate-500">No se detectaron parámetros estructurados en este documento.</p>
       </div>
     );

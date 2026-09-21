@@ -1,20 +1,18 @@
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 import { Layers } from 'lucide-react';
-import { INAAQC_THEME } from '../../../config/theme';
 
 interface ComorbiditiesChartProps {
   data: { nombre: string; pacientes: number }[];
 }
 
 export const ComorbiditiesChart: React.FC<ComorbiditiesChartProps> = ({ data }) => {
-  const adobe = INAAQC_THEME.palette;
 
   return (
-    <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-xs border border-slate-100 flex flex-col">
+    <div className="bg-white dark:bg-[#1E3040] p-4 sm:p-5 rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] flex flex-col">
       <div className="flex justify-between items-center mb-1">
-        <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-          <Layers className="w-4 h-4 text-[#1E3040]" />
+        <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
+          <Layers className="w-4 h-4 text-[#1E3040] dark:text-[#87C7FF]" />
           Distribución de Comorbilidades Detectadas
         </h3>
       </div>
@@ -26,24 +24,24 @@ export const ComorbiditiesChart: React.FC<ComorbiditiesChartProps> = ({ data }) 
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-              <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} />
-              <YAxis dataKey="nombre" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: adobe.base, fontWeight: 600 }} width={160} />
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#94a3b8" strokeOpacity={0.2} />
+              <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} />
+              <YAxis dataKey="nombre" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 600 }} width={160} />
               <Tooltip 
-                cursor={{ fill: 'rgba(30, 48, 64, 0.05)' }} 
+                cursor={{ fill: 'rgba(135, 199, 255, 0.08)' }} 
                 contentStyle={{ 
                   backgroundColor: '#1E3040', 
                   borderRadius: '12px', 
-                  border: 'none', 
+                  border: '1px solid #334759', 
                   color: '#fff', 
                   fontSize: '11px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)' 
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)' 
                 }} 
                 itemStyle={{ color: '#fff' }}
               />
-              <Bar dataKey="pacientes" name="Nº Pacientes" fill={adobe.base} radius={[0, 4, 4, 0]} barSize={18}>
+              <Bar dataKey="pacientes" name="Nº Pacientes" fill="#4D6173" radius={[0, 4, 4, 0]} barSize={18}>
                 {data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={index === 0 ? adobe.darkTint : adobe.base} />
+                  <Cell key={`cell-${index}`} fill={index === 0 ? '#87C7FF' : '#4D6173'} />
                 ))}
               </Bar>
             </BarChart>

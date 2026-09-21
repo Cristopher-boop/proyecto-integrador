@@ -91,26 +91,26 @@ export const LabTrendsView: React.FC = () => {
 
       {/* ÁREA DE GRÁFICAS */}
       {!selectedAdmision ? (
-        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center text-center space-y-3">
-          <FileText className="w-12 h-12 text-slate-300" />
-          <p className="text-sm font-bold text-slate-700">
+        <div className="bg-white dark:bg-[#1E3040] p-12 rounded-2xl border border-slate-100 dark:border-[#334759] flex flex-col items-center justify-center text-center space-y-3">
+          <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600" />
+          <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
             Selecciona un episodio para visualizar las curvas de laboratorio.
           </p>
-          <p className="text-xs text-slate-400 max-w-md">
+          <p className="text-xs text-slate-400 dark:text-slate-400 max-w-md">
             El motor sincronizará los paneles analíticos en tiempo cronológico sin alterar los registros.
           </p>
         </div>
       ) : isLoading ? (
-        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center space-y-3">
+        <div className="bg-white dark:bg-[#1E3040] p-12 rounded-2xl border border-slate-100 dark:border-[#334759] flex flex-col items-center justify-center space-y-3">
           <Loader2 className="w-8 h-8 animate-spin" style={{ color: adobe.highlight }} />
-          <p className="font-bold tracking-widest uppercase text-xs text-slate-500">
+          <p className="font-bold tracking-widest uppercase text-xs text-slate-500 dark:text-slate-400">
             Sincronizando series temporales...
           </p>
         </div>
       ) : observaciones.length === 0 ? (
-        <div className="bg-white p-12 rounded-2xl border border-slate-100 flex flex-col items-center justify-center text-center space-y-2">
-          <AlertCircle className="w-10 h-10 text-slate-300" />
-          <p className="text-sm font-bold text-slate-600">
+        <div className="bg-white dark:bg-[#1E3040] p-12 rounded-2xl border border-slate-100 dark:border-[#334759] flex flex-col items-center justify-center text-center space-y-2">
+          <AlertCircle className="w-10 h-10 text-slate-300 dark:text-slate-600" />
+          <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
             No hay estudios de laboratorio (LAB) registrados en este episodio.
           </p>
         </div>

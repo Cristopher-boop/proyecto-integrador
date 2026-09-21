@@ -41,7 +41,6 @@ export const YearMonthFilter: React.FC<YearMonthFilterProps> = ({
   compact = false,
 }) => {
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
   const years = Array.from(new Set([...availableYears, currentYear])).sort((a, b) => b - a);
 
   const handleYear = (val: number | 'ALL') => {
@@ -54,16 +53,13 @@ export const YearMonthFilter: React.FC<YearMonthFilterProps> = ({
     onChangeMonth?.(val);
   };
 
-  const isCurrentSelection = selectedYear === currentYear && selectedMonth === currentMonth;
-
   const yearOptions: SearchableOption[] = useMemo(() => [
     { value: 'ALL', label: 'Todos los años' },
     ...years.map((y) => ({
       value: String(y),
       label: String(y),
-      badge: y === currentYear ? 'Actual' : undefined,
     })),
-  ], [years, currentYear]);
+  ], [years]);
 
   const monthOptions: SearchableOption[] = useMemo(() => [
     { value: 'ALL', label: 'Todos los meses' },
@@ -72,17 +68,16 @@ export const YearMonthFilter: React.FC<YearMonthFilterProps> = ({
       return {
         value: String(monthNum),
         label: name,
-        badge: selectedYear === currentYear && monthNum === currentMonth ? 'Actual' : undefined,
       };
     }),
-  ], [selectedYear, currentYear, currentMonth]);
+  ], []);
 
   return (
-    <div className={`flex items-center gap-1.5 bg-slate-50/90 border border-slate-200/90 rounded-xl p-1 shadow-xs text-xs ${className}`}>
-      <div className="flex items-center gap-1 pl-1.5 pr-0.5 text-slate-500 shrink-0">
-        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+    <div className={`flex items-center gap-1.5 bg-slate-50/90 dark:bg-[#15232F] border border-slate-200/90 dark:border-[#334759] rounded-xl p-1 shadow-xs text-xs transition-colors duration-200 ${className}`}>
+      <div className="flex items-center gap-1 pl-1.5 pr-0.5 text-slate-500 dark:text-slate-400 shrink-0">
+        <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-[#87C7FF]" />
         {!compact && (
-          <span className="font-semibold text-slate-600 hidden sm:inline text-[11px] uppercase tracking-wider">
+          <span className="font-semibold text-slate-600 dark:text-slate-300 hidden sm:inline text-[11px] uppercase tracking-wider">
             Periodo:
           </span>
         )}
@@ -115,13 +110,6 @@ export const YearMonthFilter: React.FC<YearMonthFilterProps> = ({
           dropdownWidth="w-40"
         />
       </div>
-
-      {/* Indicador de Filtro Actual */}
-      {isCurrentSelection && (
-        <span className="text-[10px] bg-slate-200/70 text-slate-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider hidden lg:inline mr-1">
-          Mes Actual
-        </span>
-      )}
     </div>
   );
 };

@@ -74,27 +74,27 @@ const IngestionView: React.FC = () => {
         <div className="lg:col-span-2 space-y-4">
           <Dropzone onFilesDropped={addFiles} />
           {filesWithMeta.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-                <span className="text-xs font-black uppercase tracking-widest" style={{ color: adobe.darkTint }}>Archivos en cola ({filesWithMeta.length})</span>
-                <button onClick={clearAll} className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors">Limpiar todo</button>
+            <div className="bg-white dark:bg-[#1E3040] rounded-xl border border-slate-200 dark:border-[#334759] overflow-hidden shadow-sm">
+              <div className="bg-slate-50 dark:bg-[#15232F] px-4 py-3 border-b border-slate-200 dark:border-[#334759] flex justify-between items-center">
+                <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Archivos en cola ({filesWithMeta.length})</span>
+                <button onClick={clearAll} className="text-xs font-bold text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">Limpiar todo</button>
               </div>
-              <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto custom-scrollbar">
+              <div className="divide-y divide-slate-100 dark:divide-[#334759] max-h-80 overflow-y-auto custom-scrollbar">
                 {filesWithMeta.map((item, idx) => (
-                  <div key={idx} className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                    <div className={`p-2 rounded-lg ${item.detectedType === 'UNKNOWN' ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'}`}>
+                  <div key={idx} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-[#334759]/30 transition-colors">
+                    <div className={`p-2 rounded-lg ${item.detectedType === 'UNKNOWN' ? 'bg-amber-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'}`}>
                       {item.file.type.includes('pdf') ? <FileText size={20} /> : <FileType size={20} />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold truncate" style={{ color: adobe.base }}>{item.file.name}</p>
+                      <p className="text-sm font-bold truncate text-slate-800 dark:text-white">{item.file.name}</p>
                       <div className="flex items-center gap-3 mt-1.5">
                         <select 
                           value={item.detectedType}
                           onChange={(e) => updateFileType(idx, e.target.value)}
                           className={`text-xs font-bold px-3 py-1 rounded-md border appearance-none cursor-pointer pr-8 transition-colors
-                            ${item.detectedType === 'UNKNOWN' ? 'border-amber-300 bg-amber-50 text-amber-700' : 
-                             (item.detectedType === 'NA' || item.detectedType === 'NE') ? 'border-[#9FB0BF] bg-[#9EBDD9]/30 text-[#1E3040]' :
-                             'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+                            ${item.detectedType === 'UNKNOWN' ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-400' : 
+                             (item.detectedType === 'NA' || item.detectedType === 'NE') ? 'border-[#9FB0BF] bg-[#9EBDD9]/30 text-[#1E3040] dark:bg-[#87C7FF]/20 dark:text-[#87C7FF] dark:border-[#87C7FF]/40' :
+                             'border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40'}`}
                           style={{
                             backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234D6173' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
                             backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', backgroundSize: '14px'
@@ -112,10 +112,10 @@ const IngestionView: React.FC = () => {
                             <option value="NE">NOTA DE EVOLUCIÓN</option>
                           </optgroup>
                         </select>
-                        <span className="text-xs font-medium" style={{ color: adobe.midTint }}>{(item.file.size / 1024).toFixed(1)} KB</span>
+                        <span className="text-xs font-medium text-slate-400 dark:text-slate-400">{(item.file.size / 1024).toFixed(1)} KB</span>
                       </div>
                     </div>
-                    <button onClick={() => removeFile(idx)} className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><X size={18} /></button>
+                    <button onClick={() => removeFile(idx)} className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"><X size={18} /></button>
                   </div>
                 ))}
               </div>
@@ -124,18 +124,18 @@ const IngestionView: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white p-6 rounded-xl border shadow-sm" style={{ borderColor: adobe.lightTint }}>
-            <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: adobe.base }}>
+          <div className="bg-white dark:bg-[#1E3040] p-6 rounded-xl border border-slate-200 dark:border-[#334759] shadow-sm">
+            <h3 className="font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
               <Info size={18} style={{ color: adobe.highlight }} /> Resumen de Operación
             </h3>
             
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="font-medium" style={{ color: adobe.darkTint }}>Total archivos:</span>
-                <span className="font-black" style={{ color: adobe.base }}>{filesWithMeta.length}</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Total archivos:</span>
+                <span className="font-black text-slate-800 dark:text-white">{filesWithMeta.length}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="font-medium" style={{ color: adobe.darkTint }}>Estado actual:</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Estado actual:</span>
                 <span className="font-black" style={{ color: getStatusInfo(status).color }}>
                   {getStatusInfo(status).label}
                 </span>

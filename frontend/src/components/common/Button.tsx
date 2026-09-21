@@ -1,5 +1,4 @@
 import React, { type ReactNode } from 'react';
-import { INAAQC_THEME } from '../../config/theme';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
@@ -12,23 +11,17 @@ export const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', i
     
     let variantStyle = "";
     if (variant === 'primary') {
-      variantStyle = "text-white";
+      variantStyle = "text-white bg-[#1E3040] dark:bg-[#87C7FF] dark:text-[#0F1A24]";
     } else if (variant === 'secondary') {
-      variantStyle = "bg-white border";
+      variantStyle = "bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] text-[#1E3040] dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#334759]/40";
     } else if (variant === 'outline') {
-      variantStyle = "bg-white border hover:bg-slate-50";
+      variantStyle = "bg-white dark:bg-[#1E3040] border border-slate-200 dark:border-[#334759] text-[#1E3040] dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#334759]/40";
     } else if (variant === 'ghost') {
-      variantStyle = "bg-transparent hover:bg-slate-100/60";
+      variantStyle = "bg-transparent hover:bg-slate-100/60 dark:hover:bg-[#334759]/40 text-[#1E3040] dark:text-slate-100";
     }
 
-  // Usamos el tema dinámicamente con la escala INAAQC
-  const customStyles: React.CSSProperties = 
-    variant === 'primary' ? { backgroundColor: INAAQC_THEME.scale[900] } :
-    variant === 'secondary' || variant === 'outline' ? { borderColor: INAAQC_THEME.scale[400], color: INAAQC_THEME.scale[700] } :
-    variant === 'ghost' ? { color: INAAQC_THEME.scale[700] } : {};
-
   return (
-    <button className={`${baseStyle} ${variantStyle} ${className}`} style={customStyles} {...props}>
+    <button className={`${baseStyle} ${variantStyle} ${className}`} {...props}>
       {icon && <span className="w-4 h-4 flex items-center justify-center">{icon}</span>}
       {children}
     </button>

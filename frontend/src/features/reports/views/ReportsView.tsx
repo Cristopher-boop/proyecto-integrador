@@ -65,9 +65,9 @@ export const ReportsView: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-xs flex flex-col items-center justify-center space-y-3 font-sans">
+      <div className="bg-white dark:bg-[#1E3040] p-12 rounded-2xl border border-slate-100 dark:border-[#334759] shadow-xs flex flex-col items-center justify-center space-y-3 font-sans">
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#00A896' }} />
-        <p className="font-bold tracking-widest uppercase text-xs text-slate-500">
+        <p className="font-bold tracking-widest uppercase text-xs text-slate-500 dark:text-slate-400">
           Generando reportes biomédicos reales...
         </p>
       </div>
@@ -93,17 +93,16 @@ export const ReportsView: React.FC = () => {
       >
         <div className="flex items-center gap-2.5 w-full sm:w-auto">
           {/* Selector de Rango Temporal */}
-          <div className="flex bg-slate-100/90 p-1 rounded-xl border border-slate-200">
+          <div className="flex bg-slate-100/90 dark:bg-[#15232F] p-1 rounded-xl border border-slate-200 dark:border-[#334759]">
             {['1M', '6M', 'ALL'].map(range => (
               <button 
                 key={range} 
                 onClick={() => setTimeRange(range)}
                 className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
                   timeRange === range 
-                    ? 'shadow-xs bg-white text-slate-800' 
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'shadow-xs bg-white dark:bg-[#1E3040] text-slate-800 dark:text-white' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                 }`}
-                style={{ color: timeRange === range ? adobe.base : undefined }}
               >
                 {range}
               </button>
@@ -124,44 +123,44 @@ export const ReportsView: React.FC = () => {
             </button>
 
             {showExportMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
-                <div className="p-2.5 border-b border-slate-100 bg-slate-50/80">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#1E3040] rounded-2xl shadow-xl border border-slate-100 dark:border-[#334759] overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
+                <div className="p-2.5 border-b border-slate-100 dark:border-[#334759] bg-slate-50/80 dark:bg-[#15232F]">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">
                     Documentos Excel (.xlsx)
                   </p>
                 </div>
                 <button 
                   onClick={() => handleExportReport('pacientes', false)} 
-                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 flex items-center gap-2.5 transition-colors"
                 >
-                  <Users size={15} style={{ color: adobe.darkTint }} /> 
+                  <Users size={15} className="text-[#4D6173] dark:text-[#87C7FF]" /> 
                   Pacientes y Admisiones
                 </button>
                 <button 
                   onClick={() => handleExportReport('gravedad', false)} 
-                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 flex items-center gap-2.5 transition-colors"
                 >
-                  <Activity size={15} style={{ color: adobe.darkTint }} /> 
+                  <Activity size={15} className="text-[#4D6173] dark:text-[#87C7FF]" /> 
                   Métricas de Severidad (SOFA)
                 </button>
                 <button 
                   onClick={() => handleExportReport('extracciones', false)} 
-                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 flex items-center gap-2.5 transition-colors"
                 >
-                  <FileSpreadsheet size={15} style={{ color: adobe.base }} /> 
+                  <FileSpreadsheet size={15} className="text-[#1E3040] dark:text-[#87C7FF]" /> 
                   Sábana de Datos (Labs/Vit)
                 </button>
 
-                <div className="p-2.5 border-y border-slate-100 bg-slate-50/80">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div className="p-2.5 border-y border-slate-100 dark:border-[#334759] bg-slate-50/80 dark:bg-[#15232F]">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">
                     Documentos PDF (.pdf)
                   </p>
                 </div>
                 <button 
                   onClick={() => handleExportReport('auditoria_pdf', true)} 
-                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#334759]/40 flex items-center gap-2.5 transition-colors"
                 >
-                  <ShieldAlert size={15} className="text-rose-600" /> 
+                  <ShieldAlert size={15} className="text-rose-600 dark:text-rose-400" /> 
                   Auditoría Analítica (OCR/IA)
                 </button>
               </div>

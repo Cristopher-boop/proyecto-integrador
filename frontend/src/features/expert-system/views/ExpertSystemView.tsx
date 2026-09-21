@@ -115,17 +115,17 @@ export const ExpertSystemView: React.FC = () => {
 
       {/* ÁREA CENTRAL */}
       {!selectedEpisode ? (
-        <div className="p-10 text-center bg-white rounded-2xl shadow-xs border border-slate-100" style={{ color: adobe.base }}>
-          <BrainCircuit className="mx-auto mb-3 opacity-30 animate-pulse" size={44} style={{ color: adobe.midTint }} />
+        <div className="p-10 text-center bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] text-slate-800 dark:text-white">
+          <BrainCircuit className="mx-auto mb-3 opacity-30 animate-pulse text-[#4D6173] dark:text-[#87C7FF]" size={44} />
           <h3 className="text-base font-bold">Base de Hechos Vacía</h3>
-          <p className="text-xs mt-1 max-w-md mx-auto" style={{ color: adobe.darkTint }}>
+          <p className="text-xs mt-1 max-w-md mx-auto text-slate-500 dark:text-slate-400">
             Por favor, utiliza el menú desplegable superior para elegir un episodio clínico e iniciar el motor de inferencia.
           </p>
         </div>
       ) : loading ? (
-        <div className="flex flex-col items-center justify-center p-16 bg-white rounded-2xl shadow-xs border border-slate-100">
+        <div className="flex flex-col items-center justify-center p-16 bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759]">
           <Loader2 className="animate-spin mb-3" size={36} style={{ color: adobe.highlight }} />
-          <p className="text-xs font-bold tracking-wide uppercase text-slate-500">Consultando Base de Hechos e infiriendo scores médicos...</p>
+          <p className="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400">Consultando Base de Hechos e infiriendo scores médicos...</p>
         </div>
       ) : error ? (
         <div className="p-3.5 rounded-xl border flex items-center gap-2" style={{ backgroundColor: statusColors.warning.bg, borderColor: statusColors.warning.border, color: statusColors.warning.text }}>

@@ -7,6 +7,43 @@
     <title>INAAQC - Sistema Experto</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              inaaqc: {
+                900: '#1E3040',
+                800: '#334759',
+                700: '#4D6173',
+                600: '#6C7D8C',
+                500: '#909CA6',
+                400: '#9FB0BF',
+                300: '#9EBDD9',
+                200: '#99C8F2',
+                100: '#87C7FF',
+                50:  '#6EBBFF',
+                darkBg: '#0F1A24',
+                darkCard: '#1E3040',
+                darkBorder: '#334759',
+              }
+            }
+          }
+        }
+      };
+      (function() {
+        try {
+          const theme = localStorage.getItem('inaaqc_theme');
+          const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (_) {}
+      })();
+    </script>
     
   </head>
   <body>

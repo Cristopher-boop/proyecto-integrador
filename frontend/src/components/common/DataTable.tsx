@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { ArrowUpDown } from 'lucide-react';
-import { INAAQC_THEME } from '../../config/theme';
 
 export interface Column<T> {
   header: string;
@@ -19,24 +18,20 @@ interface DataTableProps<T> {
 }
 
 export function DataTable<T>({ data, columns, onSort, sortConfig }: DataTableProps<T>) {
-  const adobe = INAAQC_THEME.palette;
-
   return (
-    // ELIMINAMOS el pb-24 y el min-h-[300px] que causaba el hueco gigante
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-slate-50/80 border-b" style={{ borderColor: '#e2e8f0' }}>
+          <tr className="bg-slate-50/80 dark:bg-[#15232F] border-b border-slate-200 dark:border-[#334759] transition-colors">
             {columns.map((col, index) => (
               <th 
                 key={index}
-                className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider ${col.sortable ? 'cursor-pointer group select-none' : ''} text-${col.align || 'left'} ${col.width || ''}`} 
-                style={{ color: adobe.darkTint }}
+                className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-[#334759] dark:text-slate-300 ${col.sortable ? 'cursor-pointer group select-none' : ''} text-${col.align || 'left'} ${col.width || ''}`} 
                 onClick={() => col.sortable && col.accessorKey && onSort && onSort(col.accessorKey)}
               >
                 {col.header}
                 {col.sortable && (
-                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-[#1E3040]' : 'text-slate-300 group-hover:text-slate-500'}`} />
+                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-[#1E3040] dark:text-[#87C7FF]' : 'text-slate-300 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-300'}`} />
                 )}
               </th>
             ))}
@@ -44,9 +39,9 @@ export function DataTable<T>({ data, columns, onSort, sortConfig }: DataTablePro
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b transition-colors hover:bg-slate-50/80" style={{ borderColor: '#f1f5f9' }}>
+            <tr key={rowIndex} className="border-b border-slate-100 dark:border-[#334759]/40 transition-colors hover:bg-slate-50/80 dark:hover:bg-[#334759]/30">
               {columns.map((col, colIndex) => (
-                <td key={colIndex} className={`py-2.5 px-4 text-${col.align || 'left'}`}>
+                <td key={colIndex} className={`py-2.5 px-4 text-${col.align || 'left'} text-slate-700 dark:text-slate-200`}>
                   {col.render ? col.render(row) : (row[col.accessorKey as keyof T] as ReactNode)}
                 </td>
               ))}

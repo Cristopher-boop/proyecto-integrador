@@ -20,10 +20,10 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
   return (
     <>
       {/* COLUMNA 1: BASE DE HECHOS NLP */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col h-full min-h-0">
-        <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2 bg-slate-50/70 shrink-0">
+      <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col h-full min-h-0">
+        <div className="px-4 py-3 border-b border-slate-100 dark:border-[#334759] flex items-center gap-2 bg-slate-50/70 dark:bg-[#15232F]/70 shrink-0">
           <FileText size={16} style={{ color: adobe.highlight }} />
-          <h3 className="font-bold text-sm" style={{ color: adobe.base }}>
+          <h3 className="font-bold text-sm text-slate-800 dark:text-white">
             Base de Hechos (NLP)
           </h3>
         </div>
@@ -31,10 +31,7 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
         <div className="p-4 flex-1 overflow-y-auto space-y-4 custom-scrollbar min-h-0">
           {/* Diagnósticos */}
           <div>
-            <h4
-              className="text-xs font-black uppercase tracking-wider mb-2.5"
-              style={{ color: adobe.midTint }}
-            >
+            <h4 className="text-xs font-black uppercase tracking-wider mb-2.5 text-slate-400 dark:text-slate-400">
               Diagnósticos Detectados
             </h4>
             {diagnosticos.length === 0 ? (
@@ -44,8 +41,7 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
                 {diagnosticos.map((dx, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-2 text-xs font-semibold p-2.5 rounded-xl border border-slate-100 bg-slate-50/60"
-                    style={{ color: adobe.base }}
+                    className="flex items-center gap-2 text-xs font-semibold p-2.5 rounded-xl border border-slate-100 dark:border-[#334759] bg-slate-50/60 dark:bg-[#15232F] text-slate-800 dark:text-slate-200"
                   >
                     <CheckCircle2 size={15} style={{ color: adobe.highlight }} className="shrink-0" />
                     <span>{dx.nombre}</span>
@@ -57,10 +53,7 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
 
           {/* Comorbilidades */}
           <div>
-            <h4
-              className="text-xs font-black uppercase tracking-wider mb-2.5"
-              style={{ color: adobe.midTint }}
-            >
+            <h4 className="text-xs font-black uppercase tracking-wider mb-2.5 text-slate-400 dark:text-slate-400">
               Comorbilidades Clínicas
             </h4>
             {comorbilidades.length === 0 ? (
@@ -70,13 +63,13 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
                 {comorbilidades.map((com, idx) => (
                   <li
                     key={idx}
-                    className="flex flex-col p-2.5 rounded-xl border border-slate-100 shadow-xs relative overflow-hidden bg-white"
+                    className="flex flex-col p-2.5 rounded-xl border border-slate-100 dark:border-[#334759] shadow-xs relative overflow-hidden bg-white dark:bg-[#15232F]"
                   >
                     <div
                       className="absolute left-0 top-0 bottom-0 w-1"
                       style={{ backgroundColor: adobe.highlight }}
                     />
-                    <span className="font-bold text-xs pl-1.5" style={{ color: adobe.base }}>
+                    <span className="font-bold text-xs pl-1.5 text-slate-800 dark:text-white">
                       {com.nombre}
                     </span>
                     {com.categoria && (
@@ -93,20 +86,17 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
       </div>
 
       {/* COLUMNA 2: SOPORTES UCI */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden flex flex-col h-full min-h-0">
-        <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2 bg-slate-50/70 shrink-0">
+      <div className="bg-white dark:bg-[#1E3040] rounded-2xl shadow-xs border border-slate-100 dark:border-[#334759] overflow-hidden flex flex-col h-full min-h-0">
+        <div className="px-4 py-3 border-b border-slate-100 dark:border-[#334759] flex items-center gap-2 bg-slate-50/70 dark:bg-[#15232F]/70 shrink-0">
           <Syringe size={16} style={{ color: adobe.highlight }} />
-          <h3 className="font-bold text-sm" style={{ color: adobe.base }}>
+          <h3 className="font-bold text-sm text-slate-800 dark:text-white">
             Intervenciones Extraídas
           </h3>
         </div>
 
         <div className="p-4 flex-1 flex flex-col gap-4 justify-between overflow-y-auto custom-scrollbar min-h-0">
           <div>
-            <h4
-              className="text-xs font-black uppercase tracking-wider mb-2.5"
-              style={{ color: adobe.midTint }}
-            >
+            <h4 className="text-xs font-black uppercase tracking-wider mb-2.5 text-slate-400 dark:text-slate-400">
               Soportes Orgánicos Activos
             </h4>
             {soportes.length === 0 ? (
@@ -131,14 +121,13 @@ export const EntityBadges: React.FC<EntityBadgesProps> = ({
           </div>
 
           <div
-            className="rounded-xl border border-dashed flex flex-col items-center justify-center p-3.5 text-center bg-slate-50/80"
-            style={{ borderColor: `${adobe.lightTint}60` }}
+            className="rounded-xl border border-dashed border-slate-300 dark:border-[#334759] flex flex-col items-center justify-center p-3.5 text-center bg-slate-50/80 dark:bg-[#15232F]/80"
           >
             <Activity size={22} style={{ color: adobe.highlight }} className="mb-1 opacity-80" />
-            <p className="text-xs font-bold" style={{ color: adobe.base }}>
+            <p className="text-xs font-bold text-slate-800 dark:text-white">
               Sincronización Determinista
             </p>
-            <p className="text-[11px] mt-0.5 text-slate-500 max-w-xs mx-auto">
+            <p className="text-[11px] mt-0.5 text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
               Cálculo SOFA y SAPS 3 consolidado a partir de los datos analíticos del episodio.
             </p>
           </div>
