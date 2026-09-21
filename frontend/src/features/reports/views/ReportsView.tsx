@@ -141,14 +141,14 @@ export const ReportsView: React.FC = () => {
                   onClick={() => handleExportReport('gravedad', false)} 
                   className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
                 >
-                  <Activity size={15} className="text-teal-600" /> 
+                  <Activity size={15} style={{ color: adobe.darkTint }} /> 
                   Métricas de Severidad (SOFA)
                 </button>
                 <button 
                   onClick={() => handleExportReport('extracciones', false)} 
                   className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
                 >
-                  <FileSpreadsheet size={15} className="text-emerald-600" /> 
+                  <FileSpreadsheet size={15} style={{ color: adobe.base }} /> 
                   Sábana de Datos (Labs/Vit)
                 </button>
 

@@ -181,7 +181,7 @@ const PatientsView: React.FC = () => {
                 <button onClick={() => { setEditingPatient(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                   <Edit2 className="w-4 h-4 text-slate-400" /> Editar Perfil
                 </button>
-                <button onClick={() => { toggleStatus(row.id_paciente, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-emerald-600 hover:bg-emerald-50'}`}>
+                <button onClick={() => { toggleStatus(row.id_paciente, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-[#4D6173] hover:bg-[#9EBDD9]/20'}`}>
                   {row.esta_activo ? <PowerOff className="w-4 h-4 opacity-70" /> : <Power className="w-4 h-4 opacity-70" />}
                   {row.esta_activo ? 'Dar de Baja' : 'Reactivar'}
                 </button>
@@ -242,7 +242,7 @@ const PatientsView: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-150 ${
                       estadoFilter === est
-                        ? 'bg-white text-teal-700 shadow-xs border border-slate-200/60'
+                        ? 'bg-white text-[#1E3040] shadow-xs border border-slate-200/60'
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >

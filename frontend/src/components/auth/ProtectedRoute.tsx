@@ -33,7 +33,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, ch
           Acceso Restringido (403)
         </h2>
         <p className="text-sm text-slate-600 max-w-md mb-2 leading-relaxed">
-          Su rol institucional actual (<strong className="text-teal-700">{user?.rol || 'Sin Rol'}</strong>) no cuenta con privilegios suficientes para operar en este módulo.
+          Su rol institucional actual (<strong className="text-[#1E3040]">{user?.rol || 'Sin Rol'}</strong>) no cuenta con privilegios suficientes para operar en este módulo.
         </p>
         <p className="text-xs text-slate-400 mb-6">
           Si considera que esto es un error, por favor contacte al Administrador del Sistema.

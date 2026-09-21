@@ -42,7 +42,6 @@ export const AuditSplitView: React.FC<AuditProps> = ({ onClose, idArchivo, docum
               variant="primary" 
               icon={<CheckCircle className="w-4 h-4" />} 
               onClick={onClose}
-              className="bg-emerald-500 hover:bg-emerald-600 border-none text-white shadow-sm"
             >
               Aprobar Auditoría
             </Button>

@@ -14,7 +14,7 @@ export const ComorbiditiesChart: React.FC<ComorbiditiesChartProps> = ({ data }) 
     <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-xs border border-slate-100 flex flex-col">
       <div className="flex justify-between items-center mb-1">
         <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-          <Layers className="w-4 h-4 text-teal-600" />
+          <Layers className="w-4 h-4 text-[#1E3040]" />
           Distribución de Comorbilidades Detectadas
         </h3>
       </div>
@@ -30,7 +30,7 @@ export const ComorbiditiesChart: React.FC<ComorbiditiesChartProps> = ({ data }) 
               <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} />
               <YAxis dataKey="nombre" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: adobe.base, fontWeight: 600 }} width={160} />
               <Tooltip 
-                cursor={{ fill: 'rgba(0, 168, 150, 0.05)' }} 
+                cursor={{ fill: 'rgba(30, 48, 64, 0.05)' }} 
                 contentStyle={{ 
                   backgroundColor: '#1E3040', 
                   borderRadius: '12px', 
@@ -43,7 +43,7 @@ export const ComorbiditiesChart: React.FC<ComorbiditiesChartProps> = ({ data }) 
               />
               <Bar dataKey="pacientes" name="Nº Pacientes" fill={adobe.base} radius={[0, 4, 4, 0]} barSize={18}>
                 {data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={index === 0 ? '#00A896' : adobe.base} />
+                  <Cell key={`cell-${index}`} fill={index === 0 ? adobe.darkTint : adobe.base} />
                 ))}
               </Bar>
             </BarChart>

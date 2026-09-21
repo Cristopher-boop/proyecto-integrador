@@ -81,3 +81,39 @@ class AuditLogAndRBACUnitTests(TestCase):
         # Even superadmin cannot create logs via POST (it's read-only)
         response = self.client.post('/api/v1/users/logs/', {'accion': 'TEST'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_superadmin_can_generate_and_list_backups(self):
+        self.client.force_authenticate(user=self.user_superadmin)
+        post_res = self.client.post('/api/v1/users/backups/', {'notas': 'Backup de prueba unitaria'})
+        self.assertEqual(post_res.status_code, status.HTTP_201_CREATED)
+        self.assertIn('id_backup', post_res.data)
+        self.assertIn('checksum_sha256', post_res.data)
+
+        get_res = self.client.get('/api/v1/users/backups/')
+        self.assertEqual(get_res.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(get_res.data), 1)
+
+    def test_doctor_and_ti_cannot_manage_backups(self):
+        # Doctor forbidden
+        self.client.force_authenticate(user=self.user_doctor)
+        res_doc = self.client.get('/api/v1/users/backups/')
+        self.assertEqual(res_doc.status_code, status.HTTP_403_FORBIDDEN)
+        res_doc_post = self.client.post('/api/v1/users/backups/', {})
+        self.assertEqual(res_doc_post.status_code, status.HTTP_403_FORBIDDEN)
+
+        # TI forbidden
+        self.client.force_authenticate(user=self.user_ti)
+        res_ti = self.client.get('/api/v1/users/backups/')
+        self.assertEqual(res_ti.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_schedule_status_accessible_only_by_superadmin(self):
+        self.client.force_authenticate(user=self.user_superadmin)
+        res = self.client.get('/api/v1/users/backups/estado-programacion/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('proximo_corte', res.data)
+        self.assertIn('dias_restantes', res.data)
+
+        self.client.force_authenticate(user=self.user_doctor)
+        res_doc = self.client.get('/api/v1/users/backups/estado-programacion/')
+        self.assertEqual(res_doc.status_code, status.HTTP_403_FORBIDDEN)
+

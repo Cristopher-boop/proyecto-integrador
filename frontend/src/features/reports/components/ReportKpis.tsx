@@ -18,7 +18,7 @@ export const ReportKpis: React.FC<ReportKpisProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-3.5 hover:shadow-sm transition-all">
-        <div className="p-2.5 rounded-xl bg-teal-50 text-teal-600 shrink-0">
+        <div className="p-2.5 rounded-xl bg-[#9EBDD9]/30 text-[#1E3040] shrink-0">
           <BrainCircuit className="w-5 h-5" />
         </div>
         <div className="min-w-0">

@@ -14,7 +14,7 @@ export const MortalityTrendChart: React.FC<MortalityTrendChartProps> = ({ data }
     <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-xs border border-slate-100 flex flex-col">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-teal-600" />
+          <TrendingUp className="w-4 h-4 text-[#1E3040]" />
           Evolución de Gravedad Estimada (SAPS 3 / SOFA)
         </h3>
       </div>

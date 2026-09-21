@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import AuditLog
+from .models import AuditLog, SystemBackup
 
 User = get_user_model()
 
@@ -54,3 +54,21 @@ class AuditLogSerializer(serializers.ModelSerializer):
 
     def get_fecha_formateada(self, obj):
         return obj.fecha_hora.strftime('%d/%m/%Y %H:%M:%S') if obj.fecha_hora else ''
+
+
+class SystemBackupSerializer(serializers.ModelSerializer):
+    tipo_display = serializers.CharField(source='get_tipo_display', read_only=True)
+    fecha_formateada = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SystemBackup
+        fields = [
+            'id_backup', 'tipo', 'tipo_display', 'nombre_archivo',
+            'tamanio_bytes', 'tamanio_legible', 'checksum_sha256',
+            'total_registros', 'creado_por', 'creado_por_nombre',
+            'estado', 'periodo_inicio', 'periodo_fin', 'detalles',
+            'creado_en', 'fecha_formateada'
+        ]
+
+    def get_fecha_formateada(self, obj):
+        return obj.creado_en.strftime('%d/%m/%Y %H:%M:%S') if obj.creado_en else ''

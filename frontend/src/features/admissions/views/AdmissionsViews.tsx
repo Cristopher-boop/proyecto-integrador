@@ -103,7 +103,7 @@ const AdmissionsView: React.FC = () => {
       sortable: true,
       width: 'w-[140px]',
       render: (row) => (
-        <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-md border border-teal-200/80">
+        <span className="text-xs font-mono font-bold text-[#1E3040] bg-[#9EBDD9]/40 px-2.5 py-1 rounded-md border border-[#9FB0BF]">
           {row.numero_episodio}
         </span>
       )
@@ -189,7 +189,7 @@ const AdmissionsView: React.FC = () => {
                 <button onClick={() => { setEditingAdmission(row); setShowForm(true); setOpenDropdownId(null); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                   <Edit2 className="w-4 h-4 text-slate-400" /> Editar Registro
                 </button>
-                <button onClick={() => { toggleStatus(row.id_admision, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-emerald-600 hover:bg-emerald-50'}`}>
+                <button onClick={() => { toggleStatus(row.id_admision, row.esta_activo); setOpenDropdownId(null); }} className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${row.esta_activo ? 'text-red-600 hover:bg-red-50' : 'text-[#4D6173] hover:bg-[#9EBDD9]/20'}`}>
                   {row.esta_activo ? <PowerOff className="w-4 h-4 opacity-70" /> : <Power className="w-4 h-4 opacity-70" />}
                   {row.esta_activo ? 'Cerrar Episodio' : 'Reactivar'}
                 </button>
@@ -252,7 +252,7 @@ const AdmissionsView: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-150 ${
                       estadoFilter === est
-                        ? 'bg-white text-teal-700 shadow-xs border border-slate-200/60'
+                        ? 'bg-white text-[#1E3040] shadow-xs border border-slate-200/60'
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >

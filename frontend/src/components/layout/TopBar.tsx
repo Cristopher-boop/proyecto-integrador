@@ -62,7 +62,7 @@ export const TopBar: React.FC<TopBarProps> = ({ isSidebarOpen, onToggleSidebar }
             p-2 rounded-xl border transition-all duration-200 flex items-center justify-center
             ${
               !isSidebarOpen
-                ? 'bg-teal-50 border-teal-200 text-teal-700 shadow-xs hover:bg-teal-100'
+                ? 'bg-[#9EBDD9]/30 border-[#9FB0BF] text-[#1E3040] shadow-xs hover:bg-[#9EBDD9]/50'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }
           `}
@@ -87,7 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({ isSidebarOpen, onToggleSidebar }
       {/* Identidad del Usuario en TopBar */}
       <div className="flex items-center gap-3 shrink-0">
         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200/80 text-xs font-semibold text-slate-600">
-          <Stethoscope className="w-3.5 h-3.5 text-teal-600" />
+          <Stethoscope className="w-3.5 h-3.5 text-[#4D6173]" />
           <span>UCI Adultos • Sala A</span>
         </div>
 
@@ -102,7 +102,7 @@ export const TopBar: React.FC<TopBarProps> = ({ isSidebarOpen, onToggleSidebar }
             <p className="text-xs font-bold leading-tight" style={{ color: adobe.base }}>
               {displayName}
             </p>
-            <p className="text-[10px] text-teal-600 font-semibold flex items-center gap-0.5">
+            <p className="text-[10px] text-[#4D6173] font-semibold flex items-center gap-0.5">
               <ShieldCheck className="w-2.5 h-2.5" /> {roleLabel}
             </p>
           </div>

@@ -12,19 +12,17 @@ export const Badge: React.FC<BadgeProps> = ({ children, status }) => {
   
   if (status === 'info') {
     styles = { 
-      backgroundColor: INAAQC_THEME.palette.lightTint, 
-      color: INAAQC_THEME.palette.base, 
-      borderColor: INAAQC_THEME.palette.midTint 
+      backgroundColor: `${INAAQC_THEME.scale[300]}40`, 
+      color: INAAQC_THEME.scale[900], 
+      borderColor: INAAQC_THEME.scale[400] 
     };
   } else if (status === 'neutral') {
     styles = { 
       backgroundColor: 'transparent', 
-      color: INAAQC_THEME.palette.darkTint, 
-      borderColor: INAAQC_THEME.palette.midTint 
+      color: INAAQC_THEME.scale[700], 
+      borderColor: INAAQC_THEME.scale[500] 
     };
   } else {
-    // --- CORRECCIÓN AQUÍ ---
-    // Extraemos la tríada matemática y la traducimos al idioma que React entiende
     const themeStatus = INAAQC_THEME.status[status];
     styles = {
       backgroundColor: themeStatus.bg,

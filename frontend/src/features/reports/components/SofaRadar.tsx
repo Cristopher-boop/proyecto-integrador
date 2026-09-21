@@ -14,7 +14,7 @@ export const SofaRadar: React.FC<SofaRadarProps> = ({ data }) => {
     <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-xs border border-slate-100 flex flex-col items-center">
       <div className="w-full flex justify-between items-center mb-2">
         <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-          <Activity className="w-4 h-4 text-teal-600" />
+          <Activity className="w-4 h-4 text-[#1E3040]" />
           Mapa Global de Disfunción (Promedios SOFA)
         </h3>
       </div>

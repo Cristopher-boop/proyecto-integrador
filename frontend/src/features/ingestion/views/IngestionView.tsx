@@ -93,7 +93,7 @@ const IngestionView: React.FC = () => {
                           onChange={(e) => updateFileType(idx, e.target.value)}
                           className={`text-xs font-bold px-3 py-1 rounded-md border appearance-none cursor-pointer pr-8 transition-colors
                             ${item.detectedType === 'UNKNOWN' ? 'border-amber-300 bg-amber-50 text-amber-700' : 
-                             (item.detectedType === 'NA' || item.detectedType === 'NE') ? 'border-purple-300 bg-purple-50 text-purple-700' :
+                             (item.detectedType === 'NA' || item.detectedType === 'NE') ? 'border-[#9FB0BF] bg-[#9EBDD9]/30 text-[#1E3040]' :
                              'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
                           style={{
                             backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234D6173' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
@@ -150,7 +150,7 @@ const IngestionView: React.FC = () => {
             )}
 
             {status === 'uploaded' && (
-              <Button onClick={processOCR} disabled={isProcessing} className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white border-none">
+              <Button onClick={processOCR} disabled={isProcessing} variant="primary" className="w-full py-3">
                 {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Cpu className="w-5 h-5" />}
                 Ejecutar Motor Inteligente
               </Button>
@@ -169,7 +169,7 @@ const IngestionView: React.FC = () => {
                   
                   {/* BOTÓN INTELIGENTE: Navega a Laboratorios o Sistema Experto según lo subido */}
                   {hasExpertSystemFiles ? (
-                    <Button onClick={() => navigate(`/dashboard/sistema-experto?episodio=${episode}`)} className="w-full py-2 text-xs bg-purple-600 hover:bg-purple-700 text-white border-none">
+                    <Button onClick={() => navigate(`/dashboard/sistema-experto?episodio=${episode}`)} variant="primary" className="w-full py-2 text-xs">
                       <BrainCircuit className="w-4 h-4 mr-1" />
                       Ver Sistema Experto
                     </Button>

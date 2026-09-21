@@ -80,8 +80,8 @@ export const DashboardHomeView: React.FC = () => {
             Métricas operativas del Instituto Académico-Científico Quispe-Cornejo (INAAQC) • Hospital Erasme
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#9EBDD9]/30 border border-[#9FB0BF] text-[#1E3040] text-xs font-bold">
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#1E3040]" />
           <span>Servidores Activos</span>
         </div>
       </div>

@@ -1,0 +1,2220 @@
+﻿UNIVERSIDAD PRIVADA “FRANZ TAMAYO”
+FACULTAD DE INGENIERÍA
+INGENIERÍA DE SISTEMAS
+/
+PROYECTO DE GRADO
+SISTEMA EXPERTO PARA LA GESTIÓN Y ANÁLISIS DE DATOS BIOMÉDICOS MEDIANTE REDES NEURONALES ARTIFICIALES
+CASO: “INSTITUTO ACADÉMICO-CIENTÍFICO QUISPE-CORNEJO”
+
+POSTULANTE:		CRISTOPHER DIEGO RODRIGUEZ AYALA
+
+TUTOR:			AÚN SIN TUTOR
+
+
+GESTIÓN 2026
+LA PAZ – BOLIVIAÍNDICE GENERAL
+I. INTRODUCCIÓN	1
+1.1. Presentación del problema de investigación	1
+1.2. Antecedentes	2
+1.2.1. Antecedentes de la institución	2
+1.2.2. Antecedentes del problema	4
+1.2.3. Antecedentes del proyecto de investigación	5
+1.3. Argumentación de la importancia del tema de estudio	6
+1.4. Novedad científica	7
+CAPÍTULO 1 MARCO TEÓRICO	
+II DESARROLLO	9
+1.5. Fundamentos de sistemas y tecnologías de desarrollo	9
+1.5.1. Definición de sistemas de información	9
+1.5.2. Sistemas expertos y su aplicación en el ámbito médico	9
+1.5.3. Inteligencia artificial aplicada a la toma de decisiones clínicas	10
+1.5.4. Aprendizaje automático y redes neuronales artificiales	10
+1.5.5. Procesamiento óptico de caracteres (OCR) y digitalización de datos biomédicos	11
+1.5.6. Arquitectura de software	11
+1.5.6.1. Arquitectura cliente-servidor	11
+1.5.6.2. Arquitectura multicapa	12
+1.5.7. Lenguajes de programación	12
+1.5.7.1. Python	12
+1.5.7.2. TypeScript	12
+1.5.8. Frameworks de desarrollo	13
+1.5.8.1. FastAPI	13
+1.5.8.2. React	13
+1.5.9. Sistema de gestión de base de datos	14
+1.5.9.1. PostgreSQL	14
+1.5.10. Servidor y entorno de despliegue	14
+1.5.10.1. Servidor ASGI — Uvicorn	14
+1.5.10.2. Entorno de despliegue local o institucional	15
+1.5.11. Seguridad y confidencialidad de los datos clínicos	15
+1.5.12. Interoperabilidad y estándares de datos biomédicos	16
+1.6. Fundamentos biomédicos y variables clínicas	16
+1.6.1. Datos biomédicos	16
+1.6.2. Clasificación de datos clínicos: de laboratorio, vitales y fisiológicos	17
+1.6.3. Parámetros de laboratorio relevantes	18
+1.6.3.1. Bilirrubina total	18
+1.6.3.2. Creatinina	18
+1.6.3.3. Glóbulos blancos	18
+1.6.3.4. Hematocrito	18
+1.6.3.5. INR	19
+1.6.3.6. Plaquetas	19
+1.6.3.7. Potasio	19
+1.6.3.8. Sodio	19
+1.6.3.9. Urea	20
+1.6.4. Integración de datos clínicos históricos en sistemas inteligentes	20
+1.6.5. Modelado de conocimiento médico en sistemas expertos	20
+1.6.6. Evaluación de patrones biomédicos mediante redes neuronales	21
+1.7. Metodologías, evaluación y calidad del proyecto	21
+1.7.1. Metodología de desarrollo ICONIX	21
+1.7.2. Metodología de desarrollo BUCHANAN	21
+1.7.3. Lenguaje de modelado unificado (UML)	23
+1.7.4. Pruebas de software	23
+1.7.5. Calidad de software según ISO/IEC 25010	23
+1.7.6. Estimación de costos - Modelo COCOMO II	24
+CAPÍTULO 2 JUSTIFICACIÓN DEL PROYECTO	
+2.1. Justificación	25
+2.1.1. Justificación técnica	25
+2.1.2. Justificación económica	26
+2.1.3. Justificación social	27
+2.1.4. Justificación legal	28
+CAPÍTULO 3 DISEÑO TEÓRICO DE LA INVESTIGACIÓN	
+3.1. Problemática	29
+3.2. Formulación del problema	30
+3.3. Delimitación del contenido	30
+3.4. Delimitación temporal	31
+3.5. Delimitación espacial	32
+3.4. Objetivo general	33
+3.5. Objetivos específicos	33
+CAPÍTULO 5 DESCRIPCIÓN DEL PROYECTO	34
+5.1. Introducción a la metodología de análisis ICONIX	34
+5.2. Fase 1 – Pre Game	35
+5.2.1. Análisis de requerimientos	35
+5.2.3. Historias de usuario	36
+5.3. Fase 2 – Game	43
+5.3.1. Análisis y diseño	43
+5.3.1.1 Diagrama de paquetes	43
+5.3.1.2. Diagramas de casos de uso	44
+5.3.1.3. Diagramas de secuencia	51
+5.3.1.4. Diagramas de robustez	55
+5.3.1.5. Diagrama de clases de alto nivel	59
+5.3.1.6. Diagrama de clases de bajo nivel	60
+5.3.1.7. Diagrama físico del sistema	61
+5.3.1.8. Arquitectura de software	62
+III. CONCLUSIONES	64
+IV. RECOMENDACIONES	66
+V. GLOSARIO	67
+VI. BIBLIOGRAFÍA	70
+VII. WEBGRAFÍA	72
+VIII. ANEXOS	73
+
+
+
+
+
+ÍNDICE DE TABLAS
+Tabla 1. Antecedentes académico internacional	5
+Tabla 2. Antecedente académico regional	5
+Tabla 3. Antecedente académico nacional	6
+Tabla 4. Requisitos funcionales	35
+Tabla 5. Requisitos no funcionales	36
+Tabla 6. Historia de usuario – Inicio de sesión	37
+Tabla 7. Historia de usuario – Gestión de usuario y permisos	37
+Tabla 8. Historia de usuario – Registro de pacientes y admisiones	38
+Tabla 9. Historia de usuario – Digitalización de datos	39
+Tabla 10. Historia de usuario – Gestión de observaciones	40
+Tabla 11. Historia de usuario – Registro de diagnósticos secundarios	41
+Tabla 12. Historia de usuario – Generación de reportes	42
+Tabla 13. Cronograma de actividades	76
+Tabla 14. Diccionario de datos - Tabla admisiones	82
+Tabla 15. Diccionario de datos - Tabla archivos	83
+Tabla 16. Diccionario de datos - Tabla diagnósticos secundarios	83
+Tabla 17. Diccionario de datos - Tabla hechos clínicos	84
+Tabla 18. Diccionario de datos - Tabla inferencias	85
+Tabla 19. Diccionario de datos - Tabla observaciones	86
+Tabla 20. Diccionario de datos - Tabla ocr crudo	86
+Tabla 21. Diccionario de datos - Tabla pacientes	87
+Tabla 22. Diccionario de datos - Tabla predicciones	87
+Tabla 23. Diccionario de datos - Tabla reglas	88
+Tabla 24. Diccionario de datos - Tabla revisión observaciones	88
+Tabla 25. Diccionario de datos - Tabla roles	89
+Tabla 26. Diccionario de datos - Tabla tipos observación	90
+Tabla 27. Diccionario de datos - Tabla usuarios	90
+Tabla 28. Diccionario de datos - Tabla usuarios roles	91
+ÍNDICE DE FIGURAS
+Figura 1. Organigrama del área de trabajo del proyecto dentro de la empresa	3
+Figura 2. Diagrama de paquetes	43
+Figura 3. Caso de uso – Inicio de sesión	44
+Figura 4. Caso de uso – Gestión de usuarios y permisos	45
+Figura 5. Caso de uso – Registro de pacientes y admisiones	46
+Figura 6. Caso de uso – Digitalización de datos	47
+Figura 7. Caso de uso – Gestión de observaciones	48
+Figura 8. Caso de uso – Registro de diagnósticos secundarios	49
+Figura 9. Caso de uso – Generación de reportes	50
+Figura 10. Secuencia – Inicio de sesión	51
+Figura 11. Secuencia – Gestión de usuarios	52
+Figura 12. Secuencia – Gestión de pacientes y admisiones	53
+Figura 13. Secuencia – Digitalización de datos	54
+Figura 14. Robustez – Inicio de sesión	55
+Figura 15. Robustez – Registro de pacientes y admisiones	56
+Figura 16. Robustez – Digitalización de datos	57
+Figura 17. Robustez – Generación de reportes	58
+Figura 18. Diagrama de clases de alto nivel	59
+Figura 19. Diagrama de clases de bajo nivel	60
+Figura 20. Diagrama físico	61
+I. INTRODUCCIÓN
+1.1. Presentación del problema de investigación
+La investigación y el desarrollo en el campo de la medicina constituyen pilares fundamentales para el avance de la salud pública en Bolivia. El Instituto Académico-Científico Quispe-Cornejo (INAAQC), fundado por el Dr. Armin Álvaro Quispe Cornejo —médico especializado en Medicina Interna por la Universidad Mayor de San Andrés (UMSA) y en Medicina Intensiva por la Universidad Nacional Autónoma de México (UNAM), promueve la producción científica y la formación continua con miras a fortalecer la investigación biomédica.
+Actualmente, el Dr. Quispe Cornejo lidera actualmente proyectos como Las Perlas Científicas, Altitude, Telemedicina e ISICEM, que demandan procesamiento sistemático de datos clínicos para generar evidencia robusta. No obstante, la captura y preparación de datos provistos por fuentes como el Hospital Erasme se realiza mayoritariamente de forma manual a partir de archivos digitales (PDF, PNG, JPG), lo que conlleva retrasos, inconsistencias y dificultades para asegurar la trazabilidad necesaria en estudios científicos.
+El presente proyecto propone abordar la necesidad de acelerar y sistematizar el flujo de datos para investigación: mejorar la calidad, la trazabilidad y la velocidad con que la información biomédica se prepara para análisis científicos, sin comprometer la validez ni la interpretación clínica. En particular, se busca incorporar métodos de análisis automatizado que permitan clasificar y estructurar diagnósticos extraídos de documentos digitales, facilitando la producción de conocimientos reproducibles y la eficiencia en las líneas de investigación del INAAQC.
+1.2. Antecedentes
+1.2.1. Antecedentes de la institución
+El INAAQC fue fundado en 2020 por el Dr. Armin Álvaro Quispe Cornejo con el objetivo de impulsar la investigación, la educación médica continua y la producción científica orientada a Bolivia y América Latina. El Dr. Quispe actualmente colabora como investigador clínico en el Departamento de Cuidados Intensivos del Hospital Universitario Erasme (Bruselas, Bélgica), experiencia que contribuye a la internacionalización y rigurosidad metodológica del instituto.
+INAAQC organiza proyectos multidisciplinarios y desarrolla iniciativas en telemedicina y medicina intensiva. Su visión es posicionarse como referente en ciencia, educación y tecnología médica, conectando profesionales locales con expertos internacionales para mejorar la salud poblacional mediante formación y estudios científicos. 
+Vision: Become a specialized benchmark on medical “science, education and technology” where worldwide multidisciplinary teams work altogether contributing to the growth and development of those fields/domains in Bolivia and Latin America.Connect healthcare providers with world-renowned experts to work together to improve the lifestyle and overall well-being of Bolivian communities creating opportunities, performing consistent training and developing scientific studies to broaden our academic, scientific and clinical perspective/horizon.”
+Mision: Instituto Académico-Científico Quispe-Cornejo (ᴮᴼ) is an initiative that encourages and applies the spirit of connecting world-renowned experts with healthcare providers and other professionals who share similar interests, passion and vision about medical “science, education and technology”.
+We are an academic-scientific workgroup that pursues high-quality continuing medical education and scientific production oriented to Bolivia and Latin-America.
+We do our best to create opportunities and perform consistent training to broaden our perspective about the medical ‘academic, scientific and clinical’ world.
+Dentro del presente proyecto, este trabajaría con el área de Tecnologías de la Información (TI), según la información provista por el jefe de la misma, la jerarquía del área sería la siguiente.
+/
+Figura 1. Organigrama del área de trabajo del proyecto dentro de la empresa
+Fuente: Elaboración propia
+
+1.2.2. Antecedentes del problema
+En el ámbito de la investigación biomédica, uno de los principales desafíos es la gestión eficiente de grandes volúmenes de datos clínicos, especialmente aquellos provenientes de estudios realizados en entornos de cuidados intensivos. La recolección de información proveniente de hospitales y centros asociados —como el Hospital Universitario Erasme— suele presentarse en formatos digitales diversos, lo que complica su procesamiento y análisis sistemático.
+Esta situación genera limitaciones en la trazabilidad y consistencia de los datos empleados en las investigaciones, además de aumentar el tiempo necesario para su revisión y clasificación manual. La ausencia de una base de datos estructurada centralizada y la dependencia de procedimientos manuales dificultan el aprovechamiento completo del valor científico contenido en los resultados de laboratorio y reportes clínicos.
+Para el INAAQC, que impulsa estudios en medicina intensiva y fisiología de altura, la disponibilidad de datos biomédicos limpios, organizados y verificables es esencial para la generación de conocimiento confiable. Sin embargo, la falta de herramientas automatizadas para interpretar y clasificar la información proveniente de diversas fuentes representa una barrera significativa para el avance de la investigación.
+
+
+1.2.3. Antecedentes del proyecto de investigación
+Título
+Autor(es)
+Lugar de Publicación
+Fecha de Publicación
+Resumen del Proyecto
+
+Fuzzy Expert Systems for Prediction of ICU Admission in Patients with COVID-19
+A. A. Sadat Asl, M. M. Ershadi, S. Sotudian, X. Li, S. Dick
+Intelligent Decision Technologies / arXiv
+2022
+Proponen un sistema experto difuso (tipo-2) para predecir la admisión en UCI de pacientes con COVID-19, combinando lógica difusa con clasificación adaptativa (ANFIS). Comparan sus resultados con otros modelos (NB, CBR, DT, KNN), mostrando que el sistema difuso compite favorablemente en precisión y F-measure.
+
+Tabla 1. Antecedentes académico internacional
+Fuente: Elaboración propia
+
+
+Título
+Autor(es)
+Lugar de Publicación
+Fecha de Publicación
+Resumen del Proyecto
+
+A Robust Design-Based Expert System for Feature Selection and Predicting Pandemic Trend (COVID-19)
+C. T. Ho et al.
+MDPI / Healthcare
+2022
+Proponen un sistema experto robusto que selecciona variables representativas para modelar tendencias epidémicas, aplicable al COVID-19. El sistema combina selección de rasgos (feature selection) con inferencia experta para predecir el curso de la enfermedad a nivel poblacional.
+
+Tabla 2. Antecedente académico regional
+Fuente: Elaboración propia
+
+
+
+
+
+Título
+Autor(es)
+Lugar de Publicación
+Fecha de Publicación
+Resumen del Proyecto
+
+Sistema Experto Medicina Tradicional en Bolivia
+(No se específica claramente en el documento)
+Documento universitario / informe boliviano
+2025
+Desarrollo de un sistema experto para diagnóstico basado en medicina tradicional boliviana. Recopilan conocimiento ancestral y lo estructuran mediante ingeniería del conocimiento e ingeniería de software, usando CLIPS como herramienta de implementación.
+
+Tabla 3. Antecedente académico nacional
+Fuente: Elaboración propia
+
+
+1.3. Argumentación de la importancia del tema de estudio
+La eficiencia en la gestión de información biomédica es un componente clave para garantizar la validez científica de los estudios desarrollados por el INAAQC. La consolidación, interpretación y análisis oportuno de resultados clínicos permite no sólo optimizar los tiempos de procesamiento de la información, sino también aumentar la precisión de las conclusiones obtenidas.
+En este contexto, la integración de técnicas de inteligencia artificial —particularmente el uso de redes neuronales para el análisis y clasificación de diagnósticos digitalizados— representa una oportunidad estratégica para modernizar los procesos de investigación biomédica en Bolivia. Estas herramientas permiten detectar patrones entre parámetros clínicos, establecer correlaciones entre variables y reducir el margen de error derivado de la manipulación manual de los datos.
+La relevancia de este trabajo radica en su potencial para acelerar el ciclo de investigación científica dentro del INAAQC, promoviendo una metodología más automatizada, reproducible y confiable. De esta forma, se facilita la toma de decisiones basadas en evidencia, se mejora la trazabilidad de los datos analizados y se fortalece la capacidad del instituto para desarrollar estudios con mayor rigor metodológico.
+Además, este proyecto contribuye a vincular la ingeniería de sistemas con la investigación médica, impulsando la innovación tecnológica local y sentando las bases para la futura implementación de soluciones de análisis inteligente en otros contextos académicos y clínicos del país.
+1.4. Novedad científica
+El presente proyecto incorpora un enfoque pionero en la automatización del análisis de datos biomédicos mediante la aplicación de modelos de redes neuronales artificiales, adaptados al contexto investigativo del INAAQC.
+A diferencia de los sistemas tradicionales de registro y análisis manual, la propuesta busca establecer una estructura que permita el procesamiento automatizado de datos históricos, con el fin de extraer diagnósticos, clasificar resultados y generar inferencias clínicas preliminares que sirvan como apoyo al investigador. Esta aproximación introduce un nivel de inteligencia analítica en la etapa de interpretación de la información, permitiendo identificar correlaciones complejas entre parámetros como bilirrubina total, creatinina, glóbulos blancos, hematocrito, INR, plaquetas, sodio, potasio y urea.
+La novedad científica de este trabajo radica en la aplicación de inteligencia artificial al flujo de trabajo de investigación biomédica boliviana, un campo aún en desarrollo dentro del país. Este modelo no busca reemplazar la experiencia clínica del profesional, sino complementarla mediante herramientas que aumenten la velocidad, precisión y capacidad de descubrimiento científico del INAAQC.
+Al establecer un marco metodológico para el análisis automatizado de datos clínicos en entornos de investigación, el proyecto sienta las bases para la expansión de técnicas de aprendizaje profundo en futuras líneas científicas, contribuyendo así al fortalecimiento del ecosistema de innovación médica en Bolivia.
+
+
+
+
+
+
+
+
+
+
+
+
+
+CAPÍTULO 1MARCO TEÓRICO
+
+
+
+II DESARROLLO
+1.5. Fundamentos de sistemas y tecnologías de desarrollo
+1.5.1. Definición de sistemas de información
+Un sistema de información es un conjunto organizado de elementos humanos, tecnológicos y procedimentales que interactúan para recopilar, procesar, almacenar y distribuir información relevante para la toma de decisiones dentro de una organización. Estos sistemas facilitan la gestión y control de los procesos operativos, además de apoyar las funciones administrativas y estratégicas.En términos generales, un sistema de información combina personas, software, hardware, datos y redes de comunicación para transformar datos en información útil. (O’Brien & Marakas, 2012)
+1.5.2. Sistemas expertos y su aplicación en el ámbito médico
+Los sistemas expertos son programas informáticos que emulan la capacidad de razonamiento de un especialista humano en un dominio específico, utilizando una base de conocimiento y un motor de inferencia para resolver problemas complejos o tomar decisiones fundamentadas.
+En el ámbito médico, estos sistemas se emplean para apoyar el diagnóstico clínico, la recomendación de tratamientos y la evaluación de riesgos, replicando el razonamiento lógico de los profesionales de salud mediante reglas y hechos predefinidos.
+1.5.3. Inteligencia artificial aplicada a la toma de decisiones clínicas
+La inteligencia artificial (IA) se refiere a la capacidad de las máquinas o programas informáticos para realizar tareas que normalmente requieren inteligencia humana, como el razonamiento, el aprendizaje, la percepción o la toma de decisiones.
+En el campo clínico, la IA se aplica en el análisis de grandes volúmenes de datos médicos para detectar patrones, realizar predicciones y apoyar diagnósticos más precisos, contribuyendo a una medicina más personalizada y basada en evidencia. (Russell & Norvig, 2021)
+1.5.4. Aprendizaje automático y redes neuronales artificiales
+El aprendizaje automático (Machine Learning) es una rama de la inteligencia artificial que permite a los sistemas aprender automáticamente a partir de los datos, sin necesidad de ser programados explícitamente.Por su parte, las redes neuronales artificiales son modelos computacionales inspirados en la estructura del cerebro humano, compuestos por nodos (neuronas artificiales) interconectados que procesan información mediante pesos y funciones de activación.
+Ambos conceptos se combinan para construir sistemas capaces de reconocer patrones, clasificar información y realizar predicciones en contextos como el análisis médico o el reconocimiento de imágenes. (Goodfellow, Bengio, & Courville, 2016)
+1.5.5. Procesamiento óptico de caracteres (OCR) y digitalización de datos biomédicos
+El procesamiento óptico de caracteres (OCR, por sus siglas en inglés) es una tecnología que permite convertir documentos escaneados o imágenes que contienen texto en archivos digitales editables y buscables.
+En el ámbito biomédico, el OCR facilita la digitalización de reportes de laboratorio, formularios y registros médicos en papel, permitiendo su posterior análisis automatizado y almacenamiento en sistemas electrónicos. (Tesseract OCR, 2023)
+1.5.6. Arquitectura de software
+La arquitectura de software representa la estructura fundamental de un sistema, conformada por sus componentes, sus relaciones y los principios que guían su diseño y evolución. Define la forma en que los módulos del sistema interactúan entre sí y con su entorno, estableciendo las bases para garantizar la escalabilidad, mantenibilidad y rendimiento del software.
+En proyectos complejos, la arquitectura sirve como un plano conceptual que facilita la comprensión, el desarrollo colaborativo y la integración de nuevas funcionalidades. (Bass, Clements, & Kazman, 2013)
+1.5.6.1. Arquitectura cliente-servidor
+La arquitectura cliente-servidor es un modelo de comunicación distribuido en el que dos entidades principales —el cliente y el servidor— se reparten las funciones del procesamiento de información.El cliente solicita servicios o recursos, mientras que el servidor los provee, gestionando las peticiones a través de una red. Este tipo de arquitectura es la base de la mayoría de las aplicaciones web modernas, permitiendo el procesamiento centralizado y el acceso remoto de múltiples usuarios simultáneamente. (Tanenbaum & Van Steen, 2017)
+1.5.6.2. Arquitectura multicapa
+La arquitectura multicapa (o n-tier architecture) es un modelo de diseño de software que separa las responsabilidades del sistema en distintas capas lógicas e independientes, tales como presentación, lógica de negocio y acceso a datos. 
+Este enfoque permite mayor flexibilidad, mantenibilidad y escalabilidad del sistema, ya que cada capa puede desarrollarse, probarse y modificarse de manera independiente. (Pressman & Maxim, 2020)
+1.5.7. Lenguajes de programación
+1.5.7.1. Python
+Python es un lenguaje de programación de alto nivel, interpretado y multiparadigma, caracterizado por su sintaxis clara y legible. Su enfoque en la productividad y la facilidad de uso lo hace ideal para el desarrollo de aplicaciones web, científicas, de automatización y de inteligencia artificial. (Van Rossum & Drake, 2009)
+1.5.7.2. TypeScript
+TypeScript es un lenguaje de programación desarrollado por Microsoft que extiende las funcionalidades de JavaScript añadiendo tipado estático y herramientas orientadas a objetos. Compila a JavaScript estándar, lo que permite su ejecución en navegadores y entornos de servidor.Su principal ventaja es la detección temprana de errores y la escalabilidad en proyectos grandes. (Microsoft, 2024)
+1.5.8. Frameworks de desarrollo
+1.5.8.1. FastAPI
+FastAPI es un framework moderno y de alto rendimiento para la construcción de API RESTful en Python, basado en los estándares de OpenAPI y JSON Schema. Destaca por su velocidad, validación automática de datos y facilidad de integración con tecnologías de aprendizaje automático y bases de datos. (FastAPI, 2024)
+1.5.8.2. React
+React es una biblioteca de código abierto desarrollada por Facebook (ahora Meta) para la construcción de interfaces de usuario interactivas. Basada en un modelo de componentes reutilizables, React permite actualizar eficientemente la interfaz cuando cambian los datos, gracias a su sistema de Virtual DOM. Es ampliamente utilizado en el desarrollo de aplicaciones web modernas, debido a su modularidad y su integración con herramientas como TypeScript. (Meta, 2024)
+1.5.9. Sistema de gestión de base de datos
+1.5.9.1. PostgreSQL
+PostgreSQL es un sistema de gestión de bases de datos relacional y objeto-relacional de código abierto, reconocido por su cumplimiento de estándares SQL, su extensibilidad y su robustez para entornos de producción. Soporta transacciones ACID, tipos de datos avanzados, índices especializados y extensiones (por ejemplo PostGIS para datos geoespaciales). PostgreSQL ofrece mecanismos para replicación, recuperación ante desastres y control de concurrencia multiversión (MVCC), lo que lo hace adecuado para aplicaciones que requieren integridad y escalabilidad en el manejo de datos estructurados. (PostgreSQL Global Development Group, s. f.)
+1.5.10. Servidor y entorno de despliegue
+1.5.10.1. Servidor ASGI — Uvicorn
+Un servidor ASGI (Asynchronous Server Gateway Interface) es un estándar para aplicaciones Python asincrónicas que permite manejar peticiones concurrentes de forma eficiente, incluyendo soporte para WebSockets y streaming. Uvicorn es un servidor ASGI ligero y de alto rendimiento ampliamente usado para ejecutar aplicaciones basadas en frameworks asíncronos. Uvicorn facilita la ejecución de la aplicación en entornos de producción con bajo consumo de latencia y mejor manejo de concurrencia en comparación con servidores WSGI tradicionales. (Uvicorn, s. f.)
+1.5.10.2. Entorno de despliegue local o institucional
+El despliegue local o institucional se refiere a la instalación y operación del sistema dentro de la infraestructura de la propia organización (servidores físicos o virtuales administrados por el equipo de TI del instituto). Este enfoque permite mayor control sobre la seguridad, la privacidad de los datos y el cumplimiento de políticas internas, aunque puede implicar responsabilidades adicionales en administración, respaldo y mantenimiento. En contextos con datos sensibles (por ejemplo información biomédica), el despliegue institucional facilita la aplicación de políticas de acceso, auditoría y protección acorde a la normativa vigente y a las prácticas internas de gobernanza de datos.
+1.5.11. Seguridad y confidencialidad de los datos clínicos
+La seguridad de la información en el contexto de datos clínicos engloba políticas, procedimientos y controles técnicos destinados a proteger la confidencialidad, integridad y disponibilidad (CIA) de la información médica. Las medidas típicas incluyen: control de acceso basado en roles, autenticación robusta, cifrado de datos en tránsito y en reposo, registro y auditoría de accesos, gestión de parches y pruebas de penetración. La confidencialidad implica asegurar que la información sólo sea accesible por personal autorizado; la integridad que los datos no han sido alterados; y la disponibilidad que los sistemas están accesibles cuando son requeridos. Las prácticas recomendadas contra vulnerabilidades web y de aplicación se alinean con guías como OWASP (Open Web Application Security Project) y estándares internacionales de gestión de seguridad de la información. (OWASP, s. f.; ISO/IEC 27001, 2013)
+1.5.12. Interoperabilidad y estándares de datos biomédicos
+La interoperabilidad se refiere a la capacidad de los sistemas de información para intercambiar, comprender y usar datos de manera coherente entre organizaciones y aplicaciones diferentes. En salud, existen estándares diseñados para facilitar ese intercambio; entre ellos, HL7 (Health Level Seven) es un conjunto de normas para el intercambio de mensajes clínicos y administrativos, y FHIR (Fast Healthcare Interoperability Resources) es una especificación moderna de HL7 que utiliza principios web (RESTful APIs, JSON/XML) para representar recursos clínicos reutilizables (paciente, observación, diagnóstico, etc.). FHIR busca simplificar la interoperabilidad facilitando el acceso programático y la integración entre sistemas clínicos heterogéneos. (HL7 International, s. f.)
+1.6. Fundamentos biomédicos y variables clínicas
+1.6.1. Datos biomédicos
+Los datos biomédicos son registros cuantitativos o cualitativos obtenidos del cuerpo humano mediante mediciones, pruebas de laboratorio, imágenes, observaciones clínicas o dispositivos médicos. Estos datos incluyen información sobre parámetros fisiológicos, químicos, genéticos, inmunológicos y bioquímicos que permiten monitorear, diagnosticar y evaluar la salud de los pacientes. La precisión y consistencia de los datos biomédicos son fundamentales para la investigación médica, la toma de decisiones clínicas y el desarrollo de modelos predictivos basados en inteligencia artificial. (Shortliffe & Cimino, 2014)
+1.6.2. Clasificación de datos clínicos: de laboratorio, vitales y fisiológicos
+Los datos clínicos se clasifican comúnmente en tres categorías principales:
+Datos de laboratorio: Incluyen resultados de análisis químicos, hematológicos, microbiológicos y bioquímicos realizados en muestras de sangre, orina, tejido u otros fluidos biológicos. Estos datos reflejan el estado fisiológico interno del organismo y permiten detectar alteraciones o patologías.
+Datos vitales: Corresponden a medidas fisiológicas esenciales que reflejan funciones críticas del cuerpo, como la frecuencia cardíaca, presión arterial, temperatura corporal, frecuencia respiratoria y saturación de oxígeno. Su monitoreo continuo es fundamental para evaluar la estabilidad del paciente.
+Datos fisiológicos: Comprenden información obtenida de sistemas corporales específicos, incluyendo mediciones electrofisiológicas (por ejemplo ECG), respiratorias, neurológicas y metabólicas. Estos datos permiten un análisis más detallado de la función orgánica y de los procesos patológicos asociados.
+La clasificación sistemática de los datos clínicos facilita su análisis, comparación histórica y la generación de indicadores que contribuyen al diagnóstico y seguimiento de enfermedades. (Harrington, 2020)
+1.6.3. Parámetros de laboratorio relevantes
+1.6.3.1. Bilirrubina total
+La bilirrubina total es un pigmento biliar derivado de la degradación de la hemoglobina. Su medición permite evaluar la función hepática y la capacidad del hígado para metabolizar productos de desecho. Valores elevados pueden indicar ictericia, obstrucción biliar o enfermedades hepáticas. (Burtis, Ashwood & Bruns, 2012)
+1.6.3.2. Creatinina
+La creatinina es un producto de desecho del metabolismo muscular, filtrado por los riñones. Su nivel en sangre es un indicador de la función renal y se utiliza para detectar insuficiencia renal o evaluar la filtración glomerular. (Taal, Chertow, Marsden, Skorecki & Yu, 2019)
+1.6.3.3. Glóbulos blancos
+Los glóbulos blancos son células del sistema inmunitario encargadas de defender el organismo frente a infecciones y sustancias extrañas. Su conteo permite evaluar la respuesta inmunológica y detectar infecciones, inflamaciones o trastornos hematológicos. (McCance & Huether, 2019)
+1.6.3.4. Hematocrito
+El hematocrito representa el porcentaje del volumen sanguíneo ocupado por glóbulos rojos. Es útil para diagnosticar anemia, policitemia y otras alteraciones hematológicas. (McCance & Huether, 2019)
+1.6.3.5. INR
+El INR es un índice que estandariza la medición del tiempo de protrombina, utilizado para evaluar la coagulación sanguínea. Es fundamental en pacientes que reciben anticoagulantes para ajustar dosis y prevenir complicaciones hemorrágicas. (Hirsh et al., 2001)
+1.6.3.6. Plaquetas
+Las plaquetas son fragmentos celulares esenciales para la coagulación sanguínea. Su conteo permite detectar trombocitopenia o trombocitosis, condiciones que afectan la hemostasia y el riesgo de sangrado o trombosis. (McCance & Huether, 2019)
+1.6.3.7. Potasio
+El potasio es un electrolito crucial para la función neuromuscular y la regulación del equilibrio ácido-base. Alteraciones en sus niveles pueden causar arritmias cardíacas y disfunción muscular. (Gennari, 2017)
+1.6.3.8. Sodio
+El sodio es el principal catión del plasma sanguíneo, esencial para la regulación del volumen sanguíneo, presión arterial y función nerviosa. Su medición ayuda a detectar hiponatremia o hipernatremia. (Adrogué & Madias, 2000)
+1.6.3.9. Urea
+La urea es un producto de degradación de proteínas eliminado por los riñones. Su concentración en sangre refleja la función renal y el metabolismo proteico, siendo útil en la evaluación de insuficiencia renal y estados de deshidratación. (Taal et al., 2019)
+1.6.4. Integración de datos clínicos históricos en sistemas inteligentes
+La integración de datos clínicos históricos consiste en recopilar, organizar y consolidar información biomédica generada previamente, como resultados de laboratorio, registros de signos vitales y antecedentes clínicos, para su análisis en sistemas inteligentes. Esta integración permite a los algoritmos procesar grandes volúmenes de datos de manera estructurada, identificar tendencias y generar información relevante para la toma de decisiones médicas (Raghupathi & Raghupathi, 2014).
+1.6.5. Modelado de conocimiento médico en sistemas expertos
+El modelado de conocimiento médico en sistemas expertos consiste en la representación estructurada de información clínica y reglas de decisión, de manera que un sistema pueda emular la capacidad de razonamiento de un profesional de la salud. Este conocimiento se organiza en bases de conocimiento que incluyen hechos, relaciones, reglas lógicas y protocolos médicos. Los sistemas expertos aplican inferencia sobre este conocimiento para generar conclusiones o recomendaciones, siendo ampliamente utilizados en diagnóstico, planificación terapéutica y apoyo clínico (Shortliffe & Cimino, 2014).
+1.6.6. Evaluación de patrones biomédicos mediante redes neuronales
+Las redes neuronales artificiales son modelos computacionales inspirados en el funcionamiento del cerebro humano, capaces de reconocer patrones complejos y correlaciones en grandes conjuntos de datos. En el ámbito biomédico, se utilizan para analizar información clínica histórica, detectar anomalías, prever tendencias de parámetros fisiológicos y asistir en el diagnóstico. Estas redes consisten en capas de nodos interconectados, que procesan información mediante funciones de activación y aprendizaje supervisado o no supervisado (LeCun, Bengio & Hinton, 2015).
+1.7. Metodologías, evaluación y calidad del proyecto
+1.7.1. Metodología de desarrollo ICONIX
+La metodología ICONIX es un enfoque de desarrollo de software orientado a objetos que busca equilibrar la rigurosidad del modelado con la eficiencia en la implementación. ICONIX combina diagramas de casos de uso, diagramas de clases y diagramas de secuencia para definir claramente los requisitos, el diseño y el flujo del sistema antes de la codificación. Esta metodología propone un ciclo de desarrollo ligero que reduce la documentación innecesaria y enfatiza la trazabilidad desde los requisitos hasta el código fuente (Rumbaugh et al., 2004).
+1.7.2. Metodología de desarrollo BUCHANAN
+La metodología de Buchanan et al. (1983) es un marco de trabajo fundamental en la ingeniería del conocimiento, diseñado para guiar la construcción de sistemas expertos. Este enfoque estructura el proceso de adquisición y representación del conocimiento en una serie de etapas secuenciales e iterativas, permitiendo transformar la experiencia humana en un modelo computacional funcional.
+Según los autores, el proceso se divide en cinco fases esenciales:
+Identificación: En esta etapa inicial se delimita el problema a resolver. Se determinan los participantes (el ingeniero del conocimiento y el experto del dominio), se identifican los recursos disponibles y se definen los objetivos y metas que el sistema debe alcanzar.
+Conceptualización: Corresponde a la fase de análisis donde se explicita el conocimiento. Se extraen los conceptos clave, las relaciones y las estrategias de resolución de problemas utilizadas por el experto, generando un modelo conceptual del dominio sin ataduras a una implementación técnica específica.
+Formalización: Implica traducir el modelo conceptual a una representación formal. Se seleccionan las estructuras de datos y los esquemas de representación del conocimiento (como reglas de producción, redes semánticas o marcos) que mejor se adapten a la naturaleza del problema.
+Implementación: Consiste en la codificación de las estructuras formalizadas utilizando un lenguaje de programación o una herramienta de desarrollo de sistemas expertos. En esta fase se crea el prototipo ejecutable que integra la base de conocimientos con el motor de inferencia.
+Prueba: Es la etapa de evaluación donde se verifica el desempeño del sistema. Se compara la eficacia de las respuestas y soluciones generadas por el software contra el criterio del experto humano para detectar errores, inconsistencias o vacíos en el conocimiento, reiniciando el ciclo si es necesario para refinar el sistema.
+1.7.3. Lenguaje de modelado unificado (UML)
+El Lenguaje de Modelado Unificado (UML) es un estándar de notación gráfica utilizado para especificar, visualizar, construir y documentar sistemas de software orientados a objetos. UML permite representar distintos aspectos del sistema mediante diagramas estructurales (clases, objetos, componentes) y diagramas de comportamiento (casos de uso, secuencia, estado). Su objetivo es facilitar la comprensión del sistema entre desarrolladores, analistas y usuarios, asegurando consistencia y comunicación clara durante el ciclo de vida del software (Booch, Rumbaugh & Jacobson, 2005).
+1.7.4. Pruebas de software
+Las pruebas de software son procedimientos sistemáticos utilizados para verificar que un sistema cumpla con sus especificaciones y para detectar errores en el código antes de su implementación final. Entre los tipos de pruebas más comunes se incluyen: pruebas unitarias (verificación de módulos individuales), pruebas de integración (coordinación entre módulos), pruebas de sistema (evaluación del sistema completo) y pruebas de aceptación (verificación frente a requisitos del usuario). El objetivo es asegurar confiabilidad, funcionalidad, eficiencia y mantenibilidad del software (Pressman, 2014).
+1.7.5. Calidad de software según ISO/IEC 25010
+La norma ISO/IEC 25010 establece un modelo de calidad para evaluar productos de software, definiendo características y subcaracterísticas que garantizan el desempeño y confiabilidad del sistema. Entre las características principales se incluyen funcionalidad, confiabilidad, usabilidad, eficiencia, mantenibilidad y portabilidad. Esta norma permite que los equipos de desarrollo puedan medir objetivamente la calidad del software y asegurar que cumpla con los estándares internacionales, facilitando la interoperabilidad y la satisfacción del usuario final (ISO/IEC, 2011).
+1.7.6. Estimación de costos - Modelo COCOMO II
+El modelo COCOMO II (Constructive Cost Model) es una metodología de estimación de costos y esfuerzo de desarrollo de software basada en métricas cuantitativas. Utiliza parámetros como tamaño del software (medido en líneas de código o puntos de función), factores de escala y multiplicadores de costo para predecir el esfuerzo en persona-meses y el tiempo de desarrollo. COCOMO II permite planificar recursos, asignar tareas y evaluar la viabilidad económica de proyectos de software, considerando diferentes niveles de precisión según la fase de desarrollo (Boehm et al., 2000).
+
+
+
+CAPÍTULO 2 JUSTIFICACIÓN DEL PROYECTO
+
+
+
+2.1. Justificación
+2.1.1. Justificación técnica
+Frontend
+React.js: será el framework utilizado para el desarrollo de la interfaz de usuario. Permite construir componentes dinámicos y reutilizables, ofreciendo una experiencia fluida e interactiva para los analistas y doctores del INAAQC. Su arquitectura basada en componentes facilita la escalabilidad del sistema y su mantenimiento a largo plazo.
+Tailwind CSS: se empleará para el diseño visual del sistema, permitiendo crear interfaces limpias, modernas y adaptables a diferentes dispositivos con una alta velocidad de desarrollo.
+Backend
+FastAPI: será el framework principal para el desarrollo del backend, encargado de manejar la lógica del sistema experto, las peticiones al servidor y la conexión con la base de datos. Su soporte para modelos de inteligencia artificial y su alto rendimiento lo convierten en una tecnología ideal para la gestión de grandes volúmenes de datos biomédicos.
+Python: se utilizará como lenguaje de programación base por su amplia compatibilidad con bibliotecas de aprendizaje profundo, minería de datos y análisis estadístico, como TensorFlow, PyTorch, NumPy y Pandas.
+Base de Datos
+PostgreSQL: será el sistema de gestión de bases de datos encargado de almacenar los registros biomédicos de forma estructurada y segura. Permite realizar consultas complejas y garantiza integridad en los datos, lo cual es fundamental para los procesos de análisis y trazabilidad del sistema.
+Módulo de Inteligencia Artificial
+Redes Neuronales Artificiales (RNA): se aplicarán modelos supervisados para la detección de patrones en los datos biomédicos, optimizando la identificación de anomalías o variaciones clínicas relevantes. Estas redes permitirán al sistema ofrecer recomendaciones automáticas y confiables basadas en el historial de estudios previos.
+El INAAQC cuenta con una infraestructura tecnológica adecuada para garantizar la operación del sistema experto. La institución dispone de tres laptops Mac, tres laptops HP y tres laptops Lenovo, además de una mini PC Mac y una mini PC Lenovo. Todo el equipo está disponible para el desarrollo y prueba del sistema, incluyendo periféricos como monitores, mouses, teclados y cables Ethernet necesarios para la conectividad. La red interna ofrece una velocidad de conexión superior a 100 Mbps, asegurando un entorno eficiente para la transferencia y procesamiento de datos biomédicos. No se dispone actualmente de servidores propios, pero la infraestructura existente permite ejecutar y validar las aplicaciones de manera local e institucional.
+2.1.2. Justificación económica
+Aunque el INAAQC es una institución sin fines de lucro, el desarrollo del sistema experto representa una optimización significativa de los recursos operativos y humanos. El sistema permitirá reducir los tiempos requeridos para organizar, procesar y analizar los datos biomédicos, evitando tareas repetitivas que hoy demandan horas de trabajo manual. De esta forma, el personal técnico y médico podrá enfocarse en tareas de mayor valor científico.
+Además, la automatización del registro y clasificación de datos disminuirá los errores humanos y reducirá el uso de material físico (formularios, carpetas, hojas de resultados), lo que supone un ahorro en insumos de oficina y espacio de almacenamiento. A largo plazo, el sistema contribuirá a minimizar costos indirectos relacionados con pérdida de información, reprocesos y tiempos muertos en la búsqueda de resultados previos, aumentando la eficiencia global de la institución.
+2.1.3. Justificación social
+Desde el punto de vista social, el sistema experto beneficiará tanto al personal interno del INAAQC como a la comunidad científica y médica vinculada. Para el cliente interno, compuesto por analistas de laboratorio, doctores y personal técnico, el sistema facilitará la gestión de datos biomédicos, permitiendo acceder rápidamente a historiales clínicos y resultados procesados con mayor precisión. Esto mejorará la trazabilidad, la comunicación entre departamentos y la toma de decisiones clínicas. Para el cliente externo, que incluye investigadores y colaboradores científicos que utilizan los datos del INAAQC, el sistema proporcionará información estructurada, confiable y trazable. Esto contribuirá a elevar el prestigio institucional al garantizar que los resultados y estudios generados se basen en datos consistentes y validados mediante técnicas modernas de inteligencia artificial.
+2.1.4. Justificación legal
+El desarrollo y operación del sistema experto del INAAQC se encuentra sujeto a normas y regulaciones relacionadas con la protección, manejo y confidencialidad de datos clínicos en Bolivia. Aunque no existe una ley específica para sistemas de gestión de información biomédica, el proyecto se alinea con la Ley 164 de Telecomunicaciones, Tecnologías de Información y Comunicación (TIC), la cual establece lineamientos generales para la protección de la información y la seguridad de los sistemas informáticos.
+Asimismo, se considerarán las normas internas y protocolos de seguridad de la institución, orientados a garantizar la confidencialidad de los datos clínicos, el control de accesos y la trazabilidad de la información. Esto asegura que toda operación con datos sensibles cumpla con estándares éticos y legales, minimizando riesgos de vulneración de información y protegiendo los derechos de los pacientes y usuarios involucrados.
+
+
+
+
+
+
+CAPÍTULO 3 
+DISEÑO TEÓRICO DE LA INVESTIGACIÓN
+
+
+
+3.1. Problemática
+El INAAQC enfrenta diversas limitaciones en la gestión, organización y análisis de la información biomédica utilizada en sus procesos de investigación. Actualmente, los datos clínicos y diagnósticos provenientes del Hospital Erasme son recibidos en formatos digitales como PDF, PNG y JPG, lo que dificulta su estructuración, trazabilidad y aprovechamiento científico.
+A continuación, se presentan los principales problemas identificados:
+Ingreso manual de datos: La información obtenida de las capturas digitales debe ser transcrita manualmente, lo que aumenta el riesgo de errores humanos, inconsistencias y pérdida de tiempo en las etapas de preparación de datos para la investigación.
+Gestión ineficiente de la información: Los datos biomédicos no se organizan de manera centralizada, lo que dificulta su manejo y acceso por parte de los investigadores.
+Duplicidad de registros: La información se almacena de forma fragmentada, generando registros repetidos y confusión en la interpretación de los resultados.
+Falta de trazabilidad: No existe un seguimiento sistemático del flujo de información desde su obtención hasta su uso en investigaciones, lo que complica la verificación de datos históricos.
+Retrasos en análisis de información: La revisión y preparación de los datos para estudios científicos consume tiempo excesivo debido a la falta de procesos estructurados.
+Limitaciones en la estandarización de datos: No se aplican criterios uniformes para el registro de parámetros biomédicos, lo que dificulta la comparación y consolidación de resultados.
+Dificultades en coordinación entre áreas: La comunicación y flujo de información entre departamentos internos es limitada, generando retrasos y posibles errores en el manejo de los datos.
+3.2. Formulación del problema
+¿Cómo se puede optimizar el registro, organización y análisis de la información biomédica para mejorar su trazabilidad y confiabilidad de los estudios que realiza el INAAQC?
+3.3. Delimitación del contenido
+El presente proyecto delimita su contenido a aspectos técnicos, funcionales y analíticos directamente relacionados con el desarrollo del Sistema Experto para el análisis automatizado de datos biomédicos en el INAAQC. 
+3.3.1. Alcances
+El sistema permitirá la carga, clasificación, almacenamiento y visualización de datos biomédicos de manera automatizada.
+Se analizarán resultados de laboratorio y parámetros clínicos históricos: bilirrubina total, creatinina, glóbulos blancos, hematocrito, INR, plaquetas, potasio, sodio y urea.
+Los datos se procesarán mediante algoritmos de redes neuronales artificiales para reconocer patrones biomédicos y correlaciones clínicas relevantes.
+La información procesada será utilizada para apoyar la investigación biomédica y generar informes estadísticos y analíticos confiables.
+El sistema priorizará la calidad, consistencia y trazabilidad de los datos históricos.
+Todo el desarrollo se enfocará en fortalecer las líneas de investigación del INAAQC, facilitando la gestión de datos y optimizando los procesos de análisis científico.
+Se permitirá el acceso a la información a los investigadores autorizados dentro del INAAQC, respetando la confidencialidad de los datos.
+3.3.2. Límites
+El sistema no emitirá diagnósticos clínicos ni reemplazará la labor del personal médico. 
+No se conectará a dispositivos médicos en tiempo real ni a sistemas de gestión hospitalaria externos.
+El entrenamiento y pruebas se realizarán únicamente con información histórica proporcionada por el INAAQC.
+No se contemplan funciones de atención directa a pacientes ni interacciones con otras instituciones externas al INAAQC.
+3.4. Delimitación temporal
+El desarrollo del presente proyecto de grado inició el 15 de marzo de 2025, con la definición de la problemática relacionada a la gestión y análisis de datos biomédicos del INAAQC. Esta etapa corresponde a la planificación inicial, donde se identificaron los objetivos generales y los principales requerimientos del sistema.
+Se tiene previsto organizar el proyecto siguiendo las fases sugeridas por la metodología ICONIX como guía, adaptándolas a las necesidades del sistema experto. Entre estas fases se incluyen:
+Análisis y modelado, para definir los datos a procesar, los parámetros biomédicos y las relaciones entre ellos.
+Diseño conceptual y formalización, donde se estructurará la base de conocimiento y se establecerán los criterios para la clasificación automática de diagnósticos mediante redes neuronales.
+Implementación, orientada a la construcción del sistema en software con las herramientas tecnológicas definidas.
+Pruebas y validación, destinadas a verificar la consistencia, precisión y confiabilidad del sistema usando los registros biomédicos históricos del instituto.
+Se proyecta que el desarrollo, implementación y validación del sistema se complete durante la gestión 2025, asegurando que esté operativo para apoyar la investigación biomédica interna del INAAQC.
+3.5. Delimitación espacial
+El proyecto se desarrollará únicamente en la ciudad de La Paz, Bolivia, con un énfasis mayor en la zona donde se encuentra una sucursal del INAAQC. Para ser más específico, se trabajará con la unidad administrativa y de gestión de datos del instituto ubicada en dicha sucursal, que servirá como punto de referencia para la recopilación, organización y análisis de información biomédica. Todas las fuentes de información y actividades relacionadas con el proyecto se centralizarán en esta sucursal, garantizando un control completo del proceso de investigación.
+Esta delimitación garantiza que todas las actividades relacionadas con el proyecto se realicen dentro de un entorno geográfico controlado, permitiendo centralizar la recolección de registros, la validación de datos y la prueba del sistema, sin extenderse a otras áreas o sucursales externas.
+3.4. Objetivo general
+Desarrollar un sistema experto basado en redes neuronales para optimizar el registro, organización y análisis de los datos biomédicos del INAAQC, en la ciudad de La Paz, gestión 2025.
+3.5. Objetivos específicos
+Utilizar metodología científica para recolectar información de requisitos funcionales y no funcionales del INAAQC para la gestión y análisis de datos biomédicos.
+Diseñar la arquitectura de datos y la estructura de la base de conocimiento que garanticen la trazabilidad, integridad y accesibilidad de los registros biomédicos.
+Implementar un módulo prototipo de captura y extracción automática (OCR) para convertir información contenida en archivos PDF, PNG y JPG en registros estructurados y verificables.
+Entrenar un prototipo de redes neuronales para la clasificación y priorización de diagnósticos (principal y secundarios) sobre la base de los datos históricos.
+Generar reportes derivados del procesamiento de datos biomédicos, incorporando métricas estadísticas, visualizaciones y categorías clínicas.
+
+CAPÍTULO 5 DESCRIPCIÓN DEL PROYECTO
+
+
+
+5.1. Introducción a la metodología de análisis ICONIX
+ICONIX es una metodología de desarrollo de software minimalista y pragmática que se sitúa entre la complejidad del Proceso Unificado de Rational (RUP) y la ligereza de las metodologías ágiles como Extreme Programming (XP). Su enfoque principal es el análisis de robustez, una técnica que sirve para cerrar la brecha entre el análisis de requisitos y el diseño detallado (el "cómo" se implementará).
+El proceso se guía fundamentalmente por casos de uso y sigue un ciclo de vida iterativo e incremental compuesto por cuatro fases clave:
+Análisis de requisitos: En esta etapa se define el modelo de dominio inicial y se redactan los casos de uso, describiendo las interacciones entre los actores y el sistema.
+Análisis y diseño preliminar: Se introducen los diagramas de robustez para analizar la viabilidad técnica de cada caso de uso. Aquí se identifican los objetos de entidad, frontera y control necesarios, asegurando que la lógica del sistema sea sólida antes de avanzar.
+Diseño detallado: Basándose en el análisis de robustez, se elaboran los diagramas de secuencia y se refina el modelo estático en diagramas de clases, especificando métodos y atributos concretos.
+Implementación: Se procede a la codificación del sistema y la realización de pruebas unitarias y de integración, utilizando los diagramas previos como planos de construcción.
+
+5.2. Fase 1 – Pre Game 
+5.2.1. Análisis de requerimientos
+El análisis de requerimientos se ha enfocado en las necesidades investigativas del INAAQC, priorizando la captura, estructuración y seguridad de los datos biomédicos para su posterior análisis científico.
+ID
+Requisito
+Descripción
+
+RF-01
+Autenticación y Control de Acceso
+El sistema debe validar las credenciales de los usuarios y gestionar sesiones seguras basadas en tokens para los cuatro roles definidos (Doctores, Analistas, TI, Superadministrador).
+
+RF-02
+Gestión de Usuarios y Roles
+El Área de TI debe poder registrar y gestionar cuentas de usuario, asignando los roles correspondientes para delimitar el acceso a los datos de investigación.
+
+RF-03
+Registro de Datos de Investigación
+El sistema debe permitir registrar los datos base de los sujetos de estudio (pacientes) y sus respectivas admisiones para asociarles resultados de laboratorio.
+
+RF-04
+Digitalización y Procesamiento (OCR)
+El sistema debe permitir la carga de archivos de laboratorio (PDF, imágenes) y procesarlos automáticamente para extraer la información textual sin transcripción manual.
+
+RF-05
+Gestión de Observaciones Técnicas
+Los doctores y analistas deben poder registrar observaciones sobre los resultados procesados para enriquecer la base de datos con criterios expertos.
+
+RF-06
+Registro de Diagnósticos
+El sistema debe permitir asociar diagnósticos secundarios a los registros de investigación para clasificar los casos según patologías detectadas.
+
+RF-07
+Generación de Reportes de Datos
+El sistema debe permitir exportar la información procesada y estructurada en reportes para su uso en las líneas de investigación del instituto.
+
+Tabla 4. Requisitos funcionales
+Fuente: Elaboración propia
+
+
+
+ID
+Requisito
+Descripción
+
+RNF-01
+Seguridad de Credenciales
+Las contraseñas de todos los actores deben almacenarse encriptadas utilizando algoritmos de hash seguros.
+
+RNF-02
+Integridad de la Información
+El sistema debe validar que no existan registros duplicados críticos (como identificadores de usuarios o códigos de admisión) para asegurar la calidad de los datos.
+
+RNF-03
+Auditoría de Operaciones
+El sistema debe registrar automáticamente la fecha, hora y responsable de cada carga de datos o modificación de registros para garantizar la trazabilidad investigativa.
+
+RNF-04
+Soporte de Formatos
+El módulo de carga debe ser capaz de procesar archivos en formatos estándar de digitalización (PDF, JPG, PNG).
+
+Tabla 5. Requisitos no funcionales
+Fuente: Elaboración propia
+
+
+5.2.3. Historias de usuario
+A continuación, se describen las 7 historias de usuario definidas para el sistema, adaptadas al flujo de trabajo investigativo del INAAQC.
+Campo
+Descripción
+
+Nombre:
+Inicio de sesión
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir a los usuarios acceder al sistema mediante credenciales seguras para utilizar las funcionalidades correspondientes a su rol.
+
+Actores:
+Doctores, Analistas, Área de TI, Superadministrador
+
+Precondiciones:
+El usuario debe estar registrado con credenciales de acceso activas en el sistema.
+
+Flujo normal:
+1. El usuario accede a la página de inicio del sistema.
+
+
+2. El usuario ingresa su nombre de usuario y contraseña.
+
+
+3. El sistema verifica las credenciales.
+
+
+4. El sistema permite el acceso y muestra la interfaz correspondiente al rol del usuario.
+
+Flujo alternativo:
+1. El sistema detecta credenciales incorrectas y muestra un mensaje de error.
+
+
+2. El usuario tiene la opción de intentar nuevamente.
+
+Postcondiciones:
+El sistema registra el inicio de sesión y habilita las funciones autorizadas para el rol del usuario.
+
+Tabla 6. Historia de usuario – Inicio de sesión
+Fuente: Elaboración propia
+
+
+Campo
+Descripción
+
+Nombre:
+Gestión de Usuarios y Permisos
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir al Área de TI registrar y administrar las cuentas de los usuarios del sistema, asignando roles para controlar el acceso a la información.
+
+Actores:
+Área de TI (Administrador), Superadministrador
+
+Precondiciones:
+El usuario debe haber iniciado sesión con permisos de administración.
+
+Flujo normal:
+1. El administrador accede al módulo de usuarios.
+
+
+2. Ingresa los datos del nuevo usuario y le asigna un rol (Doctor, Analista, TI).
+
+
+3. El sistema valida la información.
+
+
+4. El sistema crea la cuenta y almacena las credenciales de forma segura.
+
+Flujo alternativo:
+1. El sistema detecta que el correo o usuario ya existe.
+
+
+2. El sistema muestra un error y solicita corregir los datos.
+
+Postcondiciones:
+El nuevo usuario queda registrado y habilitado para acceder al sistema según su perfil.
+
+
+Tabla 7. Historia de usuario – Gestión de usuario y permisos
+Fuente: Elaboración propia
+
+
+
+
+
+Campo
+Descripción
+
+Nombre:
+Registro de Sujetos y Admisiones
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir registrar los datos de los pacientes de estudio y crear admisiones para vincular los resultados de laboratorio obtenidos.
+
+Actores:
+Analistas, Doctores
+
+Precondiciones:
+El usuario debe estar autenticado en el sistema.
+
+Flujo normal:
+1. El usuario accede al módulo de registro.
+
+
+2. Ingresa los datos del sujeto de estudio.
+
+
+3. Crea una admisión asociada para el periodo de investigación actual.
+
+
+4. El sistema guarda el registro y genera un identificador único para la admisión.
+
+Flujo alternativo:
+1. El sujeto ya se encuentra registrado en la base de datos.
+
+
+2. El sistema permite seleccionar el registro existente para crear una nueva admisión.
+
+Postcondiciones:
+Se crea una admisión activa lista para la carga de datos biomédicos.
+
+
+Tabla 8. Historia de usuario – Registro de pacientes y admisiones
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+Campo
+Descripción
+
+Nombre:
+Digitalización de Datos (OCR)
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir cargar archivos digitales de resultados y procesarlos automáticamente para extraer el texto y almacenarlo en la base de datos de investigación.
+
+Actores:
+Analistas, Doctores
+
+Precondiciones:
+Debe existir una admisión creada previamente y contar con el archivo digital.
+
+Flujo normal:
+1. El usuario selecciona la admisión correspondiente.
+
+
+2. Carga el archivo (PDF/Imagen) al sistema.
+
+
+3. El sistema procesa el archivo mediante OCR.
+
+
+4. El sistema guarda el archivo original y el texto extraído asociado a la admisión.
+
+Flujo alternativo:
+1. El archivo tiene un formato no válido o está dañado.
+
+
+2. El sistema rechaza la carga y notifica al usuario.
+
+Postcondiciones:
+La información cruda del archivo queda digitalizada y disponible para su análisis.
+
+
+Tabla 9. Historia de usuario – Digitalización de datos
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+
+Campo
+Descripción
+
+Nombre:
+Gestión de Observaciones
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir a los investigadores agregar notas técnicas y observaciones sobre los datos procesados para enriquecer el análisis.
+
+Actores:
+Doctores, Analistas
+
+Precondiciones:
+Deben existir datos cargados en una admisión.
+
+Flujo normal:
+1. El usuario visualiza los datos de una admisión.
+
+
+2. Selecciona la opción de agregar observación.
+
+
+3. Ingresa el detalle de la observación y su tipo.
+
+
+4. El sistema guarda la nota asociándola al usuario y a la fecha de registro.
+
+Flujo alternativo:
+1. El usuario intenta guardar una observación vacía.
+
+
+2. El sistema solicita ingresar contenido válido.
+
+Postcondiciones:
+La observación queda registrada en el historial de la investigación para futuras referencias.
+
+Tabla 10. Historia de usuario – Gestión de observaciones
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Campo
+Descripción
+
+Nombre:
+Registro de Diagnósticos Secundarios
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir asociar diagnósticos adicionales a una admisión para clasificar el caso de estudio según las patologías identificadas.
+
+Actores:
+Doctores
+
+Precondiciones:
+La admisión debe estar activa.
+
+Flujo normal:
+1. El doctor accede a la admisión del sujeto.
+
+
+2. Selecciona la opción de diagnósticos.
+
+
+3. Ingresa o selecciona el diagnóstico secundario pertinente.
+
+
+4. El sistema vincula el diagnóstico a la admisión actual.
+
+Flujo alternativo:
+1. El diagnóstico ingresado no es válido.
+
+
+2. El sistema solicita verificar la información.
+
+Postcondiciones:
+El caso de estudio queda clasificado con los diagnósticos asociados.
+
+Tabla 11. Historia de usuario – Registro de diagnósticos secundarios
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Campo
+Descripción
+
+Nombre:
+Generación de Reportes
+
+Autor:
+Equipo de Desarrollo
+
+Descripción:
+Permitir exportar la información consolidada de los sujetos y sus resultados para apoyar las actividades de investigación del instituto.
+
+Actores:
+Doctores, Superadministrador
+
+Precondiciones:
+Deben existir datos procesados en el sistema.
+
+Flujo normal:
+1. El usuario selecciona los registros a incluir en el reporte.
+
+
+2. El sistema compila la información de admisiones, resultados y diagnósticos.
+
+
+3. El sistema genera un documento descargable con la información estructurada.
+
+Flujo alternativo:
+1. No hay datos que coincidan con la selección.
+
+
+2. El sistema informa que no se puede generar el reporte.
+
+Postcondiciones:
+El usuario obtiene un archivo con los datos listos para el análisis externo o presentación.
+
+Tabla 12. Historia de usuario – Generación de reportes
+Fuente: Elaboración propia
+
+
+5.3. Fase 2 – Game
+5.3.1. Análisis y diseño 
+5.3.1.1 Diagrama de paquetes
+/
+Figura 2. Diagrama de paquetes
+Fuente: Elaboración propia
+5.3.1.2. Diagramas de casos de uso
+/
+Campo
+Descripción
+
+Nombre:
+Inicio de Sesión
+
+Actores:
+Doctores, Analistas, Área de TI, Superadministrador
+
+Función:
+El usuario ingresa sus credenciales para autenticarse y acceder a las herramientas correspondientes a su perfil.
+
+Descripción:
+El usuario accede a la plataforma e ingresa su usuario y contraseña. El sistema valida las credenciales, verifica el estado de la cuenta y, si es correcto, genera un token de seguridad redirigiendo al usuario a su panel correspondiente.
+
+Figura 3. Caso de uso – Inicio de sesión
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Gestión de Usuarios y Permisos
+
+Actores:
+Área de TI (Administrador), Superadministrador
+
+Función:
+El administrador gestiona el ciclo de vida de las cuentas de usuario y sus privilegios de acceso dentro del sistema.
+
+Descripción:
+El administrador ingresa los datos del personal y selecciona el rol correspondiente. El sistema valida que el usuario no esté duplicado, cifra las credenciales de seguridad y registra la cuenta, permitiendo también la modificación o desactivación de usuarios existentes.
+
+
+Figura 4. Caso de uso – Gestión de usuarios y permisos
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Gestión de Pacientes y Admisiones
+
+Actores:
+Analistas, Doctores
+
+Función:
+El usuario registra o selecciona a un sujeto de estudio y crea una nueva admisión clínica para iniciar el proceso de investigación.
+
+Descripción:
+El usuario ingresa los datos demográficos del sujeto. El sistema verifica si el paciente ya existe; de ser así, reutiliza el perfil, y si no, crea uno nuevo. Finalmente, genera una admisión activa lista para recibir archivos de laboratorio.
+
+
+Figura 5. Caso de uso – Registro de pacientes y admisiones
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Digitalización de Datos	
+
+Actores:
+Analistas, Doctores
+
+Función:
+El sistema recibe y procesa automáticamente los archivos de resultados de laboratorio, convirtiendo el contenido gráfico en texto crudo almacenable.
+
+Descripción:
+El usuario carga el archivo de resultados a una admisión. El sistema valida el formato, almacena el archivo de forma segura, ejecuta el motor OCR para extraer el texto y guarda el texto resultante en la base de datos. El sistema notifica errores si el archivo es inválido o el procesamiento falla.
+
+
+Figura 6. Caso de uso – Digitalización de datos
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Gestión de Observaciones
+
+Actores:
+Doctores, Analistas
+
+Función:
+El usuario experto registra notas técnicas, interpretaciones o alertas sobre los resultados biomédicos procesados.
+
+Descripción:
+El usuario selecciona una admisión con resultados y agrega una observación textual. El sistema obliga a categorizar la nota (ej. Crítica, Informativa), registra automáticamente la auditoría (autor y fecha) y permite que otros expertos validen o marquen como revisada dicha observación.
+
+
+Figura 7. Caso de uso – Gestión de observaciones
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Registro de Diagnósticos Secundarios
+
+Actores:
+Doctores
+
+Función:
+El médico asocia diagnósticos adicionales (patologías) a la admisión actual del sujeto de estudio para clasificar clínicamente el caso.
+
+Descripción:
+El doctor selecciona una admisión activa e ingresa la descripción o código de la patología detectada. El sistema valida que la admisión exista, verifica el formato del diagnóstico y lo vincula permanentemente al expediente del paciente, permitiendo también la eliminación de asignaciones erróneas.
+
+
+Figura 8. Caso de uso – Registro de diagnósticos secundarios
+Fuente: Elaboración propia
+
+
+/
+Campo
+Descripción
+
+Nombre:
+Generación de Reportes
+
+Actores:
+Doctores, Superadministrador
+
+Función:
+El usuario extrae y descarga la información clínica y biomédica procesada en formatos estandarizados para fines de investigación o archivo.
+
+Descripción:
+El usuario define los criterios de filtrado (fechas, pacientes). El sistema recopila y consolida la información de admisiones, resultados y diagnósticos asociados, generando un archivo (PDF o Excel) listo para su descarga y uso externo.
+
+
+Figura 9. Caso de uso – Generación de reportes
+Fuente: Elaboración propia
+
+
+5.3.1.3. Diagramas de secuencia
+/
+Figura 10. Secuencia – Inicio de sesión
+Fuente: Elaboración propia
+
+
+/
+Figura 11. Secuencia – Gestión de usuarios
+Fuente: Elaboración propia
+
+
+/
+Figura 12. Secuencia – Gestión de pacientes y admisiones
+Fuente: Elaboración propia
+
+
+/
+Figura 13. Secuencia – Digitalización de datos
+Fuente: Elaboración propia
+
+5.3.1.4. Diagramas de robustez
+/
+Figura 14. Robustez – Inicio de sesión
+Fuente: Elaboración propia
+
+
+/
+Figura 15. Robustez – Registro de pacientes y admisiones
+Fuente: Elaboración propia
+
+
+/
+Figura 16. Robustez – Digitalización de datos
+Fuente: Elaboración propia
+
+
+/
+Figura 17. Robustez – Generación de reportes
+Fuente: Elaboración propia
+
+5.3.1.5. Diagrama de clases de alto nivel
+/
+Figura 18. Diagrama de clases de alto nivel
+Fuente: Elaboración propia
+
+5.3.1.6. Diagrama de clases de bajo nivel
+/
+Figura 19. Diagrama de clases de bajo nivel
+Fuente: Elaboración propia
+
+5.3.1.7. Diagrama físico del sistema
+/
+Figura 20. Diagrama físico
+Fuente: Elaboración propia
+5.3.1.8. Arquitectura de software
+El sistema ha sido desarrollado bajo una Arquitectura en Capas (Layered Architecture). Este patrón de diseño estructura la aplicación en grupos lógicos separados por su funcionalidad, promoviendo la separación de responsabilidade. Esto permite que la lógica de negocio, la interfaz de datos y la seguridad evolucionen de manera independiente, facilitando el mantenimiento y la escalabilidad del proyecto.
+La arquitectura se divide en los siguientes cuatro módulos o capas fundamentales:
+Capa de presentación y control 
+Ubicación en código: app/routers
+Descripción: Esta capa actúa como el punto de entrada de la aplicación. Gestiona las solicitudes HTTP (GET, POST, PUT, DELETE) y coordina la respuesta hacia el cliente.
+Función: Los archivos en este módulo (como auth.py, pacientes.py) funcionan como Controladores. Se encargan de recibir los datos, validar las reglas de negocio inmediatas (como verificar si un usuario existe o si una fecha es válida) y orquestar la interacción con la base de datos.
+Capa de persistencia de datos
+Ubicación en código: app/models
+Descripción: Representa la estructura interna de la base de datos utilizando la técnica de Mapeo Objeto-Relacional (ORM) con SQLAlchemy.
+Función: Define las Entidades del sistema (Tablas). Aquí se especifican los atributos, tipos de datos, restricciones y las relaciones entre tablas (por ejemplo, la relación entre Usuario y Rol, o Paciente y Admisión). Esta capa abstrae la complejidad de las consultas SQL directas.
+Capa de transferencia y validación
+Ubicación en código: app/schemas
+Descripción: Define los contratos de datos o DTOs (Data Transfer Objects) utilizando la librería Pydantic.
+Función: Garantiza la integridad de los datos que entran y salen del sistema. Separa el modelo interno de base de datos (Models) de la información que se expone públicamente, permitiendo filtrar datos sensibles (como contraseñas) en las respuestas y validar estrictamente los datos de entrada (formularios de registro, login).
+Capa transversal o núcleo
+Ubicación en código: app/core
+Descripción: Contiene la lógica de infraestructura y configuración que es utilizada por todas las demás capas del sistema.
+Función: Centraliza componentes críticos como la conexión asíncrona a la base de datos (database.py), la gestión de variables de entorno y configuración (config.py), y los mecanismos de seguridad criptográfica y generación de tokens JWT (security.py).
+III. CONCLUSIONES
+A partir del desarrollo del sistema experto para el análisis automatizado de datos biomédicos en el INAAQC, se establecen las siguientes conclusiones, cada una correspondiente directamente a los objetivos específicos planteados:
+La identificación y caracterización de los requisitos funcionales y no funcionales permitió establecer una base sólida y verificable para el diseño del sistema, garantizando que las necesidades reales del INAAQC en cuanto a trazabilidad, integridad de datos y soporte investigativo se encuentren correctamente representadas y alineadas con los criterios institucionales.
+El diseño de la arquitectura de datos y de la base de conocimiento confirmó la viabilidad técnica del proyecto, asegurando que la estructura propuesta permite manejar adecuadamente información biomédica compleja, mantener relaciones clínicas esenciales y ofrecer un entorno escalable y compatible con futuros módulos de análisis avanzado.
+La implementación del módulo prototipo OCR demostró que es posible transformar archivos PDF, PNG y JPG en registros biomédicos estructurados, reduciendo significativamente la carga de digitación manual y mejorando la precisión en el registro de información histórica, contribuyendo directamente a la optimización de los procesos investigativos.
+El entrenamiento del prototipo de redes neuronales evidenció que los datos disponibles por el INAAQC permiten obtener modelos capaces de priorizar diagnósticos principales y secundarios con métricas evaluables, sentando las bases para un futuro sistema de soporte a la investigación que incorpore análisis predictivos de mayor complejidad.
+La generación de reportes mostró que el sistema puede procesar datos biomédicos y presentar resultados mediante métricas, agrupaciones y visualizaciones que facilitan la interpretación de patrones clínicos, apoyando el trabajo de investigación y fortaleciendo la utilidad práctica del sistema dentro del contexto científico institucional.
+
+
+
+
+
+
+
+
+
+
+IV. RECOMENDACIONES
+Para garantizar el éxito continuo y la evolución del Sistema Experto desarrollado, se presentan las siguientes recomendaciones:
+Integrar un panel avanzado de visualización que permita al usuario explorar tendencias longitudinales, correlaciones y anomalías en parámetros biomédicos mediante gráficos dinámicos.
+Incorporar un módulo de evaluación de modelos, donde el investigador pueda comparar diferentes configuraciones de redes neuronales o métricas de rendimiento sin requerir herramientas externas.
+Desarrollar un sistema de auditoría interna del sistema, registrando cada acción realizada por usuarios para mejorar la trazabilidad técnica del proyecto.
+Agregar un generador de datasets sintéticos, útil para experimentación, pruebas controladas y expansión del conjunto de entrenamiento sin comprometer datos sensibles.
+Implementar un módulo de exploración semántica, donde el sistema permita búsquedas inteligentes por diagnósticos, parámetros o asociaciones clínicas relevantes.
+Crear un sistema de alertas técnicas, no clínicas, que informe inconsistencias de datos, archivos corruptos o resultados con baja confianza de modelo.
+Adicionar un módulo de exportación de reportes en formatos como CSV, JSON o PDF, generados directamente desde el sistema.
+Incorporar un historial de versiones del modelo, permitiendo comparar diferentes versiones del clasificador o del motor de reglas.
+
+V. GLOSARIO
+Bilirrubina: Pigmento derivado de la degradación de glóbulos rojos, usado como indicador de función hepática.
+Creatinina: Sustancia de desecho utilizada para evaluar el funcionamiento renal.
+Glóbulos Blancos: Células encargadas de la defensa inmunitaria del organismo.
+Plaquetas: Fragmentos celulares esenciales para la coagulación sanguínea.
+OCR: Tecnología para convertir texto en imágenes o PDFs en texto editable.
+Red Neuronal Artificial: Modelo computacional inspirado en el cerebro humano capaz de aprender patrones.
+Clasificador: Algoritmo que asigna categorías o clases a un conjunto de datos.
+Feature extraction: Proceso de obtener variables relevantes a partir de datos brutos.
+Dataset: Colección estructurada de datos utilizada para entrenamiento y validación de modelos.
+API REST: Interfaz que permite la comunicación entre sistemas mediante solicitudes HTTP.
+JSON: Formato ligero de intercambio de datos usado en servicios web.
+FastAPI: Framework de Python para construir APIs de alto rendimiento.
+React.js: Librería JavaScript para construir interfaces de usuario dinámicas.
+Tailwind CSS: Framework de estilos basado en utilidades para diseño web.
+PostgreSQL: Sistema de gestión de bases de datos relacional robusto y escalable.
+Normalización: Proceso de organización de datos para evitar redundancia e inconsistencias.
+Modelo supervisado: Tipo de aprendizaje en el que el modelo aprende a partir de ejemplos etiquetados.
+Epoch: Iteración completa sobre todo el dataset durante el entrenamiento de un modelo.
+Sobreajuste: Cuando un modelo aprende demasiado los datos de entrenamiento y pierde capacidad de generalización.
+Métrica de Precisión: Indicador que mide qué tan exactas son las predicciones del modelo.
+Validación Cruzada: Técnica para evaluar el rendimiento de un modelo dividiendo los datos en múltiples particiones.
+Interfaz de Usuario: Parte del sistema con la que interactúa directamente el usuario.
+Backend: Componente del sistema que gestiona lógica, datos y operaciones internas.
+Frontend: Parte visual del sistema donde se muestran datos y funcionalidades al usuario.
+Trazabilidad: Capacidad de seguir el rastro de un dato desde su origen hasta su procesamiento final.
+Tokenización: Proceso de segmentar texto en unidades manejables para análisis.
+Red Neuronal Perceptrón Multicapa (MLP): Arquitectura neuronal clásica usada para clasificación.
+Pipeline de procesamiento: Conjunto secuencial de pasos automáticos para limpiar, transformar y analizar datos.
+Visualización de Datos: Representación gráfica de información para facilitar su interpretación.
+
+
+
+
+
+
+
+VI. BIBLIOGRAFÍA
+Giarratano, J. C., & Riley, G. D. (2018). Sistemas Expertos: Principios y Programación. Cengage Learning Editores. ISBN: 978-6075228570.
+Sommerville, I. (2016). Ingeniería de Software. 10ª Edición. Pearson Educación. ISBN: 978-6073206037.
+Elmasri, R., & Navathe, S. B. (2017). Fundamentos de Sistemas de Bases de Datos. 7ª Edición. Addison-Wesley. ISBN: 978-8490355008.
+McConnell, S. (2019). Code Complete: A Practical Handbook of Software Construction. 2ª Edición. Microsoft Press. ISBN: 978-0735619678.
+Pressman, R. S., & Maxim, B. R. (2020). Ingeniería del Software: Un Enfoque Práctico. 8ª Edición. McGraw-Hill Education. ISBN: 978-1259872976.
+Rumbaugh, J., Jacobson, I., & Booch, G. (2004). The Unified Modeling Language Reference Manual (2nd ed.). Addison-Wesley.
+Booch, G., Rumbaugh, J., & Jacobson, I. (2005). The Unified Modeling Language User Guide (2nd ed.). Addison-Wesley.
+Pressman, R. S. (2014). Software Engineering: A Practitioner's Approach (8th ed.). McGraw-Hill Education.
+ISO/IEC 25010:2011. Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — System and software quality models. ISO.
+Boehm, B., Abts, C., Brown, A., Chulani, S., Clark, B., Horowitz, E., Madachy, R., Reifer, D., & Steece, B. (2000). Software Cost Estimation with COCOMO II. Prentice Hall.
+
+
+
+
+
+
+
+
+
+
+
+VII. WEBGRAFÍA
+World Health Organization. (2024). Laboratory Quality Management System. Recuperado el 15 de junio de 2025, de https://www.who.int/publications/i/item/9789241548274
+American Association for Clinical Chemistry. (2025). Laboratory Medicine Practice Guidelines. Recuperado el 10 de junio de 2025, de https://www.aacc.org/science-and-research/practice-guidelines
+Python Software Foundation. (2025). Python Documentation. Recuperado el 1 de junio de 2025, de https://docs.python.org/3/ 
+PostgreSQL Global Development Group. (2025). PostgreSQL: The world's most advanced open source relational database. Recuperado de: https://www.postgresql.org
+FastAPI. (2025). FastAPI: Modern, fast (high-performance), web framework for building APIs with Python 3.6+. Recuperado de: https://fastapi.tiangolo.com 
+TypeScript. (2025). TypeScript: JavaScript with syntax for types. Recuperado de: https://www.typescriptlang.org 
+React. (2025). A JavaScript library for building user interfaces. Recuperado de: https://reactjs.org 
+Uvicorn. (2025). Uvicorn: The lightning-fast ASGI server. Recuperado de: https://www.uvicorn.org 
+
+
+
+VIII. ANEXOS
+
+
+
+ANEXO 1 Cronograma de actividades
+
+
+
+
+
+
+
+Iteración
+Fechas tentativas
+Fase del proyecto
+Actividades principales
+
+Iteración 1
+01 Ago - 14 Ago
+Inicio y Requisitos
+• Definición del alcance y objetivos.
+
+
+
+
+• Identificación de Actores del sistema.
+
+
+
+
+• Levantamiento de Requerimientos Funcionales y No Funcionales.
+
+Iteración 2
+15 Ago - 31 Ago
+Análisis (ICONIX)
+• Redacción de Historias de Usuario.
+
+
+
+
+• Elaboración de Diagramas de Casos de Uso.
+
+
+
+
+• Definición del Modelo de Dominio inicial.
+
+Iteración 3
+01 Sep - 14 Sep
+Diseño Preliminar
+• Creación de Diagramas de Robustez (Análisis de brecha análisis-diseño).
+
+
+
+
+• Diseño de prototipos de interfaz (Wireframes).
+
+
+
+
+• Revisión de arquitectura general.
+
+Iteración 4
+15 Sep - 30 Sep
+Diseño Detallado
+• Elaboración de Diagramas de Secuencia.
+
+
+
+
+• Diseño de Diagramas de Clases de bajo nivel.
+
+
+
+
+• Modelado de Base de Datos (Entidad-Relación).
+
+Iteración 5
+01 Oct - 14 Oct
+Desarrollo (Core)
+• Configuración del entorno (FastAPI, Docker, BD).
+
+
+
+
+• Implementación del módulo de Seguridad (Auth) y JWT.
+
+
+
+
+• Desarrollo de Gestión de Usuarios y Roles.
+
+Iteración 6
+15 Oct - 31 Oct
+Desarrollo (Clínica)
+• Implementación del módulo de Pacientes (CRUD y validaciones).
+
+
+
+
+• Desarrollo del módulo de Admisiones (Ciclo de vida del ingreso).
+
+
+
+
+• Pruebas unitarias de módulos clínicos.
+
+Iteración 7
+01 Nov - 14 Nov
+Desarrollo (OCR)
+• Implementación de carga y almacenamiento de Archivos.
+
+
+
+
+• Integración y calibración del motor OCR (Extracción de texto).
+
+
+
+
+• Pruebas de procesamiento de documentos.
+
+Iteración 8
+15 Nov - 30 Nov
+Desarrollo (Experto)
+• Implementación de Observaciones y notas técnicas.
+
+
+
+
+• Desarrollo de flujo de Revisiones y Auditoría.
+
+
+
+
+• Integración de Diagnósticos Secundarios.
+
+Iteración 9
+01 Dic - 14 Dic
+Reportes y Ajustes
+• Desarrollo del módulo de Generación de Reportes (Exportación).
+
+
+
+
+• Implementación de filtros avanzados de búsqueda.
+
+
+
+
+• Optimización de consultas a Base de Datos.
+
+Iteración 10
+15 Dic - 31 Dic
+Control de Calidad (QA)
+• Ejecución de pruebas integrales del sistema.
+
+
+
+
+• Corrección de errores (Bug fixing).
+
+
+
+
+• Pruebas de usabilidad con usuarios piloto.
+
+Iteración 11
+01 Ene - 15 Ene
+Cierre
+• Despliegue en servidor de producción.
+
+
+
+
+• Redacción de Manuales de Usuario y Técnico.
+
+
+
+
+• Entrega final del proyecto.
+
+Tabla 13. Cronograma de actividades
+Fuente: Elaboración propia
+
+
+
+
+ANEXO 2 Entrevista con el Doctor Armin
+
+
+
+
+
+Datos de la entrevista:
+Entrevistado: Dr. Armin Alvarado Quispe Cornejo
+Objetivo: Identificar las falencias del proceso manual actual y definir las necesidades para la digitalización de resultados.
+Fecha: 10 de Agosto de 2025.
+Cuestionario:
+¿Cuál es el procedimiento actual cuando llega un paciente nuevo al laboratorio? 
+Actualmente, la recepcionista debe anotar los datos personales en un cuaderno físico y luego crear una carpeta de cartón. Si el paciente ya vino antes, perdemos mucho tiempo buscando su carpeta antigua en el archivo físico, lo que genera largas filas de espera.
+¿Cómo gestionan actualmente los resultados que emiten las máquinas de análisis? 
+Los equipos nos entregan un ticket impreso o un PDF. Luego, un analista debe sentarse en la computadora y transcribir manualmente esos valores a un Excel o a un formato de Word para entregárselo al paciente.
+¿Cuáles son los principales problemas que enfrentan con esa transcripción manual? 
+El principal es el error humano. A veces, por el cansancio, se digita un número mal y eso es grave en medicina. Además, es un proceso muy lento; transcribir un hemograma completo puede tomar varios minutos por paciente.
+¿Qué sucede con el historial médico de los pacientes a largo plazo? 
+Es casi inexistente. Como todo está en papel o archivos de Word sueltos, si un médico quiere ver cómo estaba la glucosa de un paciente hace seis meses para compararla con la de hoy, es prácticamente imposible encontrar ese dato rápido.
+Mencionó que manejan archivos físicos, ¿han tenido incidentes de pérdida de información? Sí, lamentablemente. Hemos tenido casos donde los resultados se traspapelan o se deterioran por la humedad. Necesitamos que el respaldo sea digital y esté en una base de datos segura, no en papeles.
+Respecto a la seguridad, ¿quién debería tener acceso a modificar estos resultados? 
+Eso es crítico. No queremos que el personal administrativo o de recepción pueda cambiar valores médicos. Solo los doctores o analistas autorizados deberían poder cargar o validar resultados. Necesitamos un sistema de roles muy estricto.
+¿Le sería útil que el sistema pudiera "leer" automáticamente los archivos que suben? 
+Sería la solución ideal. Si el sistema pudiera escanear el PDF o la imagen del resultado y extraer el texto solo (OCR), nos ahorraríamos horas de trabajo de digitación y reduciríamos los errores a casi cero.
+¿Cómo manejan las observaciones o notas adicionales sobre un resultado anormal? 
+Ahora mismo las escribimos a mano al margen de la hoja. Necesitamos que el sistema nos deje agregar "observaciones" formales, indicando si es un valor crítico, y que quede registrado qué doctor hizo esa observación y cuándo.
+¿Requieren que el sistema maneje diagnósticos médicos formales? 
+Sí, muchas veces el resultado de laboratorio confirma una patología. Nos gustaría poder asociar diagnósticos (usando códigos internacionales como CIE-10) a la admisión del paciente para fines estadísticos.
+Para finalizar, ¿qué espera obtener con la implementación de este nuevo software? 
+Espero centralizar toda la información. Quiero poder entrar, buscar a un paciente por su carnet y ver todas sus "admisiones" pasadas con sus respectivos archivos y diagnósticos en segundos, sin tener que ir a buscar cajas al almacén.
+
+
+ANEXO 3 Diccionario de datos
+
+
+
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_admisión
+UUID
+PK
+No
+Identificador único de la admisión. Generado automáticamente.
+
+id_paciente
+UUID
+FK
+Sí
+Referencia al paciente asociado (pacientes).
+
+fecha_ingreso
+Timestamp
+
+No
+Fecha y hora de inicio de la admisión.
+
+fecha_salida
+Timestamp
+
+Sí
+Fecha y hora de cierre o alta de la admisión.
+
+diagnóstico_principal
+Text
+
+Sí
+Descripción del diagnóstico principal del ingreso.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de registro en el sistema (Default: now()).
+
+estado
+Text
+
+No
+Estado lógico del registro (Ej. 'activo', 'cerrado'). Default: 'activo'.
+
+Tabla 14. Diccionario de datos - Tabla admisiones
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_archivo
+UUID
+PK
+No
+Identificador único del archivo. Generado automáticamente.
+
+nombre_archivo
+Text
+
+Sí
+Nombre original del archivo subido.
+
+ruta_almacenamiento
+Text
+
+Sí
+Ruta física o lógica donde se guarda el archivo en el servidor.
+
+subido_por
+UUID
+FK
+Sí
+Referencia al usuario que subió el archivo (usuarios).
+
+subido_en
+Timestamp
+
+Sí
+Fecha y hora de la subida (Default: now()).
+
+tipo_archivo
+Text
+
+No
+Tipo MIME o extensión del archivo (Ej. 'application/pdf').
+
+tamaño_bytes
+BigInt
+
+Sí
+Peso del archivo en bytes.
+
+estado
+Text
+
+No
+Estado lógico (Ej. 'activo', 'eliminado'). Default: 'activo'.
+
+Tabla 15. Diccionario de datos - Tabla archivos
+Fuente: Elaboración propia
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_diag_sec
+UUID
+PK
+No
+Identificador único del diagnóstico secundario.
+
+id_admisión
+UUID
+FK
+Sí
+Referencia a la admisión correspondiente (admisiones).
+
+diagnóstico
+Text
+
+No
+Descripción o código (CIE-10) de la patología.
+
+estado
+Text
+
+No
+Estado lógico del registro. Default: 'activo'.
+
+Tabla 16. Diccionario de datos - Tabla diagnósticos secundarios
+Fuente: Elaboración propia
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_hecho
+UUID
+PK
+No
+Identificador único del hecho clínico.
+
+id_paciente
+UUID
+FK
+Sí
+Referencia al paciente.
+
+id_admisión
+UUID
+FK
+Sí
+Referencia a la admisión.
+
+id_observación
+UUID
+FK
+Sí
+Referencia a la observación origen (si aplica).
+
+tipo_hecho
+Text
+
+No
+Categoría del hecho inferido.
+
+valor
+JSONB
+
+Sí
+Valor del hecho (puede ser estructura compleja).
+
+fuente_regla
+UUID
+FK
+Sí
+Referencia a la regla que generó este hecho (reglas).
+
+confianza
+Numeric
+
+Sí
+Nivel de certeza del hecho (0.0 a 1.0).
+
+creado_en
+Timestamp
+
+Sí
+Fecha de generación del hecho.
+
+Tabla 17. Diccionario de datos - Tabla hechos clínicos
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+
+
+
+
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_inferencia
+UUID
+PK
+No
+Identificador único del proceso de inferencia.
+
+id_paciente
+UUID
+FK
+Sí
+Referencia al paciente.
+
+id_admisión
+UUID
+FK
+Sí
+Referencia a la admisión.
+
+observaciones_entrada
+JSONB
+
+Sí
+Copia de los datos usados como input.
+
+reglas_disparadas
+JSONB
+
+Sí
+Lista de IDs o códigos de reglas que se activaron.
+
+hechos_generados
+JSONB
+
+Sí
+Resultado estructurado de la inferencia.
+
+resultado_resumen
+Text
+
+Sí
+Conclusión en texto legible para humanos.
+
+metadatos
+JSONB
+
+Sí
+Datos técnicos de la ejecución (tiempos, versión, etc.).
+
+creado_en
+Timestamp
+
+Sí
+Fecha de ejecución.
+
+Tabla 18. Diccionario de datos - Tabla inferencias
+Fuente: Elaboración propia
+
+
+
+
+
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_observación
+UUID
+PK
+No
+Identificador único de la observación.
+
+id_paciente
+UUID
+FK
+Sí
+Referencia al paciente.
+
+id_admisión
+UUID
+FK
+Sí
+Referencia a la admisión.
+
+id_tipo_obs
+UUID
+FK
+Sí
+Referencia al catálogo de tipos (tipos_observacion).
+
+fecha_hora
+Timestamp
+
+No
+Momento exacto de la toma de muestra o registro.
+
+valor_numérico
+Numeric
+
+Sí
+Valor cuantitativo (si aplica).
+
+valor_texto
+Text
+
+Sí
+Valor cualitativo o descripción.
+
+unidad
+Text
+
+Sí
+Unidad de medida (mg/dL, %, etc.).
+
+id_archivo
+UUID
+FK
+Sí
+Archivo fuente de donde salió el dato.
+
+id_ocr
+UUID
+FK
+Sí
+Referencia al bloque de OCR específico.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de creación del registro.
+
+Tabla 19. Diccionario de datos - Tabla observaciones
+Fuente: Elaboración propia
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_ocr
+UUID
+PK
+No
+Identificador único del bloque OCR.
+
+id_archivo
+UUID
+FK
+Sí
+Referencia al archivo procesado (archivos).
+
+página
+Integer
+
+Sí
+Número de página dentro del documento.
+
+texto
+Text
+
+Sí
+Contenido textual extraído sin procesar.
+
+metadata
+JSONB
+
+Sí
+Posición, coordenadas o confianza del OCR.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de procesamiento.
+
+Tabla 20. Diccionario de datos - Tabla ocr crudo
+Fuente: Elaboración propia
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_paciente
+UUID
+PK
+No
+Identificador único interno del paciente.
+
+id_externo
+Text
+
+Sí
+Identificación externa (DNI, CI, Pasaporte).
+
+nombre
+Text
+
+No
+Nombres del paciente.
+
+apellido
+Text
+
+No
+Apellidos del paciente.
+
+fecha_nacimiento
+Date
+
+Sí
+Fecha de nacimiento.
+
+sexo
+Text
+
+Sí
+Género o sexo biológico.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de registro en el sistema.
+
+estado
+Text
+
+No
+Estado lógico (Ej. 'activo', 'inactivo').
+
+Tabla 21. Diccionario de datos - Tabla pacientes
+Fuente: Elaboración propia
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_predicción
+UUID
+PK
+No
+Identificador único de la predicción.
+
+id_paciente
+UUID
+FK
+Sí
+Referencia al paciente.
+
+id_admisión
+UUID
+FK
+Sí
+Referencia a la admisión.
+
+input_features
+JSONB
+
+Sí
+Variables de entrada usadas para predecir.
+
+modelo
+Text
+
+Sí
+Nombre o versión del modelo utilizado.
+
+salida
+JSONB
+
+Sí
+Resultado de la predicción.
+
+confianza
+Numeric
+
+Sí
+Probabilidad o score de confianza.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de generación.
+
+Tabla 22. Diccionario de datos - Tabla predicciones
+Fuente: Elaboración propia
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_regla
+UUID
+PK
+No
+Identificador único de la regla.
+
+código
+Text
+UK
+No
+Código único legible (Ej. 'R-001').
+
+nombre
+Text
+
+No
+Nombre descriptivo de la regla.
+
+descripción
+Text
+
+Sí
+Explicación detallada de la lógica.
+
+condición
+JSONB
+
+No
+Estructura lógica (IF) en formato JSON.
+
+acción
+JSONB
+
+No
+Consecuencia (THEN) en formato JSON.
+
+activo
+Boolean
+
+Sí
+Indica si la regla está habilitada. Default: true.
+
+versión
+Integer
+
+Sí
+Versión de la regla. Default: 1.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de creación.
+
+actualizado_en
+Timestamp
+
+Sí
+Fecha de última modificación.
+
+Tabla 23. Diccionario de datos - Tabla reglas
+Fuente: Elaboración propia
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_revisión
+UUID
+PK
+No
+Identificador único de la revisión.
+
+id_observación
+UUID
+FK
+Sí
+Referencia a la observación revisada.
+
+id_usuario_revisor
+UUID
+FK
+Sí
+Usuario que realizó la revisión (usuarios).
+
+estado_revisión
+Text
+
+Sí
+Estado del proceso (Ej. 'pendiente', 'aprobado').
+
+comentarios
+Text
+
+Sí
+Notas del revisor.
+
+revisado_en
+Timestamp
+
+Sí
+Fecha de la revisión.
+
+Tabla 24. Diccionario de datos - Tabla revisión observaciones
+Fuente: Elaboración propia
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_rol
+Serial (Int)
+PK
+No
+Identificador numérico del rol.
+
+nombre_rol
+Text
+UK
+No
+Nombre del rol (Ej. 'admin', 'médico').
+
+Tabla 25. Diccionario de datos - Tabla roles
+Fuente: Elaboración propia
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_tipo_obs
+UUID
+PK
+No
+Identificador único del tipo.
+
+código
+Text
+
+Sí
+Código estándar (Ej. LOINC) o interno.
+
+nombre
+Text
+
+No
+Nombre del parámetro (Ej. 'Glucosa', 'Hemoglobina').
+
+categoría
+Text
+
+No
+Clasificación (Ej. 'Hematología', 'Química').
+
+unidad_default
+Text
+
+Sí
+Unidad de medida por defecto.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de creación del tipo.
+
+estado
+Text
+
+No
+Estado lógico. Default: 'activo'.
+
+Tabla 26. Diccionario de datos - Tabla tipos observación
+Fuente: Elaboración propia	
+
+
+
+
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_usuario
+UUID
+PK
+No
+Identificador único del usuario.
+
+nombre_usuario
+Text
+UK
+No
+Username para inicio de sesión.
+
+contraseña_hash
+Text
+
+No
+Hash seguro de la contraseña.
+
+nombre_completo
+Text
+
+No
+Nombre real del usuario.
+
+correo_electrónico
+Text
+
+Sí
+Email de contacto.
+
+creado_en
+Timestamp
+
+Sí
+Fecha de registro.
+
+estado
+Text
+
+No
+Estado de la cuenta. Default: 'activo'.
+
+Tabla 27. Diccionario de datos - Tabla usuarios
+Fuente: Elaboración propia
+
+Columna
+Tipo de Dato
+Llave
+Nulo
+Descripción
+
+id_usuario
+UUID
+PK, FK
+No
+Referencia al usuario (usuarios).
+
+id_rol
+Integer
+PK, FK
+No
+Referencia al rol (roles).
+
+Tabla 28. Diccionario de datos - Tabla usuarios roles
+Fuente: Elaboración propia
+

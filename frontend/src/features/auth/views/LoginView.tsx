@@ -49,7 +49,7 @@ export const LoginView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex font-sans bg-white overflow-hidden selection:bg-teal-500 selection:text-white">
+    <div className="min-h-screen flex font-sans bg-white overflow-hidden selection:bg-[#87C7FF] selection:text-white">
       {/* SECCIÓN IZQUIERDA: Formulario de Autenticación */}
       <div className="w-full md:w-1/2 flex flex-col justify-between p-8 sm:p-12 lg:p-20 z-10 relative bg-white">
         {/* Cabecera / Identidad */}
@@ -103,7 +103,7 @@ export const LoginView: React.FC = () => {
               Usuario Institucional
             </label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-teal-600 text-slate-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#1E3040] text-slate-400">
                 <User className="h-4 w-4" />
               </div>
               <input
@@ -141,7 +141,7 @@ export const LoginView: React.FC = () => {
               Contraseña
             </label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-teal-600 text-slate-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#1E3040] text-slate-400">
                 <Lock className="h-4 w-4" />
               </div>
               <input

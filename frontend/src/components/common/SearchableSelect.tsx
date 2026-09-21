@@ -131,7 +131,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
             <div className="truncate flex items-center gap-1.5">
               <span className="truncate">{selectedOption.label}</span>
               {selectedOption.badge && (
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-200 shrink-0">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-[#9EBDD9]/40 text-[#1E3040] border border-[#9FB0BF] shrink-0">
                   {selectedOption.badge}
                 </span>
               )}
@@ -158,7 +158,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           )}
           <ChevronDown
             size={size === 'sm' ? 14 : 16}
-            className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-teal-600' : ''}`}
+            className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#1E3040]' : ''}`}
           />
         </div>
       </button>
@@ -179,7 +179,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 rounded-lg outline-none bg-white text-slate-800 placeholder-slate-400 focus:border-teal-500 transition-colors"
+                  className="w-full pl-8 pr-7 py-1.5 text-xs font-medium border border-slate-200 rounded-lg outline-none bg-white text-slate-800 placeholder-slate-400 focus:border-[#87C7FF] transition-colors"
                 />
                 {query && (
                   <button
@@ -212,7 +212,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                       size === 'sm' ? 'px-2.5 py-1.5' : 'px-3 py-2'
                     } ${
                       isSelected
-                        ? 'bg-teal-50/70 text-teal-900 font-bold'
+                        ? 'bg-[#9EBDD9]/30 text-[#1E3040] font-bold'
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -220,7 +220,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                       <div className="flex items-center gap-1.5">
                         <span className="truncate font-semibold">{opt.label}</span>
                         {opt.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-teal-800 border border-slate-200/80 shrink-0">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-[#1E3040] border border-slate-200/80 shrink-0">
                             {opt.badge}
                           </span>
                         )}
@@ -232,7 +232,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                       )}
                     </div>
                     {isSelected && (
-                      <Check size={14} className="shrink-0 text-teal-600" />
+                      <Check size={14} className="shrink-0 text-[#1E3040]" />
                     )}
                   </button>
                 );

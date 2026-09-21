@@ -241,14 +241,14 @@ export const LaboratoryView: React.FC = () => {
                 key={archivo.id_archivo}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs shrink-0"
               >
-                <FileText className="w-3.5 h-3.5 text-teal-600" />
+                <FileText className="w-3.5 h-3.5 text-[#4D6173]" />
                 <span
                   className="font-bold text-[11px] truncate max-w-[140px]"
                   style={{ color: adobe.base }}
                 >
                   {archivo.nombre_archivo}
                 </span>
-                <span className="text-[9px] font-black px-1 py-0.2 rounded bg-teal-50 text-teal-700">
+                <span className="text-[9px] font-black px-1 py-0.2 rounded bg-[#9EBDD9]/40 text-[#1E3040]">
                   {archivo.tipo_documento.replace('_AUDITADO', '')}
                 </span>
                 <button

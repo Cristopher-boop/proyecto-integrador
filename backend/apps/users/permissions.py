@@ -90,3 +90,12 @@ class CanAccessAuditLogs(BasePermission):
         if request.method not in SAFE_METHODS:
             return False
         return request.user.rol == 'SUPERADMIN' or request.user.is_superuser
+
+
+class CanManageBackups(BasePermission):
+    """Acceso exclusivo al SuperAdmin para listar, generar y descargar respaldos."""
+    def has_permission(self, request, view):
+        if not (request.user and request.user.is_authenticated):
+            return False
+        return request.user.rol == 'SUPERADMIN' or request.user.is_superuser
+

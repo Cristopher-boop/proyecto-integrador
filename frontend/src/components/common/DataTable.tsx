@@ -36,7 +36,7 @@ export function DataTable<T>({ data, columns, onSort, sortConfig }: DataTablePro
               >
                 {col.header}
                 {col.sortable && (
-                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-teal-600' : 'text-slate-300 group-hover:text-slate-500'}`} />
+                  <ArrowUpDown className={`w-3 h-3 inline-block ml-1 transition-colors ${sortConfig?.key === col.accessorKey ? 'text-[#1E3040]' : 'text-slate-300 group-hover:text-slate-500'}`} />
                 )}
               </th>
             ))}

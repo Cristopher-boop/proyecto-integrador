@@ -9,7 +9,13 @@ interface DocTypesDonutProps {
 
 export const DocTypesDonut: React.FC<DocTypesDonutProps> = ({ data }) => {
   const adobe = INAAQC_THEME.palette;
-  const PIE_COLORS = [adobe.base, adobe.darkTint, adobe.midTint, adobe.highlight];
+  const PIE_COLORS = [
+    INAAQC_THEME.scale[900],
+    INAAQC_THEME.scale[700],
+    INAAQC_THEME.scale[500],
+    INAAQC_THEME.scale[300],
+    INAAQC_THEME.scale[100]
+  ];
   const totalCount = data.reduce((acc, curr) => acc + curr.value, 0);
 
   return (

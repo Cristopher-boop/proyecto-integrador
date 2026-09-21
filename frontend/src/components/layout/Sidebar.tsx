@@ -238,7 +238,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-extrabold uppercase tracking-wider transition-colors
                   ${
                     hasActiveChild
-                      ? 'text-teal-400'
+                      ? 'text-[#87C7FF]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                   }
                 `}
@@ -281,7 +281,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                       >
                         <item.icon
                           className={`w-4 h-4 shrink-0 transition-colors ${
-                            isItemActive ? 'text-teal-400' : 'text-slate-400 group-hover:text-white'
+                            isItemActive ? 'text-[#87C7FF]' : 'text-slate-400 group-hover:text-white'
                           }`}
                         />
                         <span className="truncate">{item.name}</span>
@@ -310,7 +310,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold text-white truncate">{displayName}</p>
             <p className="text-[10px] text-slate-400 truncate flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-teal-400 inline" /> {roleLabel}
+              <ShieldCheck className="w-3 h-3 text-[#87C7FF] inline" /> {roleLabel}
             </p>
           </div>
         </div>

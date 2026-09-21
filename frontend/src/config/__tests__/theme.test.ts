@@ -22,4 +22,18 @@ describe('INAAQC_THEME Configuration', () => {
       expect(item.border).toMatch(/^hsl\(/);
     });
   });
+
+  it('should have the official 10-shade monochromatic scale in hex', () => {
+    expect(INAAQC_THEME.scale).toBeDefined();
+    expect(INAAQC_THEME.scale[900]).toBe('#1E3040');
+    expect(INAAQC_THEME.scale[800]).toBe('#334759');
+    expect(INAAQC_THEME.scale[700]).toBe('#4D6173');
+    expect(INAAQC_THEME.scale[600]).toBe('#6C7D8C');
+    expect(INAAQC_THEME.scale[500]).toBe('#909CA6');
+    expect(INAAQC_THEME.scale[400]).toBe('#9FB0BF');
+    expect(INAAQC_THEME.scale[300]).toBe('#9EBDD9');
+    expect(INAAQC_THEME.scale[200]).toBe('#99C8F2');
+    expect(INAAQC_THEME.scale[100]).toBe('#87C7FF');
+    expect(INAAQC_THEME.scale[50]).toBe('#6EBBFF');
+  });
 });
