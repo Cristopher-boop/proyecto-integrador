@@ -43,6 +43,15 @@ export const ExtractedDataPane: React.FC<ExtractedDataPaneProps> = ({ datos, isL
   const [editValue, setEditValue] = useState<string>('');
   const adobe = INAAQC_THEME.palette;
 
+  const handleSaveEdit = (id_observacion: string) => {
+    const trimmed = editValue.trim();
+    if (!trimmed) return;
+    const parsed = parseFloat(trimmed);
+    if (isNaN(parsed) || !isFinite(parsed)) return;
+    onUpdateValue(id_observacion, parsed.toString());
+    setEditingId(null);
+  };
+
   // Lógica de Agrupación y Ordenamiento
   const groupedData = React.useMemo(() => {
     // 1. Ordenamos todo el bloque
@@ -137,11 +146,18 @@ export const ExtractedDataPane: React.FC<ExtractedDataPaneProps> = ({ datos, isL
                       {isEditing ? (
                         <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
                           <input 
-                            type="number" step="0.01" value={editValue} onChange={e => setEditValue(e.target.value)}
+                            type="number" 
+                            step="0.01" 
+                            value={editValue} 
+                            onChange={e => setEditValue(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleSaveEdit(obs.id_observacion);
+                              if (e.key === 'Escape') setEditingId(null);
+                            }}
                             className="w-20 text-right text-sm font-bold p-1 border rounded"
                             autoFocus
                           />
-                          <button onClick={() => { onUpdateValue(obs.id_observacion, editValue); setEditingId(null); }} className="p-1.5 text-green-600 bg-green-50 rounded hover:bg-green-100">
+                          <button onClick={() => handleSaveEdit(obs.id_observacion)} className="p-1.5 text-green-600 bg-green-50 rounded hover:bg-green-100" title="Guardar valor">
                             <Save size={14} />
                           </button>
                         </div>

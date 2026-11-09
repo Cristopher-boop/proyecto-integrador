@@ -19,7 +19,7 @@ export function useEpisodeDateFilter<T extends Record<string, any>>(
   _selectedValue?: string,
   _getId?: (item: T) => string,
   defaultYear: number = 2026,
-  defaultMonth: number = 9,
+  defaultMonth: number | 'ALL' = 'ALL',
 ) {
   const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(defaultYear);
   const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>(defaultMonth);

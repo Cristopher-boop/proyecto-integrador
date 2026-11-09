@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { UserPlus, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
 import { DatePicker } from '../../../components/common/DatePicker';
@@ -12,6 +12,7 @@ interface PatientFormProps {
 
 export const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSubmit, onCancel }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     nombres: '',
@@ -21,6 +22,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSubmit,
     fecha_nacimiento: '',
     sexo: 'M'
   });
+
+  const todayStr = new Date().toISOString().split('T')[0];
 
   // Si nos pasan initialData (Edición), llenamos el formulario
   useEffect(() => {
@@ -38,11 +41,62 @@ export const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSubmit,
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+
+    const nombres = formData.nombres.trim();
+    const apellidos = formData.apellidos.trim();
+    const dossier_erasme = formData.dossier_erasme.trim();
+    const dossier_mpi = formData.dossier_mpi.trim();
+
+    if (nombres.length < 2) {
+      setErrorMsg('El nombre debe contener al menos 2 caracteres.');
+      return;
+    }
+    if (apellidos.length < 2) {
+      setErrorMsg('Los apellidos deben contener al menos 2 caracteres.');
+      return;
+    }
+    if (dossier_erasme.length < 2 || dossier_erasme.length > 20) {
+      setErrorMsg('El Dossier Erasme debe tener entre 2 y 20 caracteres.');
+      return;
+    }
+    if (dossier_mpi && dossier_mpi.length > 20) {
+      setErrorMsg('El Dossier MPI no puede superar los 20 caracteres.');
+      return;
+    }
+    if (!formData.fecha_nacimiento) {
+      setErrorMsg('La fecha de nacimiento es obligatoria.');
+      return;
+    }
+    if (formData.fecha_nacimiento > todayStr) {
+      setErrorMsg('La fecha de nacimiento no puede ser en el futuro.');
+      return;
+    }
+    const birthYear = Number(formData.fecha_nacimiento.split('-')[0]);
+    if (birthYear < 1900) {
+      setErrorMsg('El año de nacimiento no puede ser anterior a 1900.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      await onSubmit({
+        ...formData,
+        nombres,
+        apellidos,
+        dossier_erasme,
+        dossier_mpi: dossier_mpi || null,
+      });
     } catch (err: any) {
-      alert("Error al guardar: " + (err.response?.data?.error || "Verifica los datos"));
+      const resData = err.response?.data;
+      if (typeof resData === 'object' && resData !== null) {
+        const messages = Object.entries(resData)
+          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(' ') : String(val)}`)
+          .join(' | ');
+        setErrorMsg(messages || 'Error al guardar el paciente. Verifique los datos.');
+      } else {
+        setErrorMsg(err.response?.data?.error || 'Error al guardar el paciente. Verifique los datos.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -56,26 +110,56 @@ export const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSubmit,
       </h3>
       
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {errorMsg && (
+          <div className="md:col-span-2 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-xs font-bold text-rose-800 dark:text-rose-300 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-bold mb-1 text-[#334759] dark:text-slate-300">Nombres</label>
-          <Input required value={formData.nombres} onChange={e => setFormData({...formData, nombres: e.target.value})} />
+          <Input 
+            required 
+            placeholder="Ej: Jean" 
+            value={formData.nombres} 
+            onChange={e => setFormData({...formData, nombres: e.target.value})} 
+          />
         </div>
         <div>
           <label className="block text-sm font-bold mb-1 text-[#334759] dark:text-slate-300">Apellidos</label>
-          <Input required value={formData.apellidos} onChange={e => setFormData({...formData, apellidos: e.target.value})} />
+          <Input 
+            required 
+            placeholder="Ej: Dupont" 
+            value={formData.apellidos} 
+            onChange={e => setFormData({...formData, apellidos: e.target.value})} 
+          />
         </div>
         <div>
           <label className="block text-sm font-bold mb-1 text-[#334759] dark:text-slate-300">Dossier Erasme</label>
-          <Input required value={formData.dossier_erasme} onChange={e => setFormData({...formData, dossier_erasme: e.target.value})} />
+          <Input 
+            required 
+            maxLength={20}
+            placeholder="Ej: 80004512" 
+            value={formData.dossier_erasme} 
+            onChange={e => setFormData({...formData, dossier_erasme: e.target.value})} 
+          />
         </div>
         <div>
           <label className="block text-sm font-bold mb-1 text-[#334759] dark:text-slate-300">Dossier MPI (Opcional)</label>
-          <Input value={formData.dossier_mpi} onChange={e => setFormData({...formData, dossier_mpi: e.target.value})} />
+          <Input 
+            maxLength={20}
+            placeholder="Ej: MPI-908123" 
+            value={formData.dossier_mpi} 
+            onChange={e => setFormData({...formData, dossier_mpi: e.target.value})} 
+          />
         </div>
         <div>
           <label className="block text-sm font-bold mb-1 text-[#334759] dark:text-slate-300">Fecha de Nacimiento</label>
           <DatePicker 
             required 
+            maxDate={todayStr}
+            minDate="1900-01-01"
             value={formData.fecha_nacimiento} 
             onChange={(date) => setFormData({...formData, fecha_nacimiento: date})} 
           />

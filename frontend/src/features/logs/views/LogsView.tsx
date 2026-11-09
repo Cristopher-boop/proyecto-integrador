@@ -162,7 +162,7 @@ export const LogsView: React.FC = () => {
 
   const handleTriggerBackup = async () => {
     try {
-      await generateBackup(backupNotas);
+      await generateBackup(backupNotas.trim().slice(0, 255));
       setBackupNotas('');
     } catch {
       // Handled in hook
@@ -784,7 +784,8 @@ export const LogsView: React.FC = () => {
               <div className="mt-3">
                 <input
                   type="text"
-                  placeholder="Nota o motivo del respaldo (opcional, ej. Mantenimiento / Auditoría)..."
+                  maxLength={255}
+                  placeholder="Nota o motivo del respaldo (opcional, máx. 255 caracteres)..."
                   value={backupNotas}
                   onChange={(e) => setBackupNotas(e.target.value)}
                   className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-[#334759] bg-white dark:bg-[#15232F] text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#87C7FF]"

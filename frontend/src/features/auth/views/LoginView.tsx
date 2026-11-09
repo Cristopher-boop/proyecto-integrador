@@ -28,12 +28,27 @@ export const LoginView: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setErrorMsg('');
+
+    const cleanUsername = username.trim();
+    if (!cleanUsername) {
+      setErrorMsg('Por favor, ingrese su usuario institucional.');
+      return;
+    }
+    if (cleanUsername.length < 3) {
+      setErrorMsg('El usuario debe tener al menos 3 caracteres.');
+      return;
+    }
+    if (!password) {
+      setErrorMsg('Por favor, ingrese su contraseña.');
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       await login({
-        username,
+        username: cleanUsername,
         password,
       });
       navigate('/dashboard', { replace: true });

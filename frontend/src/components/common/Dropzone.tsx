@@ -16,6 +16,15 @@ export const Dropzone: React.FC<DropzoneProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.webp'];
+  const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
+  const isValidFile = (file: File) => {
+    const hasValidType = ALLOWED_TYPES.includes(file.type);
+    const hasValidExt = ALLOWED_EXTENSIONS.some(ext => file.name.toLowerCase().endsWith(ext));
+    return (hasValidType || hasValidExt) && file.size > 0 && file.size <= 50 * 1024 * 1024;
+  };
+
   // Lógica Interna de Drag & Drop
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault(); e.stopPropagation();
@@ -26,13 +35,19 @@ export const Dropzone: React.FC<DropzoneProps> = ({
     e.preventDefault(); e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      onFilesDropped(Array.from(e.dataTransfer.files));
+      const validFiles = Array.from(e.dataTransfer.files).filter(isValidFile);
+      if (validFiles.length > 0) {
+        onFilesDropped(validFiles);
+      }
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      onFilesDropped(Array.from(e.target.files));
+      const validFiles = Array.from(e.target.files).filter(isValidFile);
+      if (validFiles.length > 0) {
+        onFilesDropped(validFiles);
+      }
     }
   };
 

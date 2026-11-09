@@ -6,9 +6,17 @@ interface DatePickerProps {
   value: string; 
   onChange: (date: string) => void;
   required?: boolean;
+  minDate?: string;
+  maxDate?: string;
 }
 
-export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, required = false }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ 
+  value, 
+  onChange, 
+  required = false,
+  minDate,
+  maxDate
+}) => {
   const adobe = INAAQC_THEME.palette;
   const [isOpen, setIsOpen] = useState(false);
   
@@ -57,7 +65,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
   const handleSelectDay = (day: number) => {
     const monthStr = String(currentMonth + 1).padStart(2, '0');
     const dayStr = String(day).padStart(2, '0');
-    onChange(`${currentYear}-${monthStr}-${dayStr}`);
+    const selectedDateStr = `${currentYear}-${monthStr}-${dayStr}`;
+    if (minDate && selectedDateStr < minDate) return;
+    if (maxDate && selectedDateStr > maxDate) return;
+    onChange(selectedDateStr);
     setIsOpen(false);
   };
 
@@ -149,13 +160,21 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, require
                   const day = i + 1;
                   const itemDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                   const isSelected = value === itemDateStr;
+                  const isDisabled = Boolean((minDate && itemDateStr < minDate) || (maxDate && itemDateStr > maxDate));
 
                   return (
                     <button
                       key={day}
                       type="button"
-                      onClick={() => handleSelectDay(day)}
-                      className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${isSelected ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24]' : 'text-[#334759] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759]'}`}
+                      disabled={isDisabled}
+                      onClick={() => !isDisabled && handleSelectDay(day)}
+                      className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                        isDisabled
+                          ? 'opacity-25 cursor-not-allowed text-slate-400 dark:text-slate-600'
+                          : isSelected
+                          ? 'bg-[#1E3040] dark:bg-[#87C7FF] text-white dark:text-[#0F1A24]'
+                          : 'text-[#334759] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#334759]'
+                      }`}
                     >
                       {day}
                     </button>

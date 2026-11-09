@@ -63,14 +63,38 @@ export const useIngestion = () => {
     return 'UNKNOWN';
   };
 
+  const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.webp'];
+  const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+
   const addFiles = useCallback((incomingFiles: File[]) => {
-    const newFiles = incomingFiles.map(f => ({
+    let rejectedCount = 0;
+    const validFiles: File[] = [];
+
+    incomingFiles.forEach(f => {
+      const hasValidType = ALLOWED_TYPES.includes(f.type);
+      const hasValidExt = ALLOWED_EXTENSIONS.some(ext => f.name.toLowerCase().endsWith(ext));
+      const hasValidSize = f.size > 0 && f.size <= MAX_FILE_SIZE;
+
+      if ((hasValidType || hasValidExt) && hasValidSize) {
+        validFiles.push(f);
+      } else {
+        rejectedCount++;
+      }
+    });
+
+    if (rejectedCount > 0) {
+      setErrorMessage(`Se omitieron ${rejectedCount} archivo(s) no válidos. Solo se admiten documentos PDF e imágenes JPG/PNG/WEBP de hasta 50MB.`);
+    } else {
+      setErrorMessage('');
+    }
+
+    const newFiles = validFiles.map(f => ({
       file: f,
       detectedType: inferType(f.name)
     }));
     setFilesWithMeta(prev => [...prev, ...newFiles]);
     setStatus('idle');
-    setErrorMessage('');
   }, []);
 
   const removeFile = useCallback((indexToRemove: number) => {
@@ -96,6 +120,18 @@ export const useIngestion = () => {
   }, []);
 
   const uploadFiles = async () => {
+    if (!episode || !episode.trim()) {
+      setErrorMessage("Por favor, selecciona un episodio clínico de destino antes de subir los archivos.");
+      setStatus('error');
+      return;
+    }
+
+    if (filesWithMeta.length === 0) {
+      setErrorMessage("No hay archivos en la cola para subir.");
+      setStatus('error');
+      return;
+    }
+
     if (filesWithMeta.some(f => f.detectedType === 'UNKNOWN')) {
       setErrorMessage("Por favor, asigna un tipo a todos los documentos antes de subir.");
       setStatus('error');

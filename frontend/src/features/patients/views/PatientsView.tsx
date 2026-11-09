@@ -28,7 +28,7 @@ const PatientsView: React.FC = () => {
   
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState<number | 'ALL'>(now.getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>(now.getMonth() + 1);
+  const [selectedMonth, setSelectedMonth] = useState<number | 'ALL'>('ALL');
 
   const availableYears = useMemo(() => {
     const yearsSet = new Set<number>([now.getFullYear()]);
