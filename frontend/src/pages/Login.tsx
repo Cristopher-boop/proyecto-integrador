@@ -17,7 +17,7 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMsg(''); // Limpiamos errores previos
+    setErrorMsg('');
     
     try {
       // 1. El Disparo Real a Django
